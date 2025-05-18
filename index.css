@@ -1,0 +1,17 @@
+#performance-content {
+  position: relative;
+}
+
+#performance-content > canvas {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+#performance-content > canvas:first-child {
+  z-index: 3;
+}
+
+#performance-content > canvas:last-child {
+  z-index: 2;
+}
