@@ -1,5 +1,7 @@
+const SET_ID = '02_industrial';
+
 export async function fetchManifest() {
-  const res = await fetch('/sets/01_who_are_you/manifest.json');
+  const res = await fetch(`/sets/${SET_ID}/manifest.json`);
   const manifest = await res.json();
 
   const videoMap = parseVideoMap(manifest);
@@ -8,6 +10,7 @@ export async function fetchManifest() {
   const scenes = manifest.scenes.map((sceneMetadata) => {
     const {videoId, offsetX, offsetY} = sceneMetadata;
     return {
+      videoId,
       videoPath: videoMap.get(videoId),
       offsetX,
       offsetY,
@@ -30,7 +33,7 @@ function parseVideoMap(manifest) {
   const {videos} = manifest;
 
   const videoMap = new Map();
-  const basePath = `/sets/01_who_are_you/videos/`
+  const basePath = `/sets/${SET_ID}/videos/`
 
   Object.keys(videos).forEach((name) => {
     const fileName = videos[name];

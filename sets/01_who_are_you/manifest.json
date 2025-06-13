@@ -1,29 +1,32 @@
 {
   "tint": "#3264ff",
   "transitionOut": {
-    "duration": 1
+    "duration": 1,
+    "kind": "fade"
   },
   "scenes": [
-    {"videoId": "tree1"},
+    {"videoId": "sky"},
     {"videoId": "tree2", "offsetY": "bottom"},
-    {"videoId": "grass", "offsetX": "right"},
-    {"videoId": "sand_grass", "offsetX": "right"},
-    {"videoId": "waves_sail", "offsetX": "left"},
-    {"videoId": "pond", "offsetX": "right"},
-    {"videoId": "tower"},
-    {"videoId": "stone"},
-    {"videoId": "rocks_waves1"},
-    {"videoId": "rocks_waves2"},
+    {"videoId": "block", "offsetX": "left"},
     {"videoId": "rocks_waves3"},
     {"videoId": "rocks_waves4"},
-    {"videoId": "branches_waves"},
-    {"videoId": "block", "offsetX": "left"},
     {"videoId": "waves_surfer"},
-    {"videoId": "sky"},
+    {"videoId": "waves_sail", "offsetX": "left"},
+    {"videoId": "sand_grass", "offsetX": "right"},
+    {"videoId": "tree1"},
+    {"videoId": "rocks_waves1"},
+    {"videoId": "stone"},
+    {"videoId": "pond", "offsetX": "right"},
     {"videoId": "sand_waves1"},
-    {"videoId": "sand_waves2"},
+    {"videoId": "rocks_waves5"},
+    {"videoId": "branches_waves"},
     {"videoId": "wall"},
-    {"videoId": "rocks_waves5"}
+    {"videoId": "tower"},
+    {"videoId": "rocks_waves2"},
+    {"videoId": "rocks_waves1"},
+    {"videoId": "sand_waves2"},
+    {"videoId": "sand_waves2"},
+    {"videoId": "sky"}
   ],
   "videos": {
     "tree1": "IMG_0160.MOV",

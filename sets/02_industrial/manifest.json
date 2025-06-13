@@ -1,0 +1,9 @@
+{
+  "tint": "#ff2e2e",
+  "scenes": [
+    {"videoId": "build1"}
+  ],
+  "videos": {
+    "build1": "IMG_0640.MOV"
+  }
+}

@@ -1,5 +1,5 @@
 import {fetchManifest} from "./manifest.js";
-import {createRenderer} from "./renderer.js";
+import {createPlayer} from "./player.js";
 
 const $page = document.querySelector('#performance-page');
 const $content = document.querySelector('#performance-content');
@@ -11,8 +11,8 @@ export async function openPerformance() {
   const manifest = await fetchManifest();
 
   let currentIndex = 0;
-  let currentRenderer;
-  let nextRenderer;
+  let currentPlayer;
+  let nextPlayer;
 
   const getCurrentSceneIndex = () => currentIndex;
   const getNextSceneIndex = () => currentIndex + 1;
@@ -20,19 +20,21 @@ export async function openPerformance() {
   const getNextScene = () => manifest.scenes[getNextSceneIndex()];
   const isLastScene = (index) => index >= manifest.scenes.length - 1;
 
-  const createRendererForScene = (scene, sceneIndex) => {
+  const createPlayerForScene = (scene, sceneIndex) => {
     const isLast = isLastScene(sceneIndex);
-    return createRenderer(scene.videoPath, {
-      width: 1080,
-      height: 1080,
+    return createPlayer(scene.videoPath, {
+      // width: 1080,
+      // height: 1080,
+      width: 400,
+      height: 400,
       tint: manifest.tint,
       transitionOut: !isLast ? manifest.transitionOut : undefined,
       offsetX: scene.offsetX,
       offsetY: scene.offsetY,
       loop: isLast,
-      rate: 10,
+      // rate: 1,
       onTransitionOutStart: () => {
-        void nextRenderer?.play();
+        void nextPlayer?.play();
       },
       onEnded: () => {
         incrementScene();
@@ -40,46 +42,46 @@ export async function openPerformance() {
     });
   };
 
-  const resetRenderers = () => {
-    let oldRenderer = currentRenderer;
+  const resetPlayers = (autoplay = false) => {
+    let oldPlayer = currentPlayer;
 
-    if (nextRenderer) {
-      currentRenderer = nextRenderer;
+    if (nextPlayer) {
+      currentPlayer = nextPlayer;
     } else {
       const currentScene = getCurrentScene();
       if (currentScene) {
-        currentRenderer = createRendererForScene(getCurrentScene(), getCurrentSceneIndex())
-        $content.appendChild(currentRenderer.$canvas);
+        currentPlayer = createPlayerForScene(getCurrentScene(), getCurrentSceneIndex())
+        $content.appendChild(currentPlayer.$canvas);
       } else {
-        currentRenderer = undefined;
+        currentPlayer = undefined;
       }
     }
 
     const nextScene = getNextScene();
     if (nextScene) {
-      nextRenderer = createRendererForScene(nextScene, getNextSceneIndex());
-      $content.appendChild(nextRenderer.$canvas);
-      void nextRenderer.showPoster();
+      nextPlayer = createPlayerForScene(nextScene, getNextSceneIndex());
+      $content.appendChild(nextPlayer.$canvas);
+      void nextPlayer.showPoster();
     } else {
-      nextRenderer = undefined;
+      nextPlayer = undefined;
     }
 
-    if (oldRenderer && !isLastScene(getCurrentSceneIndex())) {
-      oldRenderer.destroy();
-      $content.removeChild(oldRenderer.$canvas);
+    if (oldPlayer && !isLastScene(getCurrentSceneIndex())) {
+      oldPlayer.destroy();
+      $content.removeChild(oldPlayer.$canvas);
     }
 
-    void currentRenderer?.play();
+    void currentPlayer?.play();
   };
 
   const incrementScene = () => {
     currentIndex += 1;
-    resetRenderers();
+    resetPlayers();
   };
 
-  resetRenderers();
+  resetPlayers();
 }
 
 $fullscreen.addEventListener('click', async () => {
-  // await $content.requestFullscreen();
+  await $content.requestFullscreen();
 });
