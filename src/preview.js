@@ -1,30 +1,40 @@
 import {fetchManifest} from "./manifest.js";
-import {createPlayer} from "./player.js";
+import {Player} from "./player.js";
+import {createRenderer} from "./renderer.js";
+import {Loop} from "./loop.js";
 
 const $page = document.querySelector('#preview-page');
 const $content = document.querySelector('#preview-content');
 const $totalDuration = document.querySelector('#preview-total-duration');
 const $colorPicker = document.querySelector('#preview-color-picker');
 
-export async function openPreview() {
+export async function openPreview(setId) {
   $page.style.display = 'block';
 
-  const manifest = await fetchManifest();
+  const manifest = await fetchManifest(setId);
 
   let totalDuration = 0;
   const players = [];
 
   for (const scene of manifest.scenes) {
-    const player = createPlayer(scene.videoPath, {
+    const renderer = createRenderer({
       width: 200,
       height: 200,
-      rate: 10,
-      tint: manifest.tint,
+      effects: manifest.effects,
       offsetX: scene.offsetX,
       offsetY: scene.offsetY,
     });
 
-    const {$canvas} = player;
+
+    const previewRate = 10;
+
+    const player = new Player(scene.videoPath, renderer, {
+      width: 200,
+      height: 200,
+      rate: previewRate,
+    });
+
+    const {$canvas} = renderer;
 
     $canvas.addEventListener('click', () => {
       player.togglePlay();
@@ -32,9 +42,10 @@ export async function openPreview() {
 
     await player.showPoster();
 
-    const duration = player.getDuration();
+    const rate = scene.rate ?? 1;
+    const duration = player.getDuration() / rate;
 
-    const $item = createItem($canvas, scene.videoId, duration, totalDuration);
+    const $item = createItem($canvas, scene.videoId, duration, totalDuration, rate);
     $content.appendChild($item);
 
     totalDuration += duration;
@@ -49,13 +60,22 @@ export async function openPreview() {
   $colorPicker.value = manifest.tint;
   $colorPicker.addEventListener('change', async () => {
     for (const player of players) {
-      await player.changeTint($colorPicker.value);
+      await player.changeTintColor($colorPicker.value);
     }
     console.log('New tint: %s', $colorPicker.value);
   });
+
+  const onTick = ({deltaTime}) => {
+    for (const player of players) {
+      player.update({deltaTime});
+    }
+  };
+
+  const loop = new Loop(onTick);
+  loop.start();
 }
 
-function createItem($canvas, title, duration, start) {
+function createItem($canvas, title, duration, start, rate) {
   const $item = document.createElement('div');
   $item.classList.add('preview-item');
 
@@ -70,7 +90,7 @@ function createItem($canvas, title, duration, start) {
 
   const $duration = document.createElement('div');
   $duration.classList.add('preview-item-duration');
-  $duration.innerHTML = `${duration.toFixed(1)}s`;
+  $duration.innerHTML = `${toMinutesString(duration)} (${rate}x)`;
 
   $descTop.appendChild($title);
   $descTop.appendChild($duration);

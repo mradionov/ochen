@@ -1,6 +1,6 @@
 #performance-content {
   position: relative;
-  padding-left: 400px;
+  /*padding-left: 400px;*/
 }
 
 #performance-content > canvas {

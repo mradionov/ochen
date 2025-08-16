@@ -1,16 +1,18 @@
-import {openPerformance} from "./performance.js";
-import {openPreview} from "./preview.js";
+import {openPerformance} from "./src/performance.js";
+import {openPreview} from "./src/preview.js";
 
 const {searchParams} = new URL(window.location);
 
 const $page = document.querySelector('#main-page');
 
+const SET_ID = '03_jrugz';
+
 switch (searchParams.get('page')) {
   case 'perf':
-    void openPerformance();
+    void openPerformance(SET_ID);
     break;
   case 'prev':
-    void openPreview();
+    void openPreview(SET_ID);
     break;
   default:
     $page.style.display = 'block';

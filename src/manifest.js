@@ -1,19 +1,18 @@
-const SET_ID = '02_industrial';
-
-export async function fetchManifest() {
-  const res = await fetch(`/sets/${SET_ID}/manifest.json`);
+export async function fetchManifest(setId) {
+  const res = await fetch(`/sets/${setId}/manifest.json`);
   const manifest = await res.json();
 
-  const videoMap = parseVideoMap(manifest);
-  const {tint, transitionOut} = manifest;
+  const videoMap = parseVideoMap(setId, manifest);
+  const {effects, transitionOut} = manifest;
 
   const scenes = manifest.scenes.map((sceneMetadata) => {
-    const {videoId, offsetX, offsetY} = sceneMetadata;
+    const {videoId, offsetX, offsetY, rate} = sceneMetadata;
     return {
       videoId,
       videoPath: videoMap.get(videoId),
       offsetX,
       offsetY,
+      rate,
     };
   });
 
@@ -23,17 +22,17 @@ export async function fetchManifest() {
 
   return {
     scenes,
-    tint,
+    effects,
     transitionOut,
     videos,
   };
 }
 
-function parseVideoMap(manifest) {
+function parseVideoMap(setId, manifest) {
   const {videos} = manifest;
 
   const videoMap = new Map();
-  const basePath = `/sets/${SET_ID}/videos/`
+  const basePath = `/sets/${setId}/videos/`
 
   Object.keys(videos).forEach((name) => {
     const fileName = videos[name];

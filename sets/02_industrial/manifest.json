@@ -1,9 +1,13 @@
 {
   "tint": "#ff2e2e",
   "scenes": [
+    {"videoId": "bridge1"},
+    {"videoId": "fence"},
     {"videoId": "build1"}
   ],
   "videos": {
+    "bridge1": "IMG_0619.MOV",
+    "fence": "IMG_0620.MOV",
     "build1": "IMG_0640.MOV"
   }
 }
