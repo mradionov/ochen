@@ -1,29 +1,36 @@
-import {defaults} from "./util.js";
-import {createRenderer} from "./renderer.js";
+import { defaults } from './util.ts';
+import type { TransitionOut } from '@/manifest.ts';
+import type { Renderer } from './renderer.ts';
 
-const DEFAULT_OPTIONS = {
+const DEFAULT_OPTIONS: PlayerOptions = {
   rate: 1,
-  /** true | false */
   loop: false,
-  /**
-   * {
-   *  duration: number,
-   *  kind: 'cut' | 'fade'
-   * }
-   */
   transitionOut: undefined,
   onTransitionOutStart: undefined,
   onEnded: undefined,
 };
 
-export class Player {
-  hasTransitionOurStarted = false;
-  isPlaying = false;
-  isDestroyed = false;
+type PlayerOptions = {
+  rate: number;
+  loop: boolean;
+  transitionOut?: TransitionOut;
+  onTransitionOutStart?: () => void;
+  onEnded?: () => void;
+};
 
-  constructor(path, renderer, argOptions = {}) {
-    this.path = path;
-    this.renderer = renderer;
+export class Player {
+  readonly options: PlayerOptions;
+  readonly $video: HTMLVideoElement;
+
+  private hasTransitionOurStarted = false;
+  private isPlaying = false;
+  private isDestroyed = false;
+
+  constructor(
+    private readonly path: string,
+    readonly renderer: Renderer,
+    argOptions = {},
+  ) {
     this.options = defaults(DEFAULT_OPTIONS, argOptions);
 
     this.$video = document.createElement('video');
@@ -31,7 +38,7 @@ export class Player {
     this.loadVideo();
   }
 
-  update({deltaTime}) {
+  update() {
     if (this.isPlaying) {
       this.drawFrame();
     }
@@ -42,7 +49,7 @@ export class Player {
   }
 
   getRate() {
-    return (this.options.rate ?? 1);
+    return this.options.rate ?? 1;
   }
 
   getRateDuration() {
@@ -56,7 +63,7 @@ export class Player {
     }
     await this.$video.play();
     this.isPlaying = true;
-  };
+  }
 
   async pause() {
     await this.$video.pause();
@@ -82,14 +89,14 @@ export class Player {
   destroy() {
     this.isDestroyed = true;
     this.destroyVideo();
-  };
+  }
 
   async changeTintColor(newTintColor) {
     this.renderer.setTintColor(newTintColor);
     this.loadVideo();
     await this.showPoster();
     this.destroy();
-  };
+  }
 
   drawFrame() {
     this.renderer.updateFrame(this.$video);
@@ -116,8 +123,8 @@ export class Player {
     if (!this.options.transitionOut) {
       return;
     }
-    const {$canvas} = this.renderer;
-    const {duration, kind} = this.options.transitionOut;
+    const { $canvas } = this.renderer;
+    const { duration, kind } = this.options.transitionOut;
     const startSec = this.$video.duration - duration;
     if (this.$video.currentTime > startSec && !this.hasTransitionOurStarted) {
       this.hasTransitionOurStarted = true;
@@ -131,12 +138,15 @@ export class Player {
         default:
           $canvas.classList.add('transition-out-cut');
       }
-    } else if (this.$video.currentTime < startSec && this.hasTransitionOurStarted) {
+    } else if (
+      this.$video.currentTime < startSec &&
+      this.hasTransitionOurStarted
+    ) {
       this.hasTransitionOurStarted = false;
     }
-  }
+  };
 
   onVideoEnded = () => {
     this.options.onEnded?.();
-  }
+  };
 }

@@ -28,7 +28,6 @@
     {"videoId": "bag", "offsetY": "top"},
     {"videoId": "tray", "offsetY": "top"},
     {"videoId": "painting2", "offsetY": "top"},
-    {"videoId": "walk1", "offsetY": "top"},
     {"videoId": "walk2", "offsetY": "top"},
     {"videoId": "barbed_wire", "offsetY": "top"},
     {"videoId": "walk3", "offsetY": "top"},
@@ -78,7 +77,7 @@
     "stone": "IMG_0879.MOV",
     "branch": "IMG_0881.MOV",
     "curtain": "IMG_0882.MOV",
-    "fountain1": "IMG_0882.MOV",
+    "fountain1": "IMG_0883.MOV",
     "fountain2": "IMG_0884.MOV"
   }
 }

@@ -1,6 +1,6 @@
-import {fetchManifest} from "./manifest.js";
-import {SceneManager} from "./scene_manager.js";
-import {Loop} from "./loop.js";
+import { fetchManifest } from './manifest.ts';
+import { SceneManager } from './scene_manager.ts';
+import { Render_loop } from './render_loop.ts';
 
 const $page = document.querySelector('#performance-page');
 const $content = document.querySelector('#performance-content');
@@ -14,11 +14,11 @@ export async function openPerformance(setId) {
   const sceneManager = new SceneManager(manifest, $content);
   sceneManager.resetPlayers();
 
-  const onTick = ({deltaTime}) => {
-    sceneManager.update({deltaTime});
+  const onTick = ({ deltaTime }) => {
+    sceneManager.update({ deltaTime });
   };
 
-  const loop = new Loop(onTick);
+  const loop = new Render_loop(onTick);
   loop.start();
 }
 

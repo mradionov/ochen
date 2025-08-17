@@ -1,5 +1,5 @@
-export function defaults(def, actual) {
-  const final = {...def};
+export function defaults<T>(def: T, actual: T): T {
+  const final = { ...def };
 
   Object.keys(actual).forEach((key) => {
     const value = actual[key];

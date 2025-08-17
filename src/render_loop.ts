@@ -1,19 +1,28 @@
-import {defaults} from "./util.js";
+import { defaults } from './util.ts';
+import { Subject } from '@/subject.ts';
 
-export class Loop {
-  constructor(onTick, argOptions = {}) {
-    this.onTick = onTick;
+type RenderLoopOptions = {
+  deltaTimeLimit?: number;
+  fps?: number;
+};
+
+export class RenderLoop {
+  readonly tick = new Subject<{ deltaTime: number; lastTime: number }>();
+  private lastTimestamp: number | undefined;
+  readonly options: RenderLoopOptions;
+
+  constructor(argOptions: RenderLoopOptions = {}) {
     this.options = defaults(argOptions, {
       deltaTimeLimit: 1,
       fps: 60,
-    })
+    });
   }
 
   start() {
     this.loop();
   }
 
-  loop = (timestamp = null) => {
+  readonly loop = (timestamp = null) => {
     const idealDeltaTime = this.getIdealDeltaTime();
     // For the very first run loop() is called from the code and timestamp is
     // not known. On the second call loop() is called by requestAnimationFrame,
@@ -41,10 +50,10 @@ export class Loop {
 
     const lastTime = timestamp / 1000;
 
-    this.onTick?.({deltaTime, lastTime});
+    this.tick.emit({ deltaTime, lastTime });
 
     window.requestAnimationFrame(this.loop);
-  }
+  };
 
   getFpsInterval() {
     return 1000 / this.options.fps;
