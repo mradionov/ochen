@@ -1,8 +1,20 @@
-node_modules
-.DS_Store
+# Code
 dist
+node_modules
+.svelte-kit
 
+# OS
+.DS_Store
+
+# IDE
 .idea
 
+# Data
 *.MOV
 *.HEIC
+
+# Env
+.env
+.env.*
+!.env.example
+!.env.test
