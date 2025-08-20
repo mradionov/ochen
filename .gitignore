@@ -12,6 +12,7 @@ node_modules
 # Data
 *.MOV
 *.HEIC
+*.WAV
 
 # Env
 .env

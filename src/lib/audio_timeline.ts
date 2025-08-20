@@ -1,0 +1,71 @@
+import type { AudioClip, Manifest } from '$lib/manifest';
+import type { AudioResolver } from '$lib/audio_resolver';
+
+type AudioId = string;
+
+export type AudioTimelineClip = {
+	audioId: AudioId;
+	clip: AudioClip;
+	start: number;
+	end: number;
+	duration: number;
+};
+
+export class AudioTimeline {
+	constructor(
+		private readonly manifest: Manifest,
+		private readonly audioResolver: AudioResolver
+	) {}
+
+	private get clips() {
+		return this.manifest.audioTrack.clips;
+	}
+
+	getTimelineClips(): AudioTimelineClip[] {
+		return this.clips.map((clip) => this.getTimelineClip(clip.audioId));
+	}
+
+	getClip(id: AudioId): AudioClip {
+		return this.clips.find((clip) => clip.audioId === id);
+	}
+
+	getTimelineClip(id: AudioId): AudioTimelineClip {
+		return {
+			audioId: id,
+			clip: this.getClip(id),
+			duration: this.getClipDuration(id),
+			start: this.getClipStart(id),
+			end: this.getClipEnd(id)
+		};
+	}
+
+	getClipStart(id: AudioId): number {
+		let duration = 0;
+		for (const clip of this.clips) {
+			if (clip.audioId === id) {
+				break;
+			}
+			duration += this.getClipDuration(clip.audioId);
+		}
+		return duration;
+	}
+
+	getClipEnd(id: AudioId): number {
+		const start = this.getClipStart(id);
+		const duration = this.getClipDuration(id);
+		return start + duration;
+	}
+
+	getClipDuration(id: AudioId): number {
+		const metadata = this.audioResolver.getMetadata(id);
+		return metadata.duration;
+	}
+
+	getTotalDuration(): number {
+		return this.clips
+			.map((clip) => this.getClipDuration(clip.audioId))
+			.reduce((duration, totalDuration) => {
+				return totalDuration + duration;
+			}, 0);
+	}
+}

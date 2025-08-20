@@ -3,14 +3,14 @@ import { Deferred } from './deferred.ts';
 type VideoId = string;
 
 type VideoMetadata = {
-	id: string;
-	path: string;
+	videoId: string;
+	videoPath: string;
 	duration: number;
 };
 
 type VideoRef = {
-	id: VideoId;
-	path: string;
+	videoId: VideoId;
+	videoPath: string;
 };
 
 export class VideoResolver {
@@ -30,7 +30,7 @@ export class VideoResolver {
 	}
 
 	private async loadMetadataOne(ref: VideoRef): Promise<VideoMetadata> {
-		const existingMetadata = this.videos.get(ref.id);
+		const existingMetadata = this.videos.get(ref.videoId);
 		if (existingMetadata) {
 			return existingMetadata;
 		}
@@ -39,7 +39,7 @@ export class VideoResolver {
 
 		const video = document.createElement('video');
 		video.preload = 'metadata';
-		video.src = ref.path;
+		video.src = ref.videoPath;
 		video.addEventListener(
 			'loadedmetadata',
 			() => {
@@ -51,12 +51,12 @@ export class VideoResolver {
 		await loadedMetadata.promise;
 
 		const metadata: VideoMetadata = {
-			id: ref.id,
-			path: ref.path,
+			videoId: ref.videoId,
+			videoPath: ref.videoPath,
 			duration: video.duration
 		};
 
-		this.videos.set(ref.id, metadata);
+		this.videos.set(ref.videoId, metadata);
 
 		video.removeAttribute('src');
 		video.load();

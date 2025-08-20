@@ -1,4 +1,4 @@
-import type { Scene } from './manifest.ts';
+import type { VideoClip } from './manifest.ts';
 import { createRenderer } from './renderer.ts';
 import { Player } from './player.ts';
 import { TaskQueue } from './task_queue.ts';
@@ -6,20 +6,20 @@ import { TaskQueue } from './task_queue.ts';
 export class PlayerFactory {
 	private taskQueue = new TaskQueue();
 
-	async createForPreview(scene: Scene): Promise<Player> {
+	async createForPreview(videoClip: VideoClip): Promise<Player> {
 		// Create one by one to speed up the process, video elements are struggling if it's done at the same time
 		return this.taskQueue.run(async () => {
 			const renderer = createRenderer({
 				width: 200,
 				height: 200,
-				effects: scene.effects,
-				offsetX: scene.offsetX,
-				offsetY: scene.offsetY
+				effects: videoClip.effects,
+				offsetX: videoClip.offsetX,
+				offsetY: videoClip.offsetY
 			});
 
 			const previewRate = 10;
 
-			const player = new Player(scene.videoPath, renderer, {
+			const player = new Player(videoClip.videoPath, renderer, {
 				width: 200,
 				height: 200,
 				rate: previewRate

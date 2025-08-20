@@ -1,16 +1,13 @@
 <script lang='ts'>
   import { toMinutesString } from '$lib/time_utils';
-  import type { Scene } from '$lib/manifest';
-  import type { SceneInTimeline } from '$lib/timeline';
+  import type { VideoTimelineClip } from '$lib/video_timeline';
   import { getContext, onMount } from 'svelte';
   import { RenderLoop } from '$lib/render_loop';
   import { PlayerFactoryKey, RenderLoopKey } from '$lib/di';
   import type { PlayerFactory } from '$lib/player_factory';
   import type { Player } from '$lib/player';
 
-  export let videoId: string;
-  export let scene: Scene;
-  export let sceneInTimeline: SceneInTimeline;
+  export let timelineClip: VideoTimelineClip;
 
   const renderLoop = getContext<RenderLoop>(RenderLoopKey);
   const playerFactory = getContext<PlayerFactory>(PlayerFactoryKey);
@@ -20,7 +17,7 @@
   let player: Player;
 
   onMount(async () => {
-    player = await playerFactory.createForPreview(scene);
+    player = await playerFactory.createForPreview(timelineClip.clip);
     // TODO: don't manipulate dom directly
     canvasContainerElement.appendChild(player.renderer.$canvas);
 
@@ -37,14 +34,14 @@
 <div class='container' on:click={onContainerClick}>
   <div bind:this={canvasContainerElement}></div>
   <div class='header'>
-    <div class='title'>{videoId}</div>
+    <div class='title'>{timelineClip.videoId}</div>
     <div class='duration'>
-      {toMinutesString(sceneInTimeline.duration)} ({sceneInTimeline.rate}x)
+      {toMinutesString(timelineClip.duration)} ({timelineClip.rate}x)
     </div>
   </div>
   <div class='footer'>
-    <div class='start'>{toMinutesString(sceneInTimeline.start)}</div>
-    <div class='end'>{toMinutesString(sceneInTimeline.end)}</div>
+    <div class='start'>{toMinutesString(timelineClip.start)}</div>
+    <div class='end'>{toMinutesString(timelineClip.end)}</div>
   </div>
 </div>
 

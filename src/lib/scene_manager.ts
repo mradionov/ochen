@@ -1,6 +1,6 @@
 import { Player } from './player.js';
 import { createRenderer } from './renderer.ts';
-import type { Manifest, Scene } from './manifest.ts';
+import type { Manifest, VideoClip } from './manifest.ts';
 
 // TODO: rename
 export class SceneManager {
@@ -18,28 +18,28 @@ export class SceneManager {
 		// this.nextPlayer?.update({deltaTime});
 	}
 
-	private createPlayerForScene(scene: Scene, sceneIndex: number) {
-		const isLast = this.isLastScene(sceneIndex);
+	private createPlayerForClip(clip: VideoClip, clipIndex: number) {
+		const isLast = this.isLastClip(clipIndex);
 
 		const renderer = createRenderer({
 			// width: 1080,
 			// height: 1080,
 			width: 800,
 			height: 800,
-			effects: this.manifest.effects,
-			offsetX: scene.offsetX,
-			offsetY: scene.offsetY
+			effects: this.manifest.videoTrack.effects,
+			offsetX: clip.offsetX,
+			offsetY: clip.offsetY
 		});
 
-		return new Player(scene.videoPath, renderer, {
-			transitionOut: !isLast ? this.manifest.transitionOut : undefined,
+		return new Player(clip.videoPath, renderer, {
+			transitionOut: !isLast ? this.manifest.videoTrack.transitionOut : undefined,
 			loop: isLast,
-			rate: scene.rate,
+			rate: clip.rate,
 			onTransitionOutStart: () => {
 				void this.nextPlayer?.play();
 			},
 			onEnded: () => {
-				this.incrementScene();
+				this.incrementClip();
 			}
 		});
 	}
@@ -50,11 +50,11 @@ export class SceneManager {
 		if (this.nextPlayer) {
 			this.currentPlayer = this.nextPlayer;
 		} else {
-			const currentScene = this.getCurrentScene();
-			if (currentScene) {
-				this.currentPlayer = this.createPlayerForScene(
-					this.getCurrentScene(),
-					this.getCurrentSceneIndex()
+			const currentClip = this.getCurrentClip();
+			if (currentClip) {
+				this.currentPlayer = this.createPlayerForClip(
+					this.getCurrentClip(),
+					this.getCurrentClipIndex()
 				);
 				this.contentElement.appendChild(this.currentPlayer.renderer.$canvas);
 			} else {
@@ -62,16 +62,16 @@ export class SceneManager {
 			}
 		}
 
-		const nextScene = this.getNextScene();
-		if (nextScene) {
-			this.nextPlayer = this.createPlayerForScene(nextScene, this.getNextSceneIndex());
+		const nextClip = this.getNextClip();
+		if (nextClip) {
+			this.nextPlayer = this.createPlayerForClip(nextClip, this.getNextClipIndex());
 			this.contentElement.appendChild(this.nextPlayer.renderer.$canvas);
 			void this.nextPlayer.showPoster();
 		} else {
 			this.nextPlayer = undefined;
 		}
 
-		if (oldPlayer && !this.isLastScene(this.getCurrentSceneIndex())) {
+		if (oldPlayer && !this.isLastClip(this.getCurrentClipIndex())) {
 			oldPlayer.destroy();
 			this.contentElement.removeChild(oldPlayer.renderer.$canvas);
 		}
@@ -79,28 +79,28 @@ export class SceneManager {
 		void this.currentPlayer?.play();
 	}
 
-	private incrementScene() {
+	private incrementClip() {
 		this.currentIndex += 1;
 		this.resetPlayers();
 	}
 
-	private getCurrentSceneIndex() {
+	private getCurrentClipIndex() {
 		return this.currentIndex;
 	}
 
-	private getNextSceneIndex() {
+	private getNextClipIndex() {
 		return this.currentIndex + 1;
 	}
 
-	private getCurrentScene() {
-		return this.manifest.scenes[this.getCurrentSceneIndex()];
+	private getCurrentClip() {
+		return this.manifest.videoTrack.clips[this.getCurrentClipIndex()];
 	}
 
-	private getNextScene() {
-		return this.manifest.scenes[this.getNextSceneIndex()];
+	private getNextClip() {
+		return this.manifest.videoTrack.clips[this.getNextClipIndex()];
 	}
 
-	private isLastScene(index: number) {
-		return index >= this.manifest.scenes.length - 1;
+	private isLastClip(index: number) {
+		return index >= this.manifest.videoTrack.clips.length - 1;
 	}
 }
