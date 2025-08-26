@@ -29,6 +29,12 @@ export class AudioResolver {
 		return this.audios.get(id);
 	}
 
+	getAudioElement(ref: AudioRef): HTMLAudioElement {
+		const audio = document.createElement('audio');
+		audio.src = ref.audioPath;
+		return audio;
+	}
+
 	private async loadMetadataOne(ref: AudioRef): Promise<AudioMetadata> {
 		const existingMetadata = this.audios.get(ref.audioId);
 		if (existingMetadata) {

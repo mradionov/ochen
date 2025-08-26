@@ -11,15 +11,20 @@
   import { AudioTimeline } from '$lib/audio_timeline';
   import type { AudioTimelineClip } from '$lib/audio_timeline';
   import { toMinutesString } from '$lib/time_utils.js';
+  import { AudioProducer } from '$lib/audio_producer';
+  import PlayheadTrack from './playhead_track.svelte';
 
   const videoResolver = getContext<VideoResolver>(VideoResolverKey);
   const audioResolver = getContext<AudioResolver>(AudioResolverKey);
+
+  let audioProducer: AudioProducer;
 
   let videoTimelineClips: VideoTimelineClip[] = [];
   let audioTimelineClips: AudioTimelineClip[] = [];
   let videoDuration: number = 0;
   let audioDuration: number = 0;
   let maxDuration: number = 0;
+  let time: number;
 
   onMount(async () => {
     const setId = '03_jrugz';
@@ -32,6 +37,8 @@
     await audioResolver.loadMetadata(manifest.audioTrack.clips);
     const audioTimeline = new AudioTimeline(manifest, audioResolver);
 
+    audioProducer = new AudioProducer(audioTimeline, audioResolver);
+
     videoTimelineClips = videoTimeline.getTimelineClips();
     audioTimelineClips = audioTimeline.getTimelineClips();
 
@@ -39,6 +46,14 @@
     audioDuration = audioTimeline.getTotalDuration();
     maxDuration = Math.max(videoDuration, audioDuration);
   });
+
+  function handlePlay() {
+    audioProducer.play();
+  }
+
+  function handlePlayheadSeek(playheadTime: number) {
+    time = playheadTime;
+  }
 </script>
 
 <div>
@@ -46,7 +61,10 @@
   Audio duration: {toMinutesString(audioDuration)} <br />
   Max duration: {toMinutesString(maxDuration)} <br />
   <hr />
+  <button on:click={handlePlay}>play</button>
+  <hr />
   <div class='tracks'>
+    <PlayheadTrack time={time} maxDuration={maxDuration} onSeek={handlePlayheadSeek} />
     <VideoTrack timelineClips={videoTimelineClips} maxDuration={maxDuration} />
     <AudioTrack timelineClips={audioTimelineClips} maxDuration={maxDuration} />
   </div>

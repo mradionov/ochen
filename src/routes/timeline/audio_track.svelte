@@ -1,13 +1,15 @@
 <script lang='ts'>
-  import { onMount } from 'svelte';
+  import AudioClip from './audio_clip.svelte';
+  import type { AudioTimelineClip } from '$lib/audio_timeline';
 
-  onMount(() => {
-
-  });
+  export let timelineClips: AudioTimelineClip[];
+  export let maxDuration: number;
 </script>
 
 <div class='container'>
-
+  {#each timelineClips as timelineClip}
+    <AudioClip timelineClip={timelineClip} maxDuration={maxDuration} />
+  {/each}
 </div>
 
 <style>
@@ -15,5 +17,6 @@
     width: 100%;
     height: 50px;
     border: 1px solid blue;
+    display: flex;
   }
 </style>

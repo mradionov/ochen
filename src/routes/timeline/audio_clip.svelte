@@ -1,14 +1,14 @@
 <script lang='ts'>
-  import type { VideoTimelineClip } from '$lib/video_timeline';
+  import type { AudioTimelineClip } from '$lib/audio_timeline';
 
-  export let timelineClip: VideoTimelineClip;
+  export let timelineClip: AudioTimelineClip;
   export let maxDuration: number;
 
   $: width = timelineClip.duration / maxDuration * 100;
 </script>
 
 <div class='container' style='width: {width}%'>
-  {timelineClip.videoId}
+  {timelineClip.audioId}
 </div>
 
 <style>
