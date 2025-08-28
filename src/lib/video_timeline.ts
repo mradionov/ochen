@@ -5,6 +5,7 @@ type VideoId = string;
 
 export type VideoTimelineClip = {
 	videoId: VideoId;
+	index: number;
 	clip: VideoClip;
 	start: number;
 	end: number;
@@ -18,11 +19,17 @@ export class VideoTimeline {
 		private readonly videoResolver: VideoResolver
 	) {}
 
-	private get clips() {
+	get clips() {
 		return this.manifest.videoTrack.clips;
 	}
 
-	getTimelineClips() {
+	findClipByTime(time: number): VideoTimelineClip | undefined {
+		return this.getTimelineClips().find((timelineClip) => {
+			return time >= timelineClip.start && time < timelineClip.end;
+		});
+	}
+
+	getTimelineClips(): VideoTimelineClip[] {
 		return this.clips.map((clip) => this.getTimelineClip(clip.videoId));
 	}
 
@@ -33,12 +40,17 @@ export class VideoTimeline {
 	getTimelineClip(id: VideoId): VideoTimelineClip {
 		return {
 			videoId: id,
+			index: this.getClipIndex(id),
 			clip: this.getClip(id),
 			duration: this.getClipDuration(id),
 			rate: this.getClipRate(id),
 			start: this.getClipStart(id),
 			end: this.getClipEnd(id)
 		};
+	}
+
+	getClipIndex(id: VideoId): number {
+		return this.clips.findIndex((clip) => clip.videoId === id);
 	}
 
 	getClipStart(id: VideoId): number {

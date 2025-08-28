@@ -44,16 +44,8 @@ export class Player {
 		}
 	}
 
-	getDuration() {
-		return this.$video.duration;
-	}
-
-	getRate() {
+	private get rate() {
 		return this.options.rate ?? 1;
-	}
-
-	getRateDuration() {
-		return this.getDuration() / this.getRate();
 	}
 
 	async play() {
@@ -78,6 +70,10 @@ export class Player {
 		} else {
 			await this.play();
 		}
+	}
+
+	seek(time: number) {
+		this.$video.currentTime = time * this.rate;
 	}
 
 	async showPoster() {
@@ -119,7 +115,7 @@ export class Player {
 		this.hasTransitionOurStarted = false;
 	}
 
-	onVideoTime = () => {
+	private onVideoTime = () => {
 		if (!this.options.transitionOut) {
 			return;
 		}
@@ -143,7 +139,7 @@ export class Player {
 		}
 	};
 
-	onVideoEnded = () => {
+	private onVideoEnded = () => {
 		this.options.onEnded?.();
 	};
 }

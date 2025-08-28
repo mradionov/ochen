@@ -29,7 +29,7 @@ export class AudioResolver {
 		return this.audios.get(id);
 	}
 
-	getAudioElement(ref: AudioRef): HTMLAudioElement {
+	createAudioElement(ref: AudioRef): HTMLAudioElement {
 		const audio = document.createElement('audio');
 		audio.src = ref.audioPath;
 		return audio;

@@ -5,6 +5,7 @@ type AudioId = string;
 
 export type AudioTimelineClip = {
 	audioId: AudioId;
+	index: number;
 	clip: AudioClip;
 	start: number;
 	end: number;
@@ -17,8 +18,14 @@ export class AudioTimeline {
 		private readonly audioResolver: AudioResolver
 	) {}
 
-	private get clips() {
+	get clips() {
 		return this.manifest.audioTrack.clips;
+	}
+
+	findClipByTime(time: number): AudioTimelineClip | undefined {
+		return this.getTimelineClips().find((timelineClip) => {
+			return time >= timelineClip.start && time < timelineClip.end;
+		});
 	}
 
 	getTimelineClips(): AudioTimelineClip[] {
@@ -32,11 +39,16 @@ export class AudioTimeline {
 	getTimelineClip(id: AudioId): AudioTimelineClip {
 		return {
 			audioId: id,
+			index: this.getClipIndex(id),
 			clip: this.getClip(id),
 			duration: this.getClipDuration(id),
 			start: this.getClipStart(id),
 			end: this.getClipEnd(id)
 		};
+	}
+
+	getClipIndex(id: AudioId): number {
+		return this.clips.findIndex((clip) => clip.audioId === id);
 	}
 
 	getClipStart(id: AudioId): number {

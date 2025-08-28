@@ -7,13 +7,8 @@
 
   function handleTrackClick(e: MouseEvent) {
     const x = e.offsetX;
-
     const position = x / e.target.clientWidth;
-
     const seekedToTime = maxDuration * position;
-
-    console.log('clicl', { position, seekedToTime });
-
     onSeek?.(seekedToTime);
   }
 </script>
