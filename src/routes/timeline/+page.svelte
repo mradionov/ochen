@@ -18,6 +18,7 @@
   import { TimelineClock } from '$lib/timeline_clock';
   import type { VideoPlayer } from '$lib/video_player';
   import VideoRender from '$lib/video_render.svelte';
+  import VideoInfo from './video_info.svelte';
 
   const renderLoop = getContext<RenderLoop>(RenderLoopKey);
   const videoResolver = getContext<VideoResolver>(VideoResolverKey);
@@ -31,6 +32,9 @@
 
   let videoTimelineClips: VideoTimelineClip[] = [];
   let audioTimelineClips: AudioTimelineClip[] = [];
+
+  let selectedVideoTimelineClip: VideoTimelineClip;
+
   let videoDuration: number = 0;
   let audioDuration: number = 0;
   let maxDuration: number = 0;
@@ -91,6 +95,10 @@
     videoProducer.seek(newTime);
     timelineClock.seek(newTime);
   }
+
+  function handleVideoTimelineClipSelect(clip: VideoTimelineClip) {
+    selectedVideoTimelineClip = clip;
+  }
 </script>
 
 <div>
@@ -104,17 +112,39 @@
   Time: {toClockString(playheadTime)} / {toClockString(maxDuration)}
   <div class='tracks'>
     <PlayheadTrack time={playheadTime} maxDuration={maxDuration} onSeek={handlePlayheadSeek} />
-    <VideoTrack timelineClips={videoTimelineClips} maxDuration={maxDuration} />
+    <VideoTrack
+      timelineClips={videoTimelineClips}
+      maxDuration={maxDuration}
+      onSelect={handleVideoTimelineClipSelect}
+    />
     <AudioTrack timelineClips={audioTimelineClips} maxDuration={maxDuration} />
   </div>
   <hr />
-  {#if videoPlayer}
-    <VideoRender player={videoPlayer} width={400} height={400} />
-  {/if}
+  <div class='split'>
+    <div class='column'>
+      {#if videoPlayer}
+        <VideoRender player={videoPlayer} width={400} height={400} />
+      {/if}
+    </div>
+    <div class='column'>
+      {#if selectedVideoTimelineClip}
+        <VideoInfo timelineClip={selectedVideoTimelineClip} />
+      {/if}
+    </div>
+  </div>
+
 </div>
 
 <style>
   .tracks {
     width: 100%;
+  }
+
+  .split {
+    display: flex;
+  }
+
+  .column {
+    flex: 1;
   }
 </style>
