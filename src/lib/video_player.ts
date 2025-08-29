@@ -4,10 +4,11 @@ import { Subject } from '$lib/subject';
 
 export class VideoPlayer {
 	readonly ended = new Subject<void>();
+	private _isPlaying = false;
 
 	private constructor(
 		readonly element: HTMLVideoElement,
-		private readonly clip: VideoClip
+		readonly clip: VideoClip
 	) {
 		element.addEventListener('ended', this.onElementEnded);
 	}
@@ -19,11 +20,23 @@ export class VideoPlayer {
 		return new VideoPlayer(element, clip);
 	}
 
+	get isPlaying() {
+		return this._isPlaying;
+	}
+
 	play() {
+		if (this._isPlaying) {
+			return;
+		}
+		this._isPlaying = true;
 		void this.element.play();
 	}
 
 	pause() {
+		if (!this._isPlaying) {
+			return;
+		}
+		this._isPlaying = false;
 		this.element.pause();
 	}
 
@@ -35,6 +48,7 @@ export class VideoPlayer {
 		this.element.removeAttribute('src'); // empty source
 		this.element.load();
 		this.element.removeEventListener('ended', this.onElementEnded);
+		this._isPlaying = false;
 	}
 
 	private get rate() {
@@ -43,5 +57,6 @@ export class VideoPlayer {
 
 	private onElementEnded = () => {
 		this.ended.emit();
+		this._isPlaying = false;
 	};
 }

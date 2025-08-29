@@ -14,10 +14,10 @@
   import { AudioProducer } from '$lib/audio_producer';
   import PlayheadTrack from './playhead_track.svelte';
   import { VideoProducer } from '$lib/video_producer';
-  import VideoOutput from '$lib/video_output.svelte';
   import { RenderLoop } from '$lib/render_loop';
   import { TimelineClock } from '$lib/timeline_clock';
   import type { VideoPlayer } from '$lib/video_player';
+  import VideoRender from '$lib/video_render.svelte';
 
   const renderLoop = getContext<RenderLoop>(RenderLoopKey);
   const videoResolver = getContext<VideoResolver>(VideoResolverKey);
@@ -65,7 +65,6 @@
 
     timelineClock = new TimelineClock();
 
-
     renderLoop.tick.addListener(({ deltaTime }) => {
       timelineClock.update({ deltaTime });
     });
@@ -110,7 +109,7 @@
   </div>
   <hr />
   {#if videoPlayer}
-    <VideoOutput player={videoPlayer} />
+    <VideoRender player={videoPlayer} width={400} height={400} />
   {/if}
 </div>
 

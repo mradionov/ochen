@@ -30,9 +30,9 @@ export class VideoResolver {
 	}
 
 	createVideoElement(ref: VideoRef): HTMLVideoElement {
-		const audio = document.createElement('video');
-		audio.src = ref.videoPath;
-		return audio;
+		const element = document.createElement('video');
+		element.src = ref.videoPath;
+		return element;
 	}
 
 	private async loadMetadataOne(ref: VideoRef): Promise<VideoMetadata> {

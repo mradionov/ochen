@@ -30,9 +30,9 @@ export class AudioResolver {
 	}
 
 	createAudioElement(ref: AudioRef): HTMLAudioElement {
-		const audio = document.createElement('audio');
-		audio.src = ref.audioPath;
-		return audio;
+		const element = document.createElement('audio');
+		element.src = ref.audioPath;
+		return element;
 	}
 
 	private async loadMetadataOne(ref: AudioRef): Promise<AudioMetadata> {

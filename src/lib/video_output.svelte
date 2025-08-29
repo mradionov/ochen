@@ -14,23 +14,3 @@
 </script>
 
 <div class='container' bind:this={containerElement}></div>
-
-<style>
-  .container {
-    position: relative;
-  }
-
-  :global(.container > canvas) {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-  }
-
-  :global(.container > canvas:first-child) {
-    z-index: 3;
-  }
-
-  :global(.container > canvas:last-child) {
-    z-index: 2;
-  }
-</style>
