@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import type { AudioTimelineClip } from '$lib/audio_timeline';
+  import type { AudioTimelineClip } from '$lib/audio/audio_timeline';
 
   export let timelineClip: AudioTimelineClip;
   export let maxDuration: number;

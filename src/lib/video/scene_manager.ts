@@ -1,6 +1,6 @@
 import { Player } from './player.js';
 import { createRenderer } from './renderer.ts';
-import type { Manifest, VideoClip } from './manifest.ts';
+import type { Manifest, VideoClip } from '../manifest/manifest_reader.ts';
 
 // TODO: rename
 export class SceneManager {

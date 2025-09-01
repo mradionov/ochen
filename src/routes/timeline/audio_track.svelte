@@ -1,6 +1,6 @@
 <script lang='ts'>
   import AudioClip from './audio_clip.svelte';
-  import type { AudioTimelineClip } from '$lib/audio_timeline';
+  import type { AudioTimelineClip } from '$lib/audio/audio_timeline';
 
   export let timelineClips: AudioTimelineClip[];
   export let maxDuration: number;
@@ -17,6 +17,7 @@
     width: 100%;
     height: 50px;
     border: 1px solid blue;
+    box-sizing: border-box;
     display: flex;
   }
 </style>

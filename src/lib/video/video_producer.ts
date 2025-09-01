@@ -1,6 +1,6 @@
-import type { VideoTimeline } from '$lib/video_timeline';
-import type { VideoResolver } from '$lib/video_resolver';
-import { VideoPlayer } from '$lib/video_player';
+import type { VideoTimeline } from '$lib/video/video_timeline';
+import type { VideoResolver } from '$lib/video/video_resolver';
+import { VideoPlayer } from '$lib/video/video_player';
 import { Subject } from '$lib/subject';
 
 export class VideoProducer {

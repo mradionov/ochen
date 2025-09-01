@@ -1,4 +1,4 @@
-import { Deferred } from './deferred.ts';
+import { Deferred } from '../deferred';
 
 type VideoId = string;
 
@@ -23,10 +23,11 @@ export class VideoResolver {
 	}
 
 	getMetadata(id: VideoId): VideoMetadata {
-		if (!this.videos.has(id)) {
+		const video = this.videos.get(id);
+		if (!video) {
 			throw new Error(`Must preload metadata for video "${id}"`);
 		}
-		return this.videos.get(id);
+		return video;
 	}
 
 	createVideoElement(ref: VideoRef): HTMLVideoElement {

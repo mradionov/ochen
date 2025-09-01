@@ -1,5 +1,5 @@
-import type { VideoClip } from '$lib/manifest';
-import type { VideoResolver } from '$lib/video_resolver';
+import type { VideoClip } from '$lib/manifest/manifest_reader';
+import type { VideoResolver } from '$lib/video/video_resolver';
 import { Subject } from '$lib/subject';
 
 export class VideoPlayer {

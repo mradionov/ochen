@@ -1,6 +1,6 @@
-import type { AudioResolver } from '$lib/audio_resolver';
-import type { AudioTimeline } from '$lib/audio_timeline';
-import { AudioPlayer } from '$lib/audio_player';
+import type { AudioResolver } from '$lib/audio/audio_resolver';
+import type { AudioTimeline } from '$lib/audio/audio_timeline';
+import { AudioPlayer } from '$lib/audio/audio_player';
 
 export class AudioProducer {
 	private currentIndex = 0;

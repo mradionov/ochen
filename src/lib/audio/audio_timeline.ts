@@ -1,5 +1,5 @@
-import type { AudioClip, Manifest } from '$lib/manifest';
-import type { AudioResolver } from '$lib/audio_resolver';
+import type { AudioClip, Manifest } from '$lib/manifest/manifest_reader';
+import type { AudioResolver } from '$lib/audio/audio_resolver';
 
 type AudioId = string;
 

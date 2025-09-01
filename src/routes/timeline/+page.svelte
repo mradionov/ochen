@@ -1,28 +1,34 @@
 <script lang='ts'>
   import VideoTrack from './video_track.svelte';
   import { getContext, onMount } from 'svelte';
-  import { fetchManifest } from '$lib/manifest';
-  import { VideoResolver } from '$lib/video_resolver';
+  import { ManifestReader } from '$lib/manifest/manifest_reader';
+  import { VideoResolver } from '$lib/video/video_resolver';
   import { AudioResolverKey, RenderLoopKey, VideoResolverKey } from '$lib/di';
-  import { VideoTimeline } from '$lib/video_timeline';
-  import type { VideoTimelineClip } from '$lib/video_timeline';
+  import { VideoTimeline } from '$lib/video/video_timeline';
+  import type { VideoTimelineClip } from '$lib/video/video_timeline';
   import AudioTrack from './audio_track.svelte';
-  import { AudioResolver } from '$lib/audio_resolver';
-  import { AudioTimeline } from '$lib/audio_timeline';
-  import type { AudioTimelineClip } from '$lib/audio_timeline';
+  import { AudioResolver } from '$lib/audio/audio_resolver';
+  import { AudioTimeline } from '$lib/audio/audio_timeline';
+  import type { AudioTimelineClip } from '$lib/audio/audio_timeline';
   import { toClockString, toMinutesString } from '$lib/time_utils.js';
-  import { AudioProducer } from '$lib/audio_producer';
+  import { AudioProducer } from '$lib/audio/audio_producer';
   import PlayheadTrack from './playhead_track.svelte';
-  import { VideoProducer } from '$lib/video_producer';
+  import { VideoProducer } from '$lib/video/video_producer';
   import { RenderLoop } from '$lib/render_loop';
   import { TimelineClock } from '$lib/timeline_clock';
-  import type { VideoPlayer } from '$lib/video_player';
-  import VideoRender from '$lib/video_render.svelte';
+  import type { VideoPlayer } from '$lib/video/video_player';
+  import VideoRender from '$lib/video/video_render.svelte';
   import VideoInfo from './video_info.svelte';
+  import { ManifestWriter } from '$lib/manifest/manifest_writer';
+  import type { Manifest } from '$lib/manifest/manifest';
 
   const renderLoop = getContext<RenderLoop>(RenderLoopKey);
   const videoResolver = getContext<VideoResolver>(VideoResolverKey);
   const audioResolver = getContext<AudioResolver>(AudioResolverKey);
+
+  const manifestReader = new ManifestReader();
+  const manifestWriter = new ManifestWriter();
+  let manifest: Manifest;
 
   let videoProducer: VideoProducer;
   let audioProducer: AudioProducer;
@@ -42,7 +48,7 @@
 
   onMount(async () => {
     const setId = '03_jrugz';
-    const manifest = await fetchManifest(setId);
+    manifest = await manifestReader.read(setId);
     console.log({ manifest });
 
     await videoResolver.loadMetadata(manifest.videoTrack.clips);
@@ -99,9 +105,15 @@
   function handleVideoTimelineClipSelect(clip: VideoTimelineClip) {
     selectedVideoTimelineClip = clip;
   }
+
+  function handleSave() {
+    void manifestWriter.writeWithFilePicker(manifest);
+  }
 </script>
 
 <div>
+  <button on:click={handleSave}>save manifest</button>
+  <hr />
   Video duration: {toMinutesString(videoDuration)} <br />
   Audio duration: {toMinutesString(audioDuration)} <br />
   Max duration: {toMinutesString(maxDuration)} <br />
@@ -115,6 +127,7 @@
     <VideoTrack
       timelineClips={videoTimelineClips}
       maxDuration={maxDuration}
+      selectedTimelineClip={selectedVideoTimelineClip}
       onSelect={handleVideoTimelineClipSelect}
     />
     <AudioTrack timelineClips={audioTimelineClips} maxDuration={maxDuration} />

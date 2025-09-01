@@ -1,7 +1,7 @@
 <script lang='ts'>
-  import type { VideoPlayer } from '$lib/video_player';
+  import type { VideoPlayer } from '$lib/video/video_player';
   import { getContext, onMount } from 'svelte';
-  import { VideoRenderer } from '$lib/video_renderer';
+  import { VideoRenderer } from '$lib/video/video_renderer';
   import { RenderLoop } from '$lib/render_loop';
   import { RenderLoopKey } from '$lib/di';
 

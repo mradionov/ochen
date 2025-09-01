@@ -1,7 +1,7 @@
-import type { VideoClip } from './manifest.ts';
+import type { VideoClip } from '../manifest/manifest_reader.ts';
 import { createRenderer } from './renderer.ts';
 import { Player } from './player.ts';
-import { TaskQueue } from './task_queue.ts';
+import { TaskQueue } from '../task_queue.ts';
 
 export class PlayerFactory {
 	private taskQueue = new TaskQueue();

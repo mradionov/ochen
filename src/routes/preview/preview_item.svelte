@@ -1,11 +1,11 @@
 <script lang='ts'>
   import { toMinutesString } from '$lib/time_utils';
-  import type { VideoTimelineClip } from '$lib/video_timeline';
+  import type { VideoTimelineClip } from '$lib/video/video_timeline';
   import { getContext, onMount } from 'svelte';
   import { RenderLoop } from '$lib/render_loop';
   import { PlayerFactoryKey, RenderLoopKey } from '$lib/di';
-  import type { PlayerFactory } from '$lib/player_factory';
-  import type { Player } from '$lib/player';
+  import type { PlayerFactory } from '$lib/video/player_factory';
+  import type { Player } from '$lib/video/player';
 
   export let timelineClip: VideoTimelineClip;
 

@@ -1,5 +1,5 @@
-import type { AudioResolver } from '$lib/audio_resolver';
-import type { AudioClip } from '$lib/manifest';
+import type { AudioResolver } from '$lib/audio/audio_resolver';
+import type { AudioClip } from '$lib/manifest/manifest_reader';
 
 export class AudioPlayer {
 	constructor(private readonly element: HTMLAudioElement) {}

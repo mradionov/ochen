@@ -1,4 +1,4 @@
-import type { VideoPlayer } from '$lib/video_player';
+import type { VideoPlayer } from '$lib/video/video_player';
 import { hexToRgb } from '$lib/color';
 
 export class VideoRenderer {

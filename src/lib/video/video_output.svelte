@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import type { VideoPlayer } from '$lib/video_player';
+  import type { VideoPlayer } from '$lib/video/video_player';
 
   export let player: VideoPlayer;
   export let width: number = 300;

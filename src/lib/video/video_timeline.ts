@@ -1,11 +1,12 @@
-import type { Manifest, VideoClip } from '@/manifest.ts';
-import type { VideoResolver } from '@/video_resolver.ts';
+import type { Manifest, VideoClip } from '$lib/manifest/manifest';
+import type { VideoResolver } from './video_resolver';
 
 type VideoId = string;
 
 export type VideoTimelineClip = {
 	videoId: VideoId;
 	index: number;
+	isLast: boolean;
 	clip: VideoClip;
 	start: number;
 	end: number;
@@ -40,51 +41,60 @@ export class VideoTimeline {
 	getTimelineClip(id: VideoId): VideoTimelineClip {
 		return {
 			videoId: id,
-			index: this.getClipIndex(id),
+			index: this.getIndex(id),
+			isLast: this.isLast(id),
 			clip: this.getClip(id),
-			duration: this.getClipDuration(id),
-			rate: this.getClipRate(id),
-			start: this.getClipStart(id),
-			end: this.getClipEnd(id)
+			duration: this.getDuration(id),
+			rate: this.getRate(id),
+			start: this.getStart(id),
+			end: this.getEnd(id)
 		};
 	}
 
-	getClipIndex(id: VideoId): number {
+	getIndex(id: VideoId): number {
 		return this.clips.findIndex((clip) => clip.videoId === id);
 	}
 
-	getClipStart(id: VideoId): number {
+	isLast(id: VideoId): boolean {
+		const lastClip = this.clips[this.clips.length - 1];
+		if (!lastClip) {
+			return false;
+		}
+		return lastClip.videoId === id;
+	}
+
+	getStart(id: VideoId): number {
 		let duration = 0;
 		for (const clip of this.clips) {
 			if (clip.videoId === id) {
 				break;
 			}
-			duration += this.getClipDuration(clip.videoId);
+			duration += this.getDuration(clip.videoId);
 		}
 		return duration;
 	}
 
-	getClipEnd(id: VideoId): number {
-		const start = this.getClipStart(id);
-		const duration = this.getClipDuration(id);
+	getEnd(id: VideoId): number {
+		const start = this.getStart(id);
+		const duration = this.getDuration(id);
 		return start + duration;
 	}
 
-	getClipDuration(id: VideoId): number {
+	getDuration(id: VideoId): number {
 		const videoMetadata = this.videoResolver.getMetadata(id);
 		const duration = videoMetadata.duration;
-		const rate = this.getClipRate(id);
+		const rate = this.getRate(id);
 		const ratedDuration = duration / rate;
 		return ratedDuration;
 	}
 
-	getClipRate(id: VideoId): number {
+	getRate(id: VideoId): number {
 		return this.getClip(id).rate ?? 1;
 	}
 
 	getTotalDuration(): number {
 		return this.clips
-			.map((clip) => this.getClipDuration(clip.videoId))
+			.map((clip) => this.getDuration(clip.videoId))
 			.reduce((duration, totalDuration) => {
 				return totalDuration + duration;
 			}, 0);

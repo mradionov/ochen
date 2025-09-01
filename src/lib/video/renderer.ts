@@ -1,6 +1,6 @@
-import { hexToRgb } from './color.ts';
-import { defaults } from './defaults.ts';
-import type { Effects } from './manifest.ts';
+import { hexToRgb } from '../color.ts';
+import { defaults } from '../defaults.ts';
+import type { Effects } from '../manifest/manifest_reader.ts';
 
 const DEFAULT_OPTIONS: RendererOptions = {
 	width: 800,

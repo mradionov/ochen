@@ -1,8 +1,9 @@
 <script lang='ts'>
-  import type { VideoTimelineClip } from '$lib/video_timeline';
+  import type { VideoTimelineClip } from '$lib/video/video_timeline';
 
   export let timelineClip: VideoTimelineClip;
   export let maxDuration: number;
+  export let isSelected: boolean;
   export let onSelect: (clip: VideoTimelineClip) => void;
 
   $: width = timelineClip.duration / maxDuration * 100;
@@ -12,7 +13,12 @@
   }
 </script>
 
-<div class='container' on:click={handleClick} style='width: {width}%'>
+<div
+  class='container'
+  class:selected={isSelected}
+  on:click={handleClick}
+  style='width: {width}%'
+>
   {timelineClip.videoId}
 </div>
 
@@ -20,9 +26,14 @@
   .container {
     height: 100%;
     overflow: hidden;
+    box-sizing: border-box;
   }
 
   .container:nth-child(odd) {
     background: #eee;
+  }
+
+  .selected {
+    border: 1px solid blue;
   }
 </style>

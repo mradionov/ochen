@@ -7,41 +7,144 @@
       "blur": 1
     },
     "clips": [
-      {"videoId": "washing", "rate": 0.4},
-      {"videoId": "walk1", "offsetY": "top", "rate": 0.4},
-      {"videoId": "ghosts"},
-      {"videoId": "cups"},
-      {"videoId": "barrier", "offsetY": "top"},
-      {"videoId": "hoop", "offsetY": "top"},
-      {"videoId": "ikea", "offsetY": "top"},
-      {"videoId": "chair", "offsetY": "top"},
-      {"videoId": "scooter"},
-      {"videoId": "mcdonalds", "offsetY": -15},
-      {"videoId": "bike1", "offsetY": -55},
-      {"videoId": "generator", "offsetY": "top"},
-      {"videoId": "painting1", "offsetY": "top"},
-      {"videoId": "shoebox", "offsetY": "top"},
-      {"videoId": "suitcase", "offsetY": "top"},
-      {"videoId": "table", "offsetY": "top"},
-      {"videoId": "toybike", "offsetY": "top"},
-      {"videoId": "stove", "offsetY": "top"},
-      {"videoId": "bike2", "offsetY": "top"},
-      {"videoId": "bag", "offsetY": "top"},
-      {"videoId": "tray", "offsetY": "top"},
-      {"videoId": "painting2", "offsetY": "top"},
-      {"videoId": "walk2", "offsetY": "top"},
-      {"videoId": "barbed_wire", "offsetY": "top"},
-      {"videoId": "walk3", "offsetY": "top"},
-      {"videoId": "high_chair", "offsetY": "top"},
-      {"videoId": "balloon_ass", "offsetY": "top"},
-      {"videoId": "water1", "offsetY": "top"},
-      {"videoId": "bag_eyes", "offsetY": "top"},
-      {"videoId": "walk4", "offsetY": "top"},
-      {"videoId": "walk5", "offsetY": "top"},
-      {"videoId": "branch", "offsetY": "top"},
-      {"videoId": "curtain", "offsetY": "top"},
-      {"videoId": "fountain1", "offsetY": "top"},
-      {"videoId": "fountain2", "offsetY": "top"}
+      {
+        "videoId": "washing",
+        "rate": 0.4
+      },
+      {
+        "videoId": "walk1",
+        "rate": 0.4,
+        "offsetY": "top"
+      },
+      {
+        "videoId": "ghosts"
+      },
+      {
+        "videoId": "cups"
+      },
+      {
+        "videoId": "barrier",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "hoop",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "ikea",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "chair",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "scooter"
+      },
+      {
+        "videoId": "mcdonalds",
+        "offsetY": -15
+      },
+      {
+        "videoId": "bike1",
+        "offsetY": -55
+      },
+      {
+        "videoId": "generator",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "painting1",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "shoebox",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "suitcase",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "table",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "toybike",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "stove",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "bike2",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "bag",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "tray",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "painting2",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "walk2",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "barbed_wire",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "walk3",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "high_chair",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "balloon_ass",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "water1",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "bag_eyes",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "walk4",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "walk5",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "branch",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "curtain",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "fountain1",
+        "offsetY": "top"
+      },
+      {
+        "videoId": "fountain2",
+        "offsetY": "top"
+      }
     ],
     "videos": {
       "washing": "IMG_0606.MOV",
@@ -84,7 +187,9 @@
   },
   "audioTrack": {
     "clips": [
-      {"audioId": "full"}
+      {
+        "audioId": "full"
+      }
     ],
     "audios": {
       "full": "01 jrugz 9.wav"
