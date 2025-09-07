@@ -25,7 +25,7 @@ export class ManifestReader {
 
 		const videoIdSet = new Set<VideoId>();
 		const clips = videoClipsRaw.map((clipRaw) => {
-			const { videoId, offsetX, offsetY, rate } = clipRaw;
+			const { videoId, offsetX, offsetY, rate, trimEnd } = clipRaw;
 
 			if (videoIdSet.has(videoId)) {
 				console.log(`Duplicate video id: "${videoId}"`);
@@ -37,7 +37,7 @@ export class ManifestReader {
 				throw new Error(`No video found for "${videoId}"`);
 			}
 
-			return new VideoClip(videoId, videoPath, offsetX, offsetY, rate, effects);
+			return new VideoClip(videoId, videoPath, offsetX, offsetY, rate, trimEnd, effects);
 		});
 
 		const unusedVideoIdSet = new Set<VideoId>();

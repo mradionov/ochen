@@ -15,15 +15,42 @@ export class VideoTrack {
 		readonly videos: Record<VideoId, VideoFilename>,
 		readonly effects: VideoEffects | undefined
 	) {}
+
+	findClip(id: VideoId) {
+		return this.clips.find((clip) => clip.videoId === id);
+	}
+
+	moveLeft(id: VideoId) {
+		const index = this.clips.findIndex((clip) => clip.videoId === id);
+		if (index === 0) {
+			return;
+		}
+		const leftIndex = index - 1;
+		const temp = this.clips[index];
+		this.clips[index] = this.clips[leftIndex];
+		this.clips[leftIndex] = temp;
+	}
+
+	moveRight(id: VideoId) {
+		const index = this.clips.findIndex((clip) => clip.videoId === id);
+		if (index > this.clips.length - 1) {
+			return;
+		}
+		const rightIndex = index + 1;
+		const temp = this.clips[index];
+		this.clips[index] = this.clips[rightIndex];
+		this.clips[rightIndex] = temp;
+	}
 }
 
 export class VideoClip {
 	constructor(
 		readonly videoId: VideoId,
 		readonly videoPath: VideoFilepath,
-		readonly offsetX: number | string | undefined,
-		readonly offsetY: number | string | undefined,
-		readonly rate: number | undefined,
+		public offsetX: number | string | undefined,
+		public offsetY: number | string | undefined,
+		public rate: number | undefined,
+		public trimEnd: number | undefined,
 		readonly effects: VideoEffects | undefined
 	) {}
 }

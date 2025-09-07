@@ -31,7 +31,8 @@ export class ManifestWriter {
 					videoId: clip.videoId,
 					rate: clip.rate,
 					offsetX: clip.offsetX,
-					offsetY: clip.offsetY
+					offsetY: clip.offsetY,
+					trimEnd: clip.trimEnd
 				})),
 				videos: manifest.videoTrack.videos
 			},

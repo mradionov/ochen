@@ -30,6 +30,11 @@ export class Subject<T> {
 		return this;
 	}
 
+	public removeAllListeners(): this {
+		this.listeners = [];
+		return this;
+	}
+
 	public emit = (event: T): this => {
 		this.listeners.forEach((listener) => {
 			// TODO: handle errors

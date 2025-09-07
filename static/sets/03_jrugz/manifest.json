@@ -9,56 +9,160 @@
     "clips": [
       {
         "videoId": "washing",
-        "rate": 0.4
+        "rate": 0.25,
+        "offsetY": "center"
       },
       {
-        "videoId": "walk1",
-        "rate": 0.4,
-        "offsetY": "top"
+        "videoId": "ghosts",
+        "rate": 0.23,
+        "offsetY": "center"
       },
       {
-        "videoId": "ghosts"
+        "videoId": "barbed_wire",
+        "rate": 0.3,
+        "offsetY": "center"
       },
       {
-        "videoId": "cups"
+        "videoId": "cups",
+        "rate": 0.3,
+        "offsetY": "center"
       },
       {
-        "videoId": "barrier",
+        "videoId": "water1",
+        "rate": 0.25,
         "offsetY": "top"
       },
       {
         "videoId": "hoop",
+        "rate": 0.3,
         "offsetY": "top"
       },
       {
+        "videoId": "walk1",
+        "rate": 0.4,
+        "offsetY": "top",
+        "trimEnd": 13
+      },
+      {
+        "videoId": "walk3",
+        "rate": 0.5,
+        "offsetY": "top"
+      },
+      {
+        "videoId": "walk2",
+        "rate": 0.5,
+        "offsetY": "bottom"
+      },
+      {
         "videoId": "ikea",
+        "rate": 0.2,
+        "offsetY": -30
+      },
+      {
+        "videoId": "toybike",
+        "rate": 0.16,
+        "offsetY": "top"
+      },
+      {
+        "videoId": "microwave",
+        "rate": 0.25
+      },
+      {
+        "videoId": "bag_eyes",
+        "rate": 0.2,
+        "offsetY": "top"
+      },
+      {
+        "videoId": "high_chair",
+        "rate": 0.2,
+        "offsetY": "top"
+      },
+      {
+        "videoId": "fountain2",
+        "rate": 0.3,
+        "offsetY": "top"
+      },
+      {
+        "videoId": "fountain1",
+        "rate": 0.3,
+        "offsetY": "top"
+      },
+      {
+        "videoId": "barrier",
+        "rate": 0.2,
+        "offsetY": "top"
+      },
+      {
+        "videoId": "curtain",
+        "rate": 0.25,
+        "offsetY": "top"
+      },
+      {
+        "videoId": "table2",
+        "rate": 0.3,
+        "offsetY": "top"
+      },
+      {
+        "videoId": "walk4",
+        "rate": 0.4,
+        "offsetY": "top"
+      },
+      {
+        "videoId": "tray",
+        "rate": 0.15,
+        "offsetY": "bottom"
+      },
+      {
+        "videoId": "stone",
+        "rate": 0.25,
+        "offsetY": "center"
+      },
+      {
+        "videoId": "bag2",
+        "rate": 0.2
+      },
+      {
+        "videoId": "balloon_ass",
+        "rate": 0.15,
+        "offsetY": "bottom"
+      },
+      {
+        "videoId": "walk5",
+        "rate": 0.3,
+        "offsetY": "top"
+      },
+      {
+        "videoId": "wall2",
+        "rate": 0.3
+      },
+      {
+        "videoId": "painting2",
+        "rate": 0.2,
+        "offsetY": "top"
+      },
+      {
+        "videoId": "branch",
+        "rate": 0.3,
+        "offsetY": "top"
+      },
+      {
+        "videoId": "wall1",
+        "rate": 0.4,
+        "offsetY": "bottom"
+      },
+      {
+        "videoId": "stove",
+        "rate": 0.2,
         "offsetY": "top"
       },
       {
         "videoId": "chair",
-        "offsetY": "top"
-      },
-      {
-        "videoId": "scooter"
-      },
-      {
-        "videoId": "mcdonalds",
-        "offsetY": -15
-      },
-      {
-        "videoId": "bike1",
-        "offsetY": -55
-      },
-      {
-        "videoId": "generator",
+        "rate": 0.3,
         "offsetY": "top"
       },
       {
         "videoId": "painting1",
-        "offsetY": "top"
-      },
-      {
-        "videoId": "shoebox",
+        "rate": 0.3,
         "offsetY": "top"
       },
       {
@@ -66,84 +170,15 @@
         "offsetY": "top"
       },
       {
-        "videoId": "table",
+        "videoId": "table1",
         "offsetY": "top"
       },
       {
-        "videoId": "toybike",
+        "videoId": "bag1",
         "offsetY": "top"
       },
       {
-        "videoId": "stove",
-        "offsetY": "top"
-      },
-      {
-        "videoId": "bike2",
-        "offsetY": "top"
-      },
-      {
-        "videoId": "bag",
-        "offsetY": "top"
-      },
-      {
-        "videoId": "tray",
-        "offsetY": "top"
-      },
-      {
-        "videoId": "painting2",
-        "offsetY": "top"
-      },
-      {
-        "videoId": "walk2",
-        "offsetY": "top"
-      },
-      {
-        "videoId": "barbed_wire",
-        "offsetY": "top"
-      },
-      {
-        "videoId": "walk3",
-        "offsetY": "top"
-      },
-      {
-        "videoId": "high_chair",
-        "offsetY": "top"
-      },
-      {
-        "videoId": "balloon_ass",
-        "offsetY": "top"
-      },
-      {
-        "videoId": "water1",
-        "offsetY": "top"
-      },
-      {
-        "videoId": "bag_eyes",
-        "offsetY": "top"
-      },
-      {
-        "videoId": "walk4",
-        "offsetY": "top"
-      },
-      {
-        "videoId": "walk5",
-        "offsetY": "top"
-      },
-      {
-        "videoId": "branch",
-        "offsetY": "top"
-      },
-      {
-        "videoId": "curtain",
-        "offsetY": "top"
-      },
-      {
-        "videoId": "fountain1",
-        "offsetY": "top"
-      },
-      {
-        "videoId": "fountain2",
-        "offsetY": "top"
+        "videoId": "palette"
       }
     ],
     "videos": {
@@ -161,11 +196,11 @@
       "painting1": "IMG_0746.MOV",
       "shoebox": "IMG_0747.MOV",
       "suitcase": "IMG_0748.MOV",
-      "table": "IMG_0749.MOV",
+      "table1": "IMG_0749.MOV",
       "toybike": "IMG_0750.MOV",
       "stove": "IMG_0755.MOV",
       "bike2": "IMG_0757.MOV",
-      "bag": "IMG_0777.MOV",
+      "bag1": "IMG_0777.MOV",
       "tray": "IMG_0783.MOV",
       "painting2": "IMG_0784.MOV",
       "walk1": "IMG_0834.MOV",
@@ -182,7 +217,15 @@
       "branch": "IMG_0881.MOV",
       "curtain": "IMG_0882.MOV",
       "fountain1": "IMG_0883.MOV",
-      "fountain2": "IMG_0884.MOV"
+      "fountain2": "IMG_0884.MOV",
+      "bag2": "IMG_0885.MOV",
+      "microwave": "IMG_0887.MOV",
+      "palette": "IMG_0888.MOV",
+      "table2": "IMG_0889.MOV",
+      "stroller": "IMG_0903.MOV",
+      "pizzabox": "IMG_0978.MOV",
+      "wall1": "IMG_0638.MOV",
+      "wall2": "IMG_0653.MOV"
     }
   },
   "audioTrack": {
@@ -192,7 +235,7 @@
       }
     ],
     "audios": {
-      "full": "01 jrugz 9.wav"
+      "full": "jrugz-cut.mp3"
     }
   }
 }

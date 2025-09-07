@@ -37,7 +37,8 @@ export class AudioProducer {
 	seek(time: number) {
 		const newTimelineClip = this.audioTimeline.findClipByTime(time);
 		if (!newTimelineClip) {
-			throw new Error(`No audio clip for time "${time}"`);
+			console.warn(`No audio clip for time "${time}"`);
+			return;
 		}
 
 		const inClipTime = time - newTimelineClip.start;

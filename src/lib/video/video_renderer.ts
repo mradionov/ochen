@@ -23,14 +23,14 @@ export class VideoRenderer {
 	}
 
 	updateFrame(videoPlayer: VideoPlayer) {
-		if (!videoPlayer.isPlaying) {
-			return;
-		}
+		// if (!videoPlayer.isPlaying) {
+		// 	return;
+		// }
 
 		const { srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight } =
 			this.getBox(videoPlayer);
 
-		const { effects } = videoPlayer.clip;
+		const { effects } = videoPlayer.timelineClip.clip;
 
 		if (effects?.blur != null) {
 			this.ctx.filter = `blur(${effects.blur}px)`;
@@ -187,7 +187,7 @@ export class VideoRenderer {
 		dstWidth: number;
 		dstHeight: number;
 	} {
-		const { offsetX, offsetY } = videoPlayer.clip;
+		const { offsetX, offsetY } = videoPlayer.timelineClip.clip;
 
 		const srcX = 0;
 		const srcY = 0;

@@ -1,6 +1,6 @@
-import type { VideoClip } from '$lib/manifest/manifest_reader';
 import type { VideoResolver } from '$lib/video/video_resolver';
 import { Subject } from '$lib/subject';
+import type { VideoTimelineClip } from '$lib/video/video_timeline';
 
 export class VideoPlayer {
 	readonly ended = new Subject<void>();
@@ -8,16 +8,17 @@ export class VideoPlayer {
 
 	private constructor(
 		readonly element: HTMLVideoElement,
-		readonly clip: VideoClip
+		readonly timelineClip: VideoTimelineClip
 	) {
 		element.addEventListener('ended', this.onElementEnded);
 	}
 
-	static create(clip: VideoClip, videoResolver: VideoResolver) {
-		const element = videoResolver.createVideoElement(clip);
-		element.playbackRate = clip.rate ?? 1;
+	static create(timelineClip: VideoTimelineClip, videoResolver: VideoResolver) {
+		console.log('VideoPlayer.create', timelineClip);
+		const element = videoResolver.createVideoElement(timelineClip.clip);
+		element.playbackRate = timelineClip.rate;
 		element.muted = true;
-		return new VideoPlayer(element, clip);
+		return new VideoPlayer(element, timelineClip);
 	}
 
 	get isPlaying() {
@@ -44,15 +45,26 @@ export class VideoPlayer {
 		this.element.currentTime = time * this.rate;
 	}
 
+	updateFrame() {
+		if (!this.isPlaying) return;
+
+		if (this.element.currentTime > this.timelineClip.trimmedDuration) {
+			this._isPlaying = false;
+			this.ended.emit();
+			this.destroy();
+		}
+	}
+
 	destroy() {
 		this.element.removeAttribute('src'); // empty source
 		this.element.load();
 		this.element.removeEventListener('ended', this.onElementEnded);
+		this.ended.removeAllListeners();
 		this._isPlaying = false;
 	}
 
 	private get rate() {
-		return this.clip.rate ?? 1;
+		return this.timelineClip.rate;
 	}
 
 	private onElementEnded = () => {

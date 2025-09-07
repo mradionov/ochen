@@ -30,6 +30,7 @@ type VideoClipRaw = {
 	rate?: number;
 	offsetX?: number | string;
 	offsetY?: number | string;
+	trimEnd?: number;
 };
 
 type AudioId = string;

@@ -13,7 +13,7 @@
     <VideoClip
       timelineClip={timelineClip}
       maxDuration={maxDuration}
-      isSelected={selectedTimelineClip === timelineClip}
+      isSelected={selectedTimelineClip?.videoId === timelineClip.videoId}
       onSelect={onSelect} />
   {/each}
 </div>

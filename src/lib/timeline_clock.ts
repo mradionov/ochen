@@ -29,7 +29,9 @@ export class TimelineClock {
 	seek(timeSec: number) {
 		this.baseTimeSec = timeSec;
 		this.emitUpdateDeltaSec = 0;
-		this.playStartTimeMs = performance.now();
+		if (this.isPlaying) {
+			this.playStartTimeMs = performance.now();
+		}
 		this.emitUpdate();
 	}
 

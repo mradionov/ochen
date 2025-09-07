@@ -18,6 +18,7 @@
     renderer = new VideoRenderer(canvasElement);
 
     renderLoop.tick.addListener(() => {
+      player.updateFrame();
       renderer.updateFrame(player);
     });
   });

@@ -34,17 +34,20 @@
   let audioProducer: AudioProducer;
   let timelineClock: TimelineClock;
 
-  let videoPlayer: VideoPlayer;
+  let videoPlayer: VideoPlayer = $state.raw(undefined);
 
-  let videoTimelineClips: VideoTimelineClip[] = [];
-  let audioTimelineClips: AudioTimelineClip[] = [];
+  let videoTimelineClips: VideoTimelineClip[] = $state.raw([]);
+  let audioTimelineClips: AudioTimelineClip[] = $state.raw([]);
 
-  let selectedVideoTimelineClip: VideoTimelineClip;
+  let selectedVideoTimelineClip: VideoTimelineClip = $state.raw(undefined);
 
-  let videoDuration: number = 0;
-  let audioDuration: number = 0;
-  let maxDuration: number = 0;
-  let playheadTime: number = 0;
+  let videoDuration: number = $state.raw(0);
+  let audioDuration: number = $state.raw(0);
+  let playheadTime: number = $state.raw(0);
+
+  let maxDuration = $derived(Math.max(videoDuration, audioDuration));
+
+  let update;
 
   onMount(async () => {
     const setId = '03_jrugz';
@@ -66,13 +69,6 @@
     audioProducer = new AudioProducer(audioTimeline, audioResolver);
     audioProducer.load();
 
-    videoTimelineClips = videoTimeline.getTimelineClips();
-    audioTimelineClips = audioTimeline.getTimelineClips();
-
-    videoDuration = videoTimeline.getTotalDuration();
-    audioDuration = audioTimeline.getTotalDuration();
-    maxDuration = Math.max(videoDuration, audioDuration);
-
     timelineClock = new TimelineClock();
 
     renderLoop.tick.addListener(({ deltaTime }) => {
@@ -82,6 +78,19 @@
     timelineClock.timeUpdate.addListener(({ time }) => {
       playheadTime = time;
     });
+
+    update = () => {
+      videoTimelineClips = videoTimeline.getTimelineClips();
+      audioTimelineClips = audioTimeline.getTimelineClips();
+      videoDuration = videoTimeline.getTotalDuration();
+      audioDuration = audioTimeline.getTotalDuration();
+      if (selectedVideoTimelineClip) {
+        selectedVideoTimelineClip = videoTimeline.getTimelineClip(selectedVideoTimelineClip.videoId);
+
+      }
+    };
+
+    update();
   });
 
   function handlePlay() {
@@ -109,6 +118,12 @@
   function handleSave() {
     void manifestWriter.writeWithFilePicker(manifest);
   }
+
+  function handleVideoInfoChanged() {
+    update();
+    videoProducer.reset(playheadTime);
+  }
+
 </script>
 
 <div>
@@ -141,7 +156,11 @@
     </div>
     <div class='column'>
       {#if selectedVideoTimelineClip}
-        <VideoInfo timelineClip={selectedVideoTimelineClip} />
+        <VideoInfo
+          manifest={manifest}
+          timelineClip={selectedVideoTimelineClip}
+          onChanged={handleVideoInfoChanged}
+        />
       {/if}
     </div>
   </div>

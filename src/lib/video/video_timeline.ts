@@ -10,6 +10,9 @@ export type VideoTimelineClip = {
 	clip: VideoClip;
 	start: number;
 	end: number;
+	sourceDuration: number;
+	trimmedDuration: number;
+	ratedDuration: number;
 	duration: number;
 	rate: number;
 };
@@ -44,10 +47,13 @@ export class VideoTimeline {
 			index: this.getIndex(id),
 			isLast: this.isLast(id),
 			clip: this.getClip(id),
-			duration: this.getDuration(id),
-			rate: this.getRate(id),
 			start: this.getStart(id),
-			end: this.getEnd(id)
+			end: this.getEnd(id),
+			sourceDuration: this.getSourceDuration(id),
+			trimmedDuration: this.getTrimmedDuration(id),
+			ratedDuration: this.getRatedDuration(id),
+			duration: this.getDuration(id),
+			rate: this.getRate(id)
 		};
 	}
 
@@ -80,12 +86,28 @@ export class VideoTimeline {
 		return start + duration;
 	}
 
-	getDuration(id: VideoId): number {
+	getSourceDuration(id: VideoId): number {
+		return this.videoResolver.getMetadata(id).duration;
+	}
+
+	getTrimmedDuration(id: VideoId): number {
+		const clip = this.getClip(id);
+		const duration = this.getSourceDuration(id);
+		return duration - (clip.trimEnd ?? 0);
+	}
+
+	getRatedDuration(id: VideoId): number {
 		const videoMetadata = this.videoResolver.getMetadata(id);
 		const duration = videoMetadata.duration;
 		const rate = this.getRate(id);
-		const ratedDuration = duration / rate;
-		return ratedDuration;
+		return duration / rate;
+	}
+
+	// rated and trimmed
+	getDuration(id: VideoId): number {
+		const trimmedDuration = this.getTrimmedDuration(id);
+		const rate = this.getRate(id);
+		return trimmedDuration / rate;
 	}
 
 	getRate(id: VideoId): number {

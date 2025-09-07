@@ -15,6 +15,12 @@ export class VideoProducer {
 		private readonly videoResolver: VideoResolver
 	) {}
 
+	reset(time: number) {
+		this.currentIndex = undefined;
+		this.currentPlayer = undefined;
+		this.seek(time);
+	}
+
 	load() {
 		this.ensurePlayer();
 	}
@@ -40,7 +46,8 @@ export class VideoProducer {
 	seek(time: number) {
 		const newTimelineClip = this.videoTimeline.findClipByTime(time);
 		if (!newTimelineClip) {
-			throw new Error(`No video clip for time "${time}"`);
+			console.warn(`No video clip for time "${time}"`);
+			return;
 		}
 
 		const inClipTime = time - newTimelineClip.start;
@@ -70,12 +77,12 @@ export class VideoProducer {
 				this.currentPlayer = undefined;
 			}
 			const index = this.currentIndex == null ? 0 : newIndex;
-			const newClip = this.videoTimeline.clips[index];
-			if (!newClip) {
+			const newTimelineClip = this.videoTimeline.getTimelineClips()[index];
+			if (!newTimelineClip) {
 				throw new Error('No new clip');
 			}
-			this.currentPlayer = VideoPlayer.create(newClip, this.videoResolver);
-			this.currentPlayer.ended.addListener(this.onPlayerEnded);
+			this.currentPlayer = VideoPlayer.create(newTimelineClip, this.videoResolver);
+			this.currentPlayer.ended.addListenerOnce(this.onPlayerEnded);
 			this.currentIndex = index;
 			this.playerChanged.emit({ player: this.currentPlayer });
 		}
@@ -86,7 +93,8 @@ export class VideoProducer {
 	}
 
 	private onPlayerEnded = () => {
-		if (!this.currentIndex) {
+		console.log('onPlayerEnded');
+		if (this.currentIndex == null) {
 			throw new Error('A player must already exist');
 		}
 		const newIndex = this.currentIndex + 1;
