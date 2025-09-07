@@ -35,6 +35,7 @@
   let timelineClock: TimelineClock;
 
   let videoPlayer: VideoPlayer = $state.raw(undefined);
+  let nextVideoPlayer: VideoPlayer | undefined = $state.raw(undefined);
 
   let videoTimelineClips: VideoTimelineClip[] = $state.raw([]);
   let audioTimelineClips: AudioTimelineClip[] = $state.raw([]);
@@ -61,8 +62,9 @@
     const audioTimeline = new AudioTimeline(manifest, audioResolver);
 
     videoProducer = new VideoProducer(videoTimeline, videoResolver);
-    videoProducer.playerChanged.addListener(({ player }) => {
+    videoProducer.playerChanged.addListener(({ player, nextPlayer }) => {
       videoPlayer = player;
+      nextVideoPlayer = nextPlayer;
     });
     videoProducer.load();
 
@@ -151,7 +153,12 @@
   <div class='split'>
     <div class='column'>
       {#if videoPlayer}
-        <VideoRender player={videoPlayer} width={400} height={400} />
+        <VideoRender
+          player={videoPlayer}
+          nextPlayer={nextVideoPlayer}
+          width={400}
+          height={400}
+        />
       {/if}
     </div>
     <div class='column'>

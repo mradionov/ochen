@@ -8,6 +8,7 @@
   const renderLoop = getContext<RenderLoop>(RenderLoopKey);
 
   export let player: VideoPlayer;
+  export let nextPlayer: VideoPlayer | undefined;
   export let width: number = 800;
   export let height: number = 800;
 
@@ -19,7 +20,8 @@
 
     renderLoop.tick.addListener(() => {
       player.updateFrame();
-      renderer.updateFrame(player);
+      nextPlayer?.updateFrame();
+      renderer.updateFrame(player, nextPlayer);
     });
   });
 </script>

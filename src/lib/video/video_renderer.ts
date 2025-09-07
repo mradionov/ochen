@@ -22,31 +22,63 @@ export class VideoRenderer {
 		return this.canvas.height;
 	}
 
-	updateFrame(videoPlayer: VideoPlayer) {
+	updateFrame(videoPlayer: VideoPlayer, nextPlayer: VideoPlayer | undefined) {
 		// if (!videoPlayer.isPlaying) {
 		// 	return;
 		// }
 
-		const { srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight } =
-			this.getBox(videoPlayer);
+		this.ctx.clearRect(0, 0, this.width, this.height);
 
-		const { effects } = videoPlayer.timelineClip.clip;
+		const box = this.getBox(videoPlayer);
+
+		const { timelineClip } = videoPlayer;
+		const { effects, transitionOut } = videoPlayer.timelineClip.clip;
 
 		if (effects?.blur != null) {
 			this.ctx.filter = `blur(${effects.blur}px)`;
 		}
 
+		const unratedTransitionDuration = transitionOut.duration * timelineClip.rate;
+		const transitionStart =
+			timelineClip.sourceDuration - unratedTransitionDuration - (timelineClip.clip.trimEnd ?? 0);
+		const transitionElapsed = Math.max(0, videoPlayer.element.currentTime - transitionStart);
+		const transitionProgress = transitionElapsed / unratedTransitionDuration;
+
+		if (transitionOut.duration > 0) {
+			this.ctx.globalAlpha = 1 - transitionProgress;
+		}
+
 		this.ctx.drawImage(
 			videoPlayer.element,
-			srcX,
-			srcY,
-			srcWidth,
-			srcHeight,
-			dstX,
-			dstY,
-			dstWidth,
-			dstHeight
+			box.srcX,
+			box.srcY,
+			box.srcWidth,
+			box.srcHeight,
+			box.dstX,
+			box.dstY,
+			box.dstWidth,
+			box.dstHeight
 		);
+
+		if (transitionOut.duration > 0 && nextPlayer) {
+			this.ctx.globalAlpha = transitionProgress;
+
+			const nextBox = this.getBox(nextPlayer);
+
+			this.ctx.drawImage(
+				nextPlayer.element,
+				nextBox.srcX,
+				nextBox.srcY,
+				nextBox.srcWidth,
+				nextBox.srcHeight,
+				nextBox.dstX,
+				nextBox.dstY,
+				nextBox.dstWidth,
+				nextBox.dstHeight
+			);
+
+			this.ctx.globalAlpha = 1;
+		}
 
 		if (effects?.tint) {
 			this.applyTint(effects.tint);

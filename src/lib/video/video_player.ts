@@ -18,6 +18,7 @@ export class VideoPlayer {
 		const element = videoResolver.createVideoElement(timelineClip.clip);
 		element.playbackRate = timelineClip.rate;
 		element.muted = true;
+		element.currentTime = 0.01;
 		return new VideoPlayer(element, timelineClip);
 	}
 

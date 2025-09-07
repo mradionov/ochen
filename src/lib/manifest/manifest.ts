@@ -9,10 +9,16 @@ type VideoEffects = {
 	blur?: number;
 };
 
+export type VideoTransitionOut = {
+	duration: number;
+	kind: 'cut' | 'fade';
+};
+
 export class VideoTrack {
 	constructor(
 		readonly clips: VideoClip[],
 		readonly videos: Record<VideoId, VideoFilename>,
+		readonly transitionOut: VideoTransitionOut,
 		readonly effects: VideoEffects | undefined
 	) {}
 
@@ -51,6 +57,7 @@ export class VideoClip {
 		public offsetY: number | string | undefined,
 		public rate: number | undefined,
 		public trimEnd: number | undefined,
+		readonly transitionOut: VideoTransitionOut,
 		readonly effects: VideoEffects | undefined
 	) {}
 }

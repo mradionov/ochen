@@ -6,6 +6,10 @@
       "grain": 70,
       "blur": 1
     },
+    "transitionOut": {
+      "duration": 20,
+      "kind": "fade"
+    },
     "clips": [
       {
         "videoId": "washing",

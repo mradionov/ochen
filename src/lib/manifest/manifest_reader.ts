@@ -1,4 +1,5 @@
 import { Manifest, VideoTrack, VideoClip, AudioTrack, AudioClip } from './manifest';
+import type { VideoTransitionOut } from './manifest';
 import type { ManifestRaw } from '$lib/manifest/manifest_raw';
 
 type VideoId = string;
@@ -19,9 +20,15 @@ export class ManifestReader {
 
 	private parseVideoTrack(setId: string, manifest: ManifestRaw): VideoTrack {
 		const videoTrackRaw = manifest.videoTrack;
-		const { effects, transitionOut } = videoTrackRaw;
+		const effectsRaw = videoTrackRaw.effects;
+		const transitionOutRaw = videoTrackRaw.transitionOut;
 		const videoClipsRaw = videoTrackRaw.clips ?? [];
 		const videoMap = this.parseVideoMap(setId, manifest);
+
+		const transitionOut: VideoTransitionOut = {
+			duration: transitionOutRaw?.duration ?? 0,
+			kind: transitionOutRaw?.kind ?? 'cut'
+		};
 
 		const videoIdSet = new Set<VideoId>();
 		const clips = videoClipsRaw.map((clipRaw) => {
@@ -37,7 +44,16 @@ export class ManifestReader {
 				throw new Error(`No video found for "${videoId}"`);
 			}
 
-			return new VideoClip(videoId, videoPath, offsetX, offsetY, rate, trimEnd, effects);
+			return new VideoClip(
+				videoId,
+				videoPath,
+				offsetX,
+				offsetY,
+				rate,
+				trimEnd,
+				transitionOut,
+				effectsRaw
+			);
 		});
 
 		const unusedVideoIdSet = new Set<VideoId>();
@@ -47,7 +63,7 @@ export class ManifestReader {
 			}
 		});
 
-		return new VideoTrack(clips, manifest.videoTrack.videos, effects);
+		return new VideoTrack(clips, manifest.videoTrack.videos, transitionOut, effectsRaw);
 	}
 
 	private parseVideoMap(setId: string, manifest: ManifestRaw): ReadonlyMap<VideoId, string> {

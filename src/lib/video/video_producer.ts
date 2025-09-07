@@ -6,9 +6,13 @@ import { Subject } from '$lib/subject';
 export class VideoProducer {
 	private currentIndex: number | undefined;
 	private currentPlayer: VideoPlayer | undefined;
+	private nextPlayer: VideoPlayer | undefined;
 	private isPlaying = false;
 
-	readonly playerChanged = new Subject<{ player: VideoPlayer }>();
+	readonly playerChanged = new Subject<{
+		player: VideoPlayer;
+		nextPlayer: VideoPlayer | undefined;
+	}>();
 
 	constructor(
 		private readonly videoTimeline: VideoTimeline,
@@ -53,7 +57,7 @@ export class VideoProducer {
 		const inClipTime = time - newTimelineClip.start;
 
 		if (this.currentIndex === newTimelineClip.index) {
-			this.ensurePlayer({ inClipTime });
+			this.maybeSeekCurrentPlayer(inClipTime);
 			return;
 		}
 
@@ -62,34 +66,71 @@ export class VideoProducer {
 			this.pause();
 		}
 
-		this.ensurePlayer({ newIndex: newTimelineClip.index, inClipTime });
+		this.ensurePlayer({ newIndex: newTimelineClip.index });
+		this.maybeSeekCurrentPlayer(inClipTime);
 
 		if (wasPlaying) {
 			this.play();
 		}
 	}
 
-	private ensurePlayer({ newIndex, inClipTime }: { newIndex?: number; inClipTime?: number } = {}) {
-		const isNew = this.currentIndex == null || (newIndex != null && this.currentIndex !== newIndex);
-		if (isNew) {
-			if (this.currentPlayer) {
-				this.currentPlayer.destroy();
-				this.currentPlayer = undefined;
-			}
-			const index = this.currentIndex == null ? 0 : newIndex;
-			const newTimelineClip = this.videoTimeline.getTimelineClips()[index];
-			if (!newTimelineClip) {
-				throw new Error('No new clip');
-			}
-			this.currentPlayer = VideoPlayer.create(newTimelineClip, this.videoResolver);
-			this.currentPlayer.ended.addListenerOnce(this.onPlayerEnded);
-			this.currentIndex = index;
-			this.playerChanged.emit({ player: this.currentPlayer });
+	private ensurePlayer({ newIndex }: { newIndex?: number } = {}) {
+		const hasAnyPlayer = this.currentIndex != null;
+		const isNewIndex = newIndex != null && this.currentIndex !== newIndex;
+		const shouldUpdate = !hasAnyPlayer || isNewIndex;
+		if (!shouldUpdate) {
+			return;
 		}
 
-		if (inClipTime != null) {
-			this.currentPlayer?.seek(inClipTime);
+		const newCurrentIndex =
+			newIndex != null ? newIndex : this.currentIndex != null ? this.currentIndex : 0;
+		const newNextIndex = newCurrentIndex + 1;
+		const isNewCurrentNext = this.currentIndex === newCurrentIndex - 1;
+
+		const newCurrentTimelineClip = this.videoTimeline.getTimelineClips()[newCurrentIndex];
+		if (!newCurrentTimelineClip) {
+			throw new Error('No new current clip');
 		}
+		const newNextTimelineClip = this.videoTimeline.getTimelineClips()[newNextIndex];
+
+		this.maybeDestroyCurrentPlayer();
+
+		if (isNewCurrentNext && this.nextPlayer) {
+			this.currentPlayer = this.nextPlayer;
+			if (this.isPlaying) {
+				this.currentPlayer.play();
+			}
+		} else {
+			this.maybeDestroyNextPlayer();
+			this.currentPlayer = VideoPlayer.create(newCurrentTimelineClip, this.videoResolver);
+		}
+
+		this.currentPlayer.ended.addListenerOnce(this.onPlayerEnded);
+		this.currentIndex = newCurrentIndex;
+
+		if (newNextTimelineClip) {
+			this.nextPlayer = VideoPlayer.create(newNextTimelineClip, this.videoResolver);
+		}
+
+		this.playerChanged.emit({ player: this.currentPlayer, nextPlayer: this.nextPlayer });
+	}
+
+	private maybeDestroyCurrentPlayer() {
+		if (this.currentPlayer) {
+			this.currentPlayer.destroy();
+			this.currentPlayer = undefined;
+		}
+	}
+
+	private maybeDestroyNextPlayer() {
+		if (this.nextPlayer) {
+			this.nextPlayer.destroy();
+			this.nextPlayer = undefined;
+		}
+	}
+
+	private maybeSeekCurrentPlayer(inClipTime: number) {
+		this.currentPlayer?.seek(inClipTime);
 	}
 
 	private onPlayerEnded = () => {
