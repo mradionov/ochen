@@ -27,6 +27,7 @@ export class ManifestWriter {
 		return {
 			videoTrack: {
 				effects: manifest.videoTrack.effects,
+				transitionOut: manifest.videoTrack.transitionOut,
 				clips: manifest.videoTrack.clips.map((clip) => ({
 					videoId: clip.videoId,
 					rate: clip.rate,

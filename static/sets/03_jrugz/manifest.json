@@ -13,17 +13,17 @@
     "clips": [
       {
         "videoId": "washing",
-        "rate": 0.25,
-        "offsetY": "center"
-      },
-      {
-        "videoId": "ghosts",
         "rate": 0.23,
         "offsetY": "center"
       },
       {
+        "videoId": "ghosts",
+        "rate": 0.24,
+        "offsetY": "center"
+      },
+      {
         "videoId": "barbed_wire",
-        "rate": 0.3,
+        "rate": 0.32,
         "offsetY": "center"
       },
       {
@@ -43,7 +43,7 @@
       },
       {
         "videoId": "walk1",
-        "rate": 0.4,
+        "rate": 0.37,
         "offsetY": "top",
         "trimEnd": 13
       },
@@ -78,22 +78,22 @@
       },
       {
         "videoId": "high_chair",
-        "rate": 0.2,
+        "rate": 0.24,
         "offsetY": "top"
       },
       {
         "videoId": "fountain2",
-        "rate": 0.3,
+        "rate": 0.29,
         "offsetY": "top"
       },
       {
-        "videoId": "fountain1",
-        "rate": 0.3,
+        "videoId": "strawberry",
+        "rate": 0.25,
         "offsetY": "top"
       },
       {
         "videoId": "barrier",
-        "rate": 0.2,
+        "rate": 0.18,
         "offsetY": "top"
       },
       {
@@ -103,86 +103,44 @@
       },
       {
         "videoId": "table2",
-        "rate": 0.3,
+        "rate": 0.36,
         "offsetY": "top"
       },
       {
         "videoId": "walk4",
-        "rate": 0.4,
+        "rate": 0.33,
         "offsetY": "top"
-      },
-      {
-        "videoId": "tray",
-        "rate": 0.15,
-        "offsetY": "bottom"
       },
       {
         "videoId": "stone",
-        "rate": 0.25,
+        "rate": 0.29,
         "offsetY": "center"
       },
       {
-        "videoId": "bag2",
-        "rate": 0.2
-      },
-      {
-        "videoId": "balloon_ass",
-        "rate": 0.15,
+        "videoId": "wall1",
+        "rate": 0.3,
         "offsetY": "bottom"
       },
       {
-        "videoId": "walk5",
-        "rate": 0.3,
-        "offsetY": "top"
+        "videoId": "palette",
+        "rate": 0.22
+      },
+      {
+        "videoId": "bag2",
+        "rate": 0.21
+      },
+      {
+        "videoId": "mirror",
+        "rate": 0.29,
+        "offsetY": -30
       },
       {
         "videoId": "wall2",
-        "rate": 0.3
+        "rate": 0.28
       },
       {
-        "videoId": "painting2",
-        "rate": 0.2,
-        "offsetY": "top"
-      },
-      {
-        "videoId": "branch",
-        "rate": 0.3,
-        "offsetY": "top"
-      },
-      {
-        "videoId": "wall1",
-        "rate": 0.4,
-        "offsetY": "bottom"
-      },
-      {
-        "videoId": "stove",
-        "rate": 0.2,
-        "offsetY": "top"
-      },
-      {
-        "videoId": "chair",
-        "rate": 0.3,
-        "offsetY": "top"
-      },
-      {
-        "videoId": "painting1",
-        "rate": 0.3,
-        "offsetY": "top"
-      },
-      {
-        "videoId": "suitcase",
-        "offsetY": "top"
-      },
-      {
-        "videoId": "table1",
-        "offsetY": "top"
-      },
-      {
-        "videoId": "bag1",
-        "offsetY": "top"
-      },
-      {
-        "videoId": "palette"
+        "videoId": "dragonfly",
+        "rate": 0.23
       }
     ],
     "videos": {
@@ -229,7 +187,10 @@
       "stroller": "IMG_0903.MOV",
       "pizzabox": "IMG_0978.MOV",
       "wall1": "IMG_0638.MOV",
-      "wall2": "IMG_0653.MOV"
+      "wall2": "IMG_0653.MOV",
+      "mirror": "IMG_0983.MOV",
+      "strawberry": "IMG_1015.MOV",
+      "dragonfly": "IMG_1017.MOV"
     }
   },
   "audioTrack": {
@@ -239,7 +200,7 @@
       }
     ],
     "audios": {
-      "full": "jrugz-cut.mp3"
+      "full": "jrugz-full.wav"
     }
   }
 }
