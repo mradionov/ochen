@@ -83,13 +83,12 @@
       },
       {
         "videoId": "fountain2",
-        "rate": 0.29,
+        "rate": 0.32,
         "offsetY": "top"
       },
       {
-        "videoId": "strawberry",
-        "rate": 0.25,
-        "offsetY": "top"
+        "videoId": "fountain1",
+        "rate": 0.27
       },
       {
         "videoId": "barrier",
@@ -107,14 +106,13 @@
         "offsetY": "top"
       },
       {
-        "videoId": "walk4",
-        "rate": 0.33,
-        "offsetY": "top"
+        "videoId": "dragonfly",
+        "rate": 0.3
       },
       {
         "videoId": "stone",
         "rate": 0.29,
-        "offsetY": "center"
+        "offsetY": "top"
       },
       {
         "videoId": "wall1",
@@ -139,7 +137,43 @@
         "rate": 0.28
       },
       {
-        "videoId": "dragonfly",
+        "videoId": "walk4",
+        "rate": 0.33,
+        "offsetY": "top"
+      },
+      {
+        "videoId": "marble",
+        "rate": 0.22
+      },
+      {
+        "videoId": "flowers",
+        "rate": 0.26,
+        "offsetY": "top"
+      },
+      {
+        "videoId": "scooter",
+        "rate": 0.23,
+        "offsetY": "center"
+      },
+      {
+        "videoId": "piano",
+        "rate": 0.23
+      },
+      {
+        "videoId": "strawberry",
+        "rate": 0.25,
+        "offsetY": "top"
+      },
+      {
+        "videoId": "green",
+        "rate": 0.23
+      },
+      {
+        "videoId": "bike2",
+        "rate": 0.23
+      },
+      {
+        "videoId": "sneakers",
         "rate": 0.23
       }
     ],
@@ -190,7 +224,12 @@
       "wall2": "IMG_0653.MOV",
       "mirror": "IMG_0983.MOV",
       "strawberry": "IMG_1015.MOV",
-      "dragonfly": "IMG_1017.MOV"
+      "dragonfly": "IMG_1017.MOV",
+      "flowers": "IMG_1022.MOV",
+      "piano": "IMG_1023.MOV",
+      "green": "IMG_1024.MOV",
+      "marble": "IMG_1025.MOV",
+      "sneakers": "IMG_0662.MOV"
     }
   },
   "audioTrack": {

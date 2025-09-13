@@ -46,6 +46,7 @@
     window.addEventListener('keypress', (e) => {
       if (e.code === 'Space') {
         videoProducer.play();
+        audioProducer.play();
       }
     });
   });
@@ -92,6 +93,6 @@
 <style>
   .content {
     position: relative;
-    /*padding-left: 400px;*/
+    padding-left: 400px;
   }
 </style>
