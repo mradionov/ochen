@@ -1,13 +1,15 @@
 <script lang='ts'>
   import { getContext, onMount } from 'svelte';
   import { ManifestReader } from '$lib/manifest/manifest_reader';
-  import { VideoResolverKey } from '$lib/di';
+  import { ProjectsControllerKey, VideoResolverKey } from '$lib/di';
   import { VideoTimeline } from '$lib/video/video_timeline';
   import type { VideoTimelineClip } from '$lib/video/video_timeline';
   import { VideoResolver } from '$lib/video/video_resolver';
   import { toMinutesString } from '$lib/time_utils';
   import PreviewItem from './preview_item.svelte';
+  import { ProjectsController } from '$lib/projects/projects_controller';
 
+  const projectsController = getContext<ProjectsController>(ProjectsControllerKey);
   const videoResolver = getContext<VideoResolver>(VideoResolverKey);
 
   let tint;
@@ -15,8 +17,8 @@
   let timelineClips: VideoTimelineClip[] = [];
 
   onMount(async () => {
-    const setId = '03_jrugz';
-    const manifest = await new ManifestReader().read(setId);
+    const projectName = await projectsController.fetchActiveProjectName();
+    const manifest = await new ManifestReader().read(projectName);
     console.log({ manifest });
 
     await videoResolver.loadMetadata(manifest.videoTrack.clips);

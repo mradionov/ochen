@@ -2,7 +2,7 @@
   import { getContext, onMount } from 'svelte';
   import { ManifestReader } from '$lib/manifest/manifest_reader';
   import VideoRender from '$lib/video/video_render.svelte';
-  import { AudioResolverKey, VideoResolverKey } from '$lib/di';
+  import { AudioResolverKey, ProjectsControllerKey, VideoResolverKey } from '$lib/di';
   import { VideoPlayer } from '$lib/video/video_player';
   import { VideoProducer } from '$lib/video/video_producer';
   import { VideoResolver } from '$lib/video/video_resolver';
@@ -10,7 +10,9 @@
   import { VideoTimeline } from '$lib/video/video_timeline';
   import { AudioTimeline } from '$lib/audio/audio_timeline';
   import { AudioProducer } from '$lib/audio/audio_producer';
+  import { ProjectsController } from '$lib/projects/projects_controller';
 
+  const projectsController = getContext<ProjectsController>(ProjectsControllerKey);
   const videoResolver = getContext<VideoResolver>(VideoResolverKey);
   const audioResolver = getContext<AudioResolver>(AudioResolverKey);
 
@@ -23,8 +25,8 @@
   let audioProducer: AudioProducer;
 
   onMount(async () => {
-    const setId = '03_jrugz';
-    const manifest = await new ManifestReader().read(setId);
+    const projectName = await projectsController.fetchActiveProjectName();
+    const manifest = await new ManifestReader().read(projectName);
     console.log(manifest);
 
     await videoResolver.loadMetadata(manifest.videoTrack.clips);

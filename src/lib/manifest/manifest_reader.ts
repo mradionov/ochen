@@ -6,24 +6,24 @@ type VideoId = string;
 type AudioId = string;
 
 export class ManifestReader {
-	async read(setId: string): Promise<Manifest> {
-		const res = await fetch(`/sets/${setId}/manifest.json`);
+	async read(projectName: string): Promise<Manifest> {
+		const res = await fetch(`/sets/${projectName}/manifest.json`);
 		const manifestRaw: ManifestRaw = await res.json();
-		return this.parse(setId, manifestRaw);
+		return this.parse(projectName, manifestRaw);
 	}
 
-	private parse(setId: string, manifestRaw: ManifestRaw): Manifest {
-		const videoTrack = this.parseVideoTrack(setId, manifestRaw);
-		const audioTrack = this.parseAudioTrack(setId, manifestRaw);
-		return new Manifest(setId, videoTrack, audioTrack);
+	private parse(projectName: string, manifestRaw: ManifestRaw): Manifest {
+		const videoTrack = this.parseVideoTrack(projectName, manifestRaw);
+		const audioTrack = this.parseAudioTrack(projectName, manifestRaw);
+		return new Manifest(projectName, videoTrack, audioTrack);
 	}
 
-	private parseVideoTrack(setId: string, manifest: ManifestRaw): VideoTrack {
+	private parseVideoTrack(projectName: string, manifest: ManifestRaw): VideoTrack {
 		const videoTrackRaw = manifest.videoTrack;
 		const effectsRaw = videoTrackRaw.effects;
 		const transitionOutRaw = videoTrackRaw.transitionOut;
 		const videoClipsRaw = videoTrackRaw.clips ?? [];
-		const videoMap = this.parseVideoMap(setId, manifest);
+		const videoMap = this.parseVideoMap(projectName, manifest);
 
 		const transitionOut: VideoTransitionOut = {
 			duration: transitionOutRaw?.duration ?? 0,
@@ -66,11 +66,11 @@ export class ManifestReader {
 		return new VideoTrack(clips, manifest.videoTrack.videos, transitionOut, effectsRaw);
 	}
 
-	private parseVideoMap(setId: string, manifest: ManifestRaw): ReadonlyMap<VideoId, string> {
+	private parseVideoMap(projectName: string, manifest: ManifestRaw): ReadonlyMap<VideoId, string> {
 		const videos = manifest.videoTrack.videos ?? {};
 
 		const videoMap = new Map<VideoId, string>();
-		const basePath = `/sets/${setId}/videos`;
+		const basePath = `/sets/${projectName}/videos`;
 
 		Object.keys(videos).forEach((name) => {
 			const fileName = videos[name];
@@ -81,10 +81,10 @@ export class ManifestReader {
 		return videoMap;
 	}
 
-	private parseAudioTrack(setId: string, manifest: ManifestRaw): AudioTrack {
+	private parseAudioTrack(projectName: string, manifest: ManifestRaw): AudioTrack {
 		const audioTrackRaw = manifest.audioTrack ?? {};
 		const audioClipsRaw = audioTrackRaw.clips ?? [];
-		const audioMap = this.parseAudioMap(setId, manifest);
+		const audioMap = this.parseAudioMap(projectName, manifest);
 
 		const audioIdSet = new Set<AudioId>();
 		const clips = audioClipsRaw.map((clipRaw) => {
@@ -106,11 +106,11 @@ export class ManifestReader {
 		return new AudioTrack(clips, manifest.audioTrack.audios);
 	}
 
-	private parseAudioMap(setId: string, manifest: ManifestRaw): ReadonlyMap<string, string> {
+	private parseAudioMap(projectName: string, manifest: ManifestRaw): ReadonlyMap<string, string> {
 		const audios = manifest.audioTrack.audios ?? {};
 
 		const audioMap = new Map<AudioId, string>();
-		const basePath = `/sets/${setId}/audios`;
+		const basePath = `/sets/${projectName}/audios`;
 
 		Object.keys(audios).forEach((name) => {
 			const fileName = audios[name];

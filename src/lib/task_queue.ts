@@ -9,12 +9,12 @@ type Task<T> = {
 
 export class TaskQueue {
 	private isBusy = false;
-	private tasks: Task[] = [];
+	private tasks: Task<any>[] = [];
 
 	constructor() {}
 
 	run<T>(runFn: RunFn<T>): Promise<T> {
-		const deferred = new Deferred();
+		const deferred = new Deferred<T>();
 
 		const task: Task<T> = {
 			deferred,
@@ -31,9 +31,15 @@ export class TaskQueue {
 		if (this.isBusy || this.tasks.length === 0) {
 			return;
 		}
-		this.isBusy = true;
 
-		const { runFn, deferred } = this.tasks.shift();
+		const nextTask = this.tasks.shift();
+		if (!nextTask) {
+			return;
+		}
+
+		const { runFn, deferred } = nextTask;
+
+		this.isBusy = true;
 
 		try {
 			const result = await runFn();

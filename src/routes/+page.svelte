@@ -1,6 +1,12 @@
+<script lang='ts'>
+  import ProjectsList from '$lib/projects/projects_list.svelte';
+</script>
+
 <a href='/preview'>Preview</a>
 <a href='/performance'>Performance</a>
 <a href='/timeline'>Timeline</a>
+
+<ProjectsList />
 
 <style>
   a {
