@@ -1,19 +1,21 @@
 import { Deferred } from '../deferred';
+import { TaskQueue } from '$lib/task_queue';
 
 type VideoId = string;
 
-type VideoMetadata = {
+export type VideoMetadata = {
 	videoId: string;
 	videoPath: string;
 	duration: number;
 };
 
-type VideoRef = {
+export type VideoRef = {
 	videoId: VideoId;
 	videoPath: string;
 };
 
 export class VideoResolver {
+	private taskQueue = new TaskQueue();
 	private videos = new Map<VideoId, VideoMetadata>();
 
 	async loadMetadata(refs: VideoRef[]) {
@@ -36,7 +38,15 @@ export class VideoResolver {
 		return element;
 	}
 
-	private async loadMetadataOne(ref: VideoRef): Promise<VideoMetadata> {
+	async loadMetadataOne(ref: VideoRef): Promise<VideoMetadata> {
+		// Create one by one to speed up the process, video elements are struggling if it's done at the
+		// same time
+		return this.taskQueue.run(() => {
+			return this.doLoadMetadataOne(ref);
+		});
+	}
+
+	private async doLoadMetadataOne(ref: VideoRef): Promise<VideoMetadata> {
 		const existingMetadata = this.videos.get(ref.videoId);
 		if (existingMetadata) {
 			return existingMetadata;

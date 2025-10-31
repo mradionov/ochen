@@ -19,7 +19,7 @@ export class ManifestReader {
 	}
 
 	private parseVideoTrack(projectName: string, manifest: ManifestRaw): VideoTrack {
-		const videoTrackRaw = manifest.videoTrack;
+		const videoTrackRaw = manifest.videoTrack ?? {};
 		const effectsRaw = videoTrackRaw.effects;
 		const transitionOutRaw = videoTrackRaw.transitionOut;
 		const videoClipsRaw = videoTrackRaw.clips ?? [];
@@ -63,11 +63,11 @@ export class ManifestReader {
 			}
 		});
 
-		return new VideoTrack(clips, manifest.videoTrack.videos, transitionOut, effectsRaw);
+		return new VideoTrack(clips, videoTrackRaw.videos ?? {}, transitionOut, effectsRaw);
 	}
 
 	private parseVideoMap(projectName: string, manifest: ManifestRaw): ReadonlyMap<VideoId, string> {
-		const videos = manifest.videoTrack.videos ?? {};
+		const videos = manifest.videoTrack?.videos ?? {};
 
 		const videoMap = new Map<VideoId, string>();
 		const basePath = `/sets/${projectName}/videos`;
@@ -103,11 +103,11 @@ export class ManifestReader {
 			return new AudioClip(audioId, audioPath);
 		});
 
-		return new AudioTrack(clips, manifest.audioTrack.audios);
+		return new AudioTrack(clips, audioTrackRaw?.audios ?? {});
 	}
 
 	private parseAudioMap(projectName: string, manifest: ManifestRaw): ReadonlyMap<string, string> {
-		const audios = manifest.audioTrack.audios ?? {};
+		const audios = manifest.audioTrack?.audios ?? {};
 
 		const audioMap = new Map<AudioId, string>();
 		const basePath = `/sets/${projectName}/audios`;

@@ -10,7 +10,7 @@ const DEFAULT_OPTIONS: RendererOptions = {
 	effects: {}
 };
 
-type RendererOptions = {
+export type RendererOptions = {
 	width: number;
 	height: number;
 	offsetX?: 'left' | 'center' | 'right' | number;

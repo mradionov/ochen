@@ -1,13 +1,15 @@
 <script lang='ts'>
-  import { toMinutesString } from '$lib/time_utils';
-  import type { VideoTimelineClip } from '$lib/video/video_timeline';
   import { getContext, onMount } from 'svelte';
   import { RenderLoop } from '$lib/render_loop';
   import { PlayerFactoryKey, RenderLoopKey } from '$lib/di';
   import type { PlayerFactory } from '$lib/video/player_factory';
   import type { Player } from '$lib/video/player';
 
-  export let timelineClip: VideoTimelineClip;
+  export let videoPath: string;
+  export let headerLeft: string;
+  export let headerRight: string;
+  export let footerLeft: string;
+  export let footerRight: string;
 
   const renderLoop = getContext<RenderLoop>(RenderLoopKey);
   const playerFactory = getContext<PlayerFactory>(PlayerFactoryKey);
@@ -17,7 +19,7 @@
   let player: Player;
 
   onMount(async () => {
-    player = await playerFactory.createForPreview(timelineClip.clip);
+    player = await playerFactory.createForPreview(videoPath);
     // TODO: don't manipulate dom directly
     canvasContainerElement.appendChild(player.renderer.$canvas);
 
@@ -26,22 +28,23 @@
     });
   });
 
-  function onContainerClick() {
+  function onCanvasClick() {
     player.togglePlay();
   }
 </script>
 
-<div class='container' on:click={onContainerClick}>
-  <div bind:this={canvasContainerElement}></div>
+<div class='container'>
+  <div bind:this={canvasContainerElement} on:click={onCanvasClick}></div>
   <div class='header'>
-    <div class='title'>{timelineClip.videoId}</div>
-    <div class='duration'>
-      {toMinutesString(timelineClip.duration)} ({timelineClip.rate}x)
-    </div>
+    <div>{headerLeft}</div>
+    <div>{headerRight}</div>
   </div>
   <div class='footer'>
-    <div class='start'>{toMinutesString(timelineClip.start)}</div>
-    <div class='end'>{toMinutesString(timelineClip.end)}</div>
+    <div>{footerLeft}</div>
+    <div>{footerRight}</div>
+  </div>
+  <div>
+    <slot name='controls'></slot>
   </div>
 </div>
 
@@ -52,6 +55,7 @@
     background: #a1a1a1;
     display: inline-block;
     margin: 5px;
+    margin-bottom: 50px;
     position: relative;
   }
 

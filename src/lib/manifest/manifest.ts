@@ -22,6 +22,33 @@ export class VideoTrack {
 		readonly effects: VideoEffects | undefined
 	) {}
 
+	addVideo(filename: string) {
+		this.videos[filename] = filename;
+	}
+
+	removeVideo(filename: string) {
+		delete this.videos[filename];
+	}
+
+	getVideoFilenames() {
+		return Object.values(this.videos);
+	}
+
+	addClip(filename: string, path: string) {
+		this.clips.push(
+			new VideoClip(
+				filename,
+				path,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined
+			)
+		);
+	}
+
 	findClip(id: VideoId) {
 		return this.clips.find((clip) => clip.videoId === id);
 	}
@@ -57,7 +84,7 @@ export class VideoClip {
 		public offsetY: number | string | undefined,
 		public rate: number | undefined,
 		public trimEnd: number | undefined,
-		readonly transitionOut: VideoTransitionOut,
+		readonly transitionOut: VideoTransitionOut | undefined,
 		readonly effects: VideoEffects | undefined
 	) {}
 }

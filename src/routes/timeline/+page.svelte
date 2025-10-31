@@ -19,8 +19,8 @@
   import type { VideoPlayer } from '$lib/video/video_player';
   import VideoRender from '$lib/video/video_render.svelte';
   import VideoInfo from './video_info.svelte';
-  import { ManifestWriter } from '$lib/manifest/manifest_writer';
   import type { Manifest } from '$lib/manifest/manifest';
+  import ManifestSaveButton from '$lib/manifest/manifest_save_button.svelte';
   import { ProjectsController } from '$lib/projects/projects_controller';
 
   const projectsController = getContext<ProjectsController>(ProjectsControllerKey);
@@ -29,7 +29,6 @@
   const audioResolver = getContext<AudioResolver>(AudioResolverKey);
 
   const manifestReader = new ManifestReader();
-  const manifestWriter = new ManifestWriter();
   let manifest: Manifest;
 
   let videoProducer: VideoProducer;
@@ -119,10 +118,6 @@
     selectedVideoTimelineClip = clip;
   }
 
-  function handleSave() {
-    void manifestWriter.writeWithFilePicker(manifest);
-  }
-
   function handleVideoInfoChanged() {
     update();
     videoProducer.reset(playheadTime);
@@ -131,7 +126,7 @@
 </script>
 
 <div>
-  <button on:click={handleSave}>save manifest</button>
+  <ManifestSaveButton manifest={manifest} />
   <hr />
   Video duration: {toMinutesString(videoDuration)} <br />
   Audio duration: {toMinutesString(audioDuration)} <br />
