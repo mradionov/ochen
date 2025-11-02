@@ -1,5 +1,5 @@
-import { Manifest, VideoTrack, VideoClip, AudioTrack, AudioClip } from './manifest';
-import type { VideoTransitionOut } from './manifest';
+import { Manifest, VideoTrack, VideoClip, AudioTrack, AudioClip } from './manifest.svelte';
+import type { VideoTransitionOut } from './manifest.svelte';
 import type { ManifestRaw } from '$lib/manifest/manifest_raw';
 
 type VideoId = string;
@@ -15,7 +15,7 @@ export class ManifestReader {
 	private parse(projectName: string, manifestRaw: ManifestRaw): Manifest {
 		const videoTrack = this.parseVideoTrack(projectName, manifestRaw);
 		const audioTrack = this.parseAudioTrack(projectName, manifestRaw);
-		return new Manifest(projectName, videoTrack, audioTrack);
+		return new Manifest({ projectName, videoTrack, audioTrack });
 	}
 
 	private parseVideoTrack(projectName: string, manifest: ManifestRaw): VideoTrack {
@@ -63,7 +63,12 @@ export class ManifestReader {
 			}
 		});
 
-		return new VideoTrack(clips, videoTrackRaw.videos ?? {}, transitionOut, effectsRaw);
+		return new VideoTrack({
+			clips,
+			videos: videoTrackRaw.videos ?? {},
+			transitionOut,
+			effects: effectsRaw
+		});
 	}
 
 	private parseVideoMap(projectName: string, manifest: ManifestRaw): ReadonlyMap<VideoId, string> {
@@ -103,7 +108,7 @@ export class ManifestReader {
 			return new AudioClip(audioId, audioPath);
 		});
 
-		return new AudioTrack(clips, audioTrackRaw?.audios ?? {});
+		return new AudioTrack({ clips, audios: audioTrackRaw?.audios ?? {} });
 	}
 
 	private parseAudioMap(projectName: string, manifest: ManifestRaw): ReadonlyMap<string, string> {

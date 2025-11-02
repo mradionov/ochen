@@ -7,10 +7,14 @@
     "clips": [
       {
         "videoId": "IMG_0644.MOV"
+      },
+      {
+        "videoId": "IMG_0651.MOV"
       }
     ],
     "videos": {
-      "IMG_0644.MOV": "IMG_0644.MOV"
+      "IMG_0644.MOV": "IMG_0644.MOV",
+      "IMG_0651.MOV": "IMG_0651.MOV"
     }
   },
   "audioTrack": {

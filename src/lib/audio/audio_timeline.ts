@@ -1,5 +1,5 @@
-import type { AudioClip, Manifest } from '$lib/manifest/manifest_reader';
 import type { AudioResolver } from '$lib/audio/audio_resolver';
+import type { Manifest, AudioClip } from '$lib/manifest/manifest.svelte';
 
 type AudioId = string;
 
@@ -32,7 +32,7 @@ export class AudioTimeline {
 		return this.clips.map((clip) => this.getTimelineClip(clip.audioId));
 	}
 
-	getClip(id: AudioId): AudioClip {
+	getClip(id: AudioId): AudioClip | undefined {
 		return this.clips.find((clip) => clip.audioId === id);
 	}
 

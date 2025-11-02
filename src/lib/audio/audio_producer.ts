@@ -65,6 +65,9 @@ export class AudioProducer {
 
 	private ensurePlayer(inClipTime?: number) {
 		const currentClip = this.audioTimeline.clips[this.currentIndex];
+		if (!currentClip) {
+			return;
+		}
 		if (!this.currentPlayer) {
 			this.currentPlayer = AudioPlayer.create(currentClip, this.audioResolver);
 		}

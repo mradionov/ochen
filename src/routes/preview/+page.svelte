@@ -10,55 +10,56 @@
   import UnimportedItem from './unimported_item.svelte';
   import { ProjectsController } from '$lib/projects/projects_controller';
   import type { SourceVideoFile } from '$lib/projects/projects_controller';
-  import type { Manifest } from '$lib/manifest/manifest';
   import ManifestSaveButton from '$lib/manifest/manifest_save_button.svelte';
+  import { Manifest } from '$lib/manifest/manifest.svelte';
   import ClipItem from './clip_item.svelte';
 
   const projectsController = getContext<ProjectsController>(ProjectsControllerKey);
   const videoResolver = getContext<VideoResolver>(VideoResolverKey);
 
-  let manifest: Manifest;
-  let tint;
-  let totalDuration = 0;
-  let timelineClips: VideoTimelineClip[] = [];
-  let importedVideoFiles: SourceVideoFile[] = [];
-  let unimportedVideoFiles: SourceVideoFile[] = [];
+  let manifest = $state<Manifest>(Manifest.createEmpty());
+
+  console.log({ manifest });
+
+  let importedNames = $derived(manifest.videoTrack.getVideoFilenames());
+  let sourceVideoFiles = $state<SourceVideoFile[]>([]);
+  let importedVideoFiles = $derived(sourceVideoFiles.filter(file => importedNames.includes(file.name)));
+  let unimportedVideoFiles = $derived(sourceVideoFiles.filter(file => !importedNames.includes(file.name)));
+
+  let timeline = $state(new VideoTimeline(manifest, videoResolver));
+  let timelineClips = $derived(timeline.getTimelineClips());
+
+  let totalDuration = $derived(timeline.getTotalDuration());
+  let tint = $derived(manifest.videoTrack.effects?.tint);
 
   onMount(async () => {
     const projectName = await projectsController.fetchActiveProjectName();
     manifest = await new ManifestReader().read(projectName);
     console.log({ manifest });
 
-    const importedNames = manifest.videoTrack.getVideoFilenames();
-
-    const sourceVideoFiles = await projectsController.fetchActiveProjectVideoFiles();
-    importedVideoFiles = sourceVideoFiles.filter(file => importedNames.includes(file.name));
-    unimportedVideoFiles = sourceVideoFiles.filter(file => !importedNames.includes(file.name));
-    console.log({ importedNames, sourceVideoFiles, importedVideoFiles, unimportedVideoFiles });
+    sourceVideoFiles = await projectsController.fetchActiveProjectVideoFiles();
 
     await videoResolver.loadMetadata(manifest.videoTrack.clips);
 
-    const timeline = new VideoTimeline(manifest, videoResolver);
-
-    timelineClips = timeline.getTimelineClips();
-
-    console.log({ timelineClips });
-
-    totalDuration = timeline.getTotalDuration();
-    tint = manifest.videoTrack?.effects?.tint;
-    // TODO: on tint change
+    timeline = new VideoTimeline(manifest, videoResolver);
   });
 
-  function handleAddClip(sourceVideoFile: SourceVideoFile) {
-    manifest.videoTrack.addClip(sourceVideoFile.name, sourceVideoFile.path);
+  function handleMoveLeft(timelineClip: VideoTimelineClip) {
+    manifest.videoTrack.moveLeft(timelineClip.videoId);
   }
 
-  function handleRemoveImported(sourceVideoFile: SourceVideoFile) {
-    manifest.videoTrack.removeVideo(sourceVideoFile.name);
+  function handleMoveRight(timelineClip: VideoTimelineClip) {
+    manifest.videoTrack.moveRight(timelineClip.videoId);
+  }
+
+  function handleRemoveClip(timelineClip: VideoTimelineClip) {
+    manifest.videoTrack.removeClip(timelineClip.videoId);
+    manifest.videoTrack.removeVideo(timelineClip.videoId);
   }
 
   function handleImport(sourceVideoFile: SourceVideoFile) {
     manifest.videoTrack.addVideo(sourceVideoFile.name);
+    manifest.videoTrack.addClip(sourceVideoFile.name, sourceVideoFile.path);
   }
 </script>
 
@@ -70,30 +71,34 @@
 
   <hr />
 
-  <h4>Clips</h4>
-  <hr />
-
-  {#each timelineClips as timelineClip (timelineClip.videoId)}
-    <ClipItem timelineClip={timelineClip} />
-  {/each}
-
-  {#if importedVideoFiles.length > 0}
-    <h4>Imported</h4>
+  {#if timelineClips.length > 0}
+    <h4>Clips</h4>
     <hr />
-    {#each importedVideoFiles as sourceVideoFile}
-      <ImportedItem
-        sourceVideoFile={sourceVideoFile}
-        onClip={() => handleAddClip(sourceVideoFile)}
-        onRemove={() => handleRemoveImported(sourceVideoFile)}
+
+    {#each timelineClips as timelineClip (timelineClip.videoId)}
+      <ClipItem
+        timelineClip={timelineClip}
+        onMoveLeft={() => handleMoveLeft(timelineClip)}
+        onMoveRight={() => handleMoveRight(timelineClip)}
+        onRemove={() => handleRemoveClip(timelineClip)}
       />
     {/each}
   {/if}
 
+  <!--{#if importedVideoFiles.length > 0}-->
+  <!--  <h4>Imported</h4>-->
+  <!--  <hr />-->
+  <!--  {#each importedVideoFiles as sourceVideoFile (sourceVideoFile.name)}-->
+  <!--    <ImportedItem-->
+  <!--      sourceVideoFile={sourceVideoFile}-->
+  <!--    />-->
+  <!--  {/each}-->
+  <!--{/if}-->
 
   {#if unimportedVideoFiles.length > 0}
     <h4>Unimported</h4>
     <hr />
-    {#each unimportedVideoFiles as sourceVideoFile}
+    {#each unimportedVideoFiles as sourceVideoFile (sourceVideoFile.name)}
       <UnimportedItem sourceVideoFile={sourceVideoFile} onImport={() => handleImport(sourceVideoFile)} />
     {/each}
   {/if}

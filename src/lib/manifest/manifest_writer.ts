@@ -1,4 +1,4 @@
-import type { Manifest } from '$lib/manifest/manifest';
+import type { Manifest } from '$lib/manifest/manifest.svelte';
 import type { ManifestRaw } from '$lib/manifest/manifest_raw';
 
 export class ManifestWriter {

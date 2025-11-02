@@ -5,7 +5,6 @@
 <a href='/preview'>Preview</a>
 <a href='/performance'>Performance</a>
 <a href='/timeline'>Timeline</a>
-<a href='/project'>Project</a>
 
 <ProjectsList />
 

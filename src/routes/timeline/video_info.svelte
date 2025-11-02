@@ -2,7 +2,7 @@
   import type { VideoTimelineClip } from '$lib/video/video_timeline';
   import { toMinutesString } from '$lib/time_utils.js';
   import OffsetPicker from './offset_picker.svelte';
-  import type { Manifest } from '$lib/manifest/manifest';
+  import type { Manifest } from '$lib/manifest/manifest.svelte';
 
   export let manifest: Manifest;
   export let timelineClip: VideoTimelineClip;

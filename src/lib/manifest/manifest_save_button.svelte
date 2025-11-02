@@ -1,6 +1,6 @@
 <script lang='ts'>
   import { ManifestWriter } from '$lib/manifest/manifest_writer';
-  import { Manifest } from '$lib/manifest/manifest';
+  import { Manifest } from '$lib/manifest/manifest.svelte';
 
   const manifestWriter = new ManifestWriter();
 

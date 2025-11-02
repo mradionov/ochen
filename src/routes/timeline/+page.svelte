@@ -19,7 +19,7 @@
   import type { VideoPlayer } from '$lib/video/video_player';
   import VideoRender from '$lib/video/video_render.svelte';
   import VideoInfo from './video_info.svelte';
-  import type { Manifest } from '$lib/manifest/manifest';
+  import type { Manifest } from '$lib/manifest/manifest.svelte';
   import ManifestSaveButton from '$lib/manifest/manifest_save_button.svelte';
   import { ProjectsController } from '$lib/projects/projects_controller';
 

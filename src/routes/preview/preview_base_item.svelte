@@ -23,8 +23,8 @@
     // TODO: don't manipulate dom directly
     canvasContainerElement.appendChild(player.renderer.$canvas);
 
-    renderLoop.tick.addListener(({ deltaTime }) => {
-      player.update({ deltaTime });
+    renderLoop.tick.addListener(() => {
+      player.update();
     });
   });
 

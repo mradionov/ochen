@@ -1,4 +1,4 @@
-import type { Manifest, VideoClip } from '$lib/manifest/manifest';
+import type { Manifest, VideoClip } from '$lib/manifest/manifest.svelte';
 import type { VideoResolver } from './video_resolver';
 
 type VideoId = string;
@@ -6,6 +6,7 @@ type VideoId = string;
 export type VideoTimelineClip = {
 	videoId: VideoId;
 	index: number;
+	isFirst: boolean;
 	isLast: boolean;
 	clip: VideoClip;
 	start: number;
@@ -37,7 +38,7 @@ export class VideoTimeline {
 		return this.clips.map((clip) => this.getTimelineClip(clip.videoId));
 	}
 
-	getClip(id: VideoId): VideoClip {
+	getClip(id: VideoId): VideoClip | undefined {
 		return this.clips.find((clip) => clip.videoId === id);
 	}
 
@@ -45,6 +46,7 @@ export class VideoTimeline {
 		return {
 			videoId: id,
 			index: this.getIndex(id),
+			isFirst: this.isFirst(id),
 			isLast: this.isLast(id),
 			clip: this.getClip(id),
 			start: this.getStart(id),
@@ -59,6 +61,14 @@ export class VideoTimeline {
 
 	getIndex(id: VideoId): number {
 		return this.clips.findIndex((clip) => clip.videoId === id);
+	}
+
+	isFirst(id: VideoId): boolean {
+		const firstClip = this.clips[0];
+		if (!firstClip) {
+			return false;
+		}
+		return firstClip.videoId === id;
 	}
 
 	isLast(id: VideoId): boolean {
