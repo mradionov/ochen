@@ -1,3 +1,5 @@
+import { Precondition } from '$lib/precondition';
+
 type VideoId = string;
 type VideoFilename = string;
 type VideoFilepath = string;
@@ -91,10 +93,12 @@ export class VideoTrack {
 		this.clips.push(VideoClip.createFromPath({ videoId: filename, videoPath: path }));
 	}
 
-	renameClip(id: VideoId, newName: string) {}
-
 	removeClip(id: VideoId) {
 		this.clips = this.clips.filter((clip) => clip.videoId !== id);
+	}
+
+	getClip(id: VideoId): VideoClip {
+		return Precondition.checkExists(this.findClip(id));
 	}
 
 	findClip(id: VideoId) {
@@ -125,28 +129,46 @@ export class VideoTrack {
 }
 
 export class VideoClip {
-	constructor(
-		readonly videoId: VideoId,
-		readonly videoPath: VideoFilepath,
-		public offsetX: number | string | undefined,
-		public offsetY: number | string | undefined,
-		public rate: number | undefined,
-		public trimEnd: number | undefined,
-		readonly transitionOut: VideoTransitionOut | undefined,
-		readonly effects: VideoEffects | undefined
-	) {}
+	readonly videoId: VideoId;
+	readonly videoPath: VideoFilepath;
+	offsetX: number | string | undefined;
+	offsetY: number | string | undefined;
+	rate: number | undefined;
+	trimEnd: number | undefined;
+	transitionOut: VideoTransitionOut | undefined;
+	effects: VideoEffects | undefined;
+
+	constructor(args: {
+		videoId: VideoId;
+		videoPath: VideoFilepath;
+		offsetX: number | string | undefined;
+		offsetY: number | string | undefined;
+		rate: number | undefined;
+		trimEnd: number | undefined;
+		transitionOut: VideoTransitionOut | undefined;
+		effects: VideoEffects | undefined;
+	}) {
+		this.videoId = args.videoId;
+		this.videoPath = args.videoPath;
+		this.offsetX = $state(args.offsetX);
+		this.offsetY = $state(args.offsetY);
+		this.rate = $state(args.rate);
+		this.trimEnd = $state(args.trimEnd);
+		this.transitionOut = $state(args.transitionOut);
+		this.effects = $state(args.effects);
+	}
 
 	static createFromPath({ videoId, videoPath }: { videoId: VideoId; videoPath: VideoFilepath }) {
-		return new VideoClip(
+		return new VideoClip({
 			videoId,
 			videoPath,
-			undefined,
-			undefined,
-			undefined,
-			undefined,
-			undefined,
-			undefined
-		);
+			offsetX: undefined,
+			offsetY: undefined,
+			rate: undefined,
+			trimEnd: undefined,
+			transitionOut: undefined,
+			effects: undefined
+		});
 	}
 }
 
@@ -169,8 +191,11 @@ export class AudioTrack {
 }
 
 export class AudioClip {
-	constructor(
-		readonly audioId: AudioId,
-		readonly audioPath: AudioFilepath
-	) {}
+	readonly audioId: AudioId;
+	readonly audioPath: AudioFilepath;
+
+	constructor(args: { audioId: AudioId; audioPath: AudioFilepath }) {
+		this.audioId = args.audioId;
+		this.audioPath = args.audioPath;
+	}
 }

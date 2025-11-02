@@ -1,5 +1,6 @@
 import type { AudioResolver } from '$lib/audio/audio_resolver';
 import type { Manifest, AudioClip } from '$lib/manifest/manifest.svelte';
+import { Precondition } from '$lib/precondition';
 
 type AudioId = string;
 
@@ -33,7 +34,7 @@ export class AudioTimeline {
 	}
 
 	getClip(id: AudioId): AudioClip | undefined {
-		return this.clips.find((clip) => clip.audioId === id);
+		return Precondition.checkExists(this.clips.find((clip) => clip.audioId === id));
 	}
 
 	getTimelineClip(id: AudioId): AudioTimelineClip {

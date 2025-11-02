@@ -4,12 +4,12 @@
 
   export let timelineClips: VideoTimelineClip[];
   export let maxDuration: number;
-  export let selectedTimelineClip: VideoTimelineClip;
+  export let selectedTimelineClip: VideoTimelineClip | undefined;
   export let onSelect: (clip: VideoTimelineClip) => void;
 </script>
 
 <div class='container'>
-  {#each timelineClips as timelineClip}
+  {#each timelineClips as timelineClip (timelineClip.videoId)}
     <VideoClip
       timelineClip={timelineClip}
       maxDuration={maxDuration}

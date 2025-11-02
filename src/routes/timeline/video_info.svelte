@@ -6,42 +6,32 @@
 
   export let manifest: Manifest;
   export let timelineClip: VideoTimelineClip;
-  export let onChanged: () => void;
 
   $: canMoveLeft = timelineClip.index > 0;
   $: canMoveRight = !timelineClip.isLast;
 
-  function handleRateChange(e: InputEvent) {
-    const rate = Number(e.target.value);
-    manifest.videoTrack.findClip(timelineClip.videoId).rate = rate;
-    onChanged();
+  function handleRateChange(e: Event & { currentTarget: HTMLInputElement }) {
+    manifest.videoTrack.getClip(timelineClip.videoId).rate = Number(e.currentTarget.value);
   }
 
-  function handleOffsetXChange(offsetX: number) {
-    manifest.videoTrack.findClip(timelineClip.videoId).offsetX = offsetX;
-    onChanged();
+  function handleOffsetXChange(offsetX: number | string | undefined) {
+    manifest.videoTrack.getClip(timelineClip.videoId).offsetX = offsetX;
   }
 
-  function handleOffsetYChange(offsetY: number) {
-    manifest.videoTrack.findClip(timelineClip.videoId).offsetY = offsetY;
-    onChanged();
+  function handleOffsetYChange(offsetY: number | string | undefined) {
+    manifest.videoTrack.getClip(timelineClip.videoId).offsetY = offsetY;
   }
 
-  function handleTrimEndChange(e: InputEvent) {
-    const trimEnd = Number(e.target.value);
-    manifest.videoTrack.findClip(timelineClip.videoId).trimEnd = trimEnd;
-    console.log(trimEnd);
-    onChanged();
+  function handleTrimEndChange(e: Event & { currentTarget: HTMLInputElement }) {
+    manifest.videoTrack.getClip(timelineClip.videoId).trimEnd = Number(e.currentTarget.value);
   }
 
   function handleMoveLeft() {
     manifest.videoTrack.moveLeft(timelineClip.videoId);
-    onChanged();
   }
 
   function handleMoveRight() {
     manifest.videoTrack.moveRight(timelineClip.videoId);
-    onChanged();
   }
 </script>
 

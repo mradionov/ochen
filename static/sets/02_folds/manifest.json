@@ -6,7 +6,8 @@
     },
     "clips": [
       {
-        "videoId": "IMG_0644.MOV"
+        "videoId": "IMG_0644.MOV",
+        "rate": 1.5
       },
       {
         "videoId": "IMG_0651.MOV"

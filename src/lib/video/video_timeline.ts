@@ -1,5 +1,6 @@
 import type { Manifest, VideoClip } from '$lib/manifest/manifest.svelte';
 import type { VideoResolver } from './video_resolver';
+import { Precondition } from '$lib/precondition';
 
 type VideoId = string;
 
@@ -38,8 +39,8 @@ export class VideoTimeline {
 		return this.clips.map((clip) => this.getTimelineClip(clip.videoId));
 	}
 
-	getClip(id: VideoId): VideoClip | undefined {
-		return this.clips.find((clip) => clip.videoId === id);
+	getClip(id: VideoId): VideoClip {
+		return Precondition.checkExists(this.clips.find((clip) => clip.videoId === id));
 	}
 
 	getTimelineClip(id: VideoId): VideoTimelineClip {

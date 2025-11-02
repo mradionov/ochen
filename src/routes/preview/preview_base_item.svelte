@@ -6,10 +6,10 @@
   import type { Player } from '$lib/video/player';
 
   export let videoPath: string;
-  export let headerLeft: string;
-  export let headerRight: string;
-  export let footerLeft: string;
-  export let footerRight: string;
+  export let headerLeft: string | undefined = undefined;
+  export let headerRight: string | undefined = undefined;
+  export let footerLeft: string | undefined = undefined;
+  export let footerRight: string | undefined = undefined;
 
   const renderLoop = getContext<RenderLoop>(RenderLoopKey);
   const playerFactory = getContext<PlayerFactory>(PlayerFactoryKey);

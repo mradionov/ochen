@@ -44,7 +44,7 @@ export class ManifestReader {
 				throw new Error(`No video found for "${videoId}"`);
 			}
 
-			return new VideoClip(
+			return new VideoClip({
 				videoId,
 				videoPath,
 				offsetX,
@@ -52,8 +52,8 @@ export class ManifestReader {
 				rate,
 				trimEnd,
 				transitionOut,
-				effectsRaw
-			);
+				effects: effectsRaw
+			});
 		});
 
 		const unusedVideoIdSet = new Set<VideoId>();
@@ -105,7 +105,7 @@ export class ManifestReader {
 				throw new Error(`No audio found for "${audioId}"`);
 			}
 
-			return new AudioClip(audioId, audioPath);
+			return new AudioClip({ audioId, audioPath });
 		});
 
 		return new AudioTrack({ clips, audios: audioTrackRaw?.audios ?? {} });
