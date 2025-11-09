@@ -1,9 +1,14 @@
-<script lang='ts'>
+<script lang="ts">
   import VideoTrack from './video_track.svelte';
   import { getContext, onMount, untrack } from 'svelte';
   import { ManifestReader } from '$lib/manifest/manifest_reader';
   import { VideoResolver } from '$lib/video/video_resolver';
-  import { AudioResolverKey, ProjectsControllerKey, RenderLoopKey, VideoResolverKey } from '$lib/di';
+  import {
+    AudioResolverKey,
+    ProjectsControllerKey,
+    RenderLoopKey,
+    VideoResolverKey,
+  } from '$lib/di';
   import { VideoTimeline } from '$lib/video/video_timeline.svelte';
   import type { VideoTimelineClip } from '$lib/video/video_timeline.svelte';
   import AudioTrack from './audio_track.svelte';
@@ -23,7 +28,9 @@
   import ManifestSaveButton from '$lib/manifest/manifest_save_button.svelte';
   import { ProjectsController } from '$lib/projects/projects_controller';
 
-  const projectsController = getContext<ProjectsController>(ProjectsControllerKey);
+  const projectsController = getContext<ProjectsController>(
+    ProjectsControllerKey,
+  );
   const renderLoop = getContext<RenderLoop>(RenderLoopKey);
   const videoResolver = getContext<VideoResolver>(VideoResolverKey);
   const audioResolver = getContext<AudioResolver>(AudioResolverKey);
@@ -34,19 +41,24 @@
   let audioProducer: AudioProducer;
   let timelineClock: TimelineClock;
 
-  let videoTimeline: VideoTimeline | undefined = $state.raw(undefined);
-  let audioTimeline: AudioTimeline | undefined = $state.raw(undefined);
+  let videoTimeline = $state.raw<VideoTimeline | undefined>(undefined);
+  let audioTimeline = $state.raw<AudioTimeline | undefined>(undefined);
 
   let videoPlayer: VideoPlayer | undefined = $state.raw(undefined);
   let nextVideoPlayer: VideoPlayer | undefined = $state.raw(undefined);
 
-  let videoTimelineClips: VideoTimelineClip[] = $derived(videoTimeline?.getTimelineClips());
-  let audioTimelineClips: AudioTimelineClip[] = $derived(audioTimeline?.getTimelineClips());
+  let videoTimelineClips: VideoTimelineClip[] = $derived(
+    videoTimeline?.getTimelineClips() ?? [],
+  );
+  let audioTimelineClips: AudioTimelineClip[] = $derived(
+    audioTimeline?.getTimelineClips() ?? [],
+  );
 
-  let selectedVideoTimelineClip: VideoTimelineClip | undefined = $state.raw(undefined);
+  let selectedVideoTimelineClip: VideoTimelineClip | undefined =
+    $state.raw(undefined);
 
-  let videoDuration: number = $derived(videoTimeline?.getTotalDuration());
-  let audioDuration: number = $derived(audioTimeline?.getTotalDuration());
+  let videoDuration = $derived(videoTimeline?.getTotalDuration() ?? 0);
+  let audioDuration = $derived(audioTimeline?.getTotalDuration() ?? 0);
   let maxDuration = $derived(Math.max(videoDuration, audioDuration));
 
   let playheadTime: number = $state.raw(0);
@@ -114,7 +126,7 @@
 </script>
 
 <div>
-  <ManifestSaveButton manifest={manifest} />
+  <ManifestSaveButton {manifest} />
   <hr />
   Video duration: {toMinutesString(videoDuration)} <br />
   Audio duration: {toMinutesString(audioDuration)} <br />
@@ -124,38 +136,39 @@
   <button onclick={handlePause}>pause</button>
   <hr />
   Time: {toClockString(playheadTime)} / {toClockString(maxDuration)}
-  <div class='tracks'>
-    <PlayheadTrack time={playheadTime} maxDuration={maxDuration} onSeek={handlePlayheadSeek} />
+  <div class="tracks">
+    <PlayheadTrack
+      time={playheadTime}
+      {maxDuration}
+      onSeek={handlePlayheadSeek}
+    />
     <VideoTrack
       timelineClips={videoTimelineClips}
-      maxDuration={maxDuration}
+      {maxDuration}
       selectedTimelineClip={selectedVideoTimelineClip}
       onSelect={handleVideoTimelineClipSelect}
     />
-    <AudioTrack timelineClips={audioTimelineClips} maxDuration={maxDuration} />
+    <AudioTrack timelineClips={audioTimelineClips} {maxDuration} />
   </div>
   <hr />
-  <div class='split'>
-    <div class='column'>
+  <div class="split">
+    <div class="column">
       {#if videoPlayer}
         <VideoRendererSurface
           player={videoPlayer}
           nextPlayer={nextVideoPlayer}
+          effects={manifest.videoTrack.effects}
           width={400}
           height={400}
         />
       {/if}
     </div>
-    <div class='column'>
+    <div class="column">
       {#if selectedVideoTimelineClip}
-        <VideoInfo
-          manifest={manifest}
-          timelineClip={selectedVideoTimelineClip}
-        />
+        <VideoInfo {manifest} timelineClip={selectedVideoTimelineClip} />
       {/if}
     </div>
   </div>
-
 </div>
 
 <style>

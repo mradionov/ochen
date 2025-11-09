@@ -1,5 +1,6 @@
 import { Subject } from '$lib/subject';
 import { defaults } from '$lib/defaults';
+import type { VideoTimelineClip } from './video_timeline.svelte';
 
 type VideoPlayerOptions = {
   rate?: number;
@@ -26,6 +27,13 @@ export class VideoPlayer {
 
     this.element = document.createElement('video');
     this.load();
+  }
+
+  static createFromTimelineClip(timelineClip: VideoTimelineClip) {
+    return new VideoPlayer(timelineClip.clip.videoPath, {
+      trimmedDuration: timelineClip.trimmedDuration,
+      rate: timelineClip.rate,
+    });
   }
 
   get isPlaying() {

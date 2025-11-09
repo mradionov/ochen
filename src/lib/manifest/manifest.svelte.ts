@@ -1,196 +1,255 @@
 import { Precondition } from '$lib/precondition';
+import type {
+  AudioClipRaw,
+  AudioTrackRaw,
+  ManifestRaw,
+  VideoClipRaw,
+  VideoEffectsRaw,
+  VideoTrackRaw,
+} from './manifest_raw';
 
 type VideoId = string;
 type VideoFilename = string;
 type VideoFilepath = string;
 
 export type VideoTransitionOut = {
-	duration: number;
-	kind: 'cut' | 'fade';
+  duration: number;
+  kind: 'cut' | 'fade';
 };
 
 export class Manifest {
-	readonly projectName: string | undefined;
-	videoTrack: VideoTrack;
-	audioTrack: AudioTrack;
+  readonly projectName: string | undefined;
+  videoTrack: VideoTrack;
+  audioTrack: AudioTrack;
 
-	constructor({
-		projectName,
-		videoTrack,
-		audioTrack
-	}: {
-		projectName: string | undefined;
-		videoTrack: VideoTrack;
-		audioTrack: AudioTrack;
-	}) {
-		this.projectName = projectName;
-		this.videoTrack = $state(videoTrack);
-		this.audioTrack = $state(audioTrack);
-	}
+  constructor({
+    projectName,
+    videoTrack,
+    audioTrack,
+  }: {
+    projectName: string | undefined;
+    videoTrack: VideoTrack;
+    audioTrack: AudioTrack;
+  }) {
+    this.projectName = projectName;
+    this.videoTrack = $state(videoTrack);
+    this.audioTrack = $state(audioTrack);
+  }
 
-	static createEmpty() {
-		return new Manifest({
-			projectName: undefined,
-			videoTrack: VideoTrack.createEmpty(),
-			audioTrack: AudioTrack.createEmpty()
-		});
-	}
+  static createEmpty() {
+    return new Manifest({
+      projectName: undefined,
+      videoTrack: VideoTrack.createEmpty(),
+      audioTrack: AudioTrack.createEmpty(),
+    });
+  }
+
+  toRaw(): ManifestRaw {
+    return {
+      videoTrack: this.videoTrack.toRaw(),
+      audioTrack: this.audioTrack.toRaw(),
+    };
+  }
 }
 
 export class VideoTrack {
-	clips: VideoClip[];
-	videos: Record<VideoId, VideoFilename>;
-	transitionOut: VideoTransitionOut | undefined;
-	effects: VideoEffects;
+  clips: VideoClip[];
+  videos: Record<VideoId, VideoFilename>;
+  transitionOut: VideoTransitionOut | undefined;
+  effects: VideoEffects;
 
-	constructor({
-		clips,
-		videos,
-		transitionOut,
-		effects
-	}: {
-		clips: VideoClip[];
-		videos: Record<VideoId, VideoFilename>;
-		transitionOut: VideoTransitionOut | undefined;
-		effects: VideoEffects;
-	}) {
-		this.clips = $state(clips);
-		this.videos = $state(videos);
-		this.transitionOut = $state(transitionOut);
-		this.effects = $state(effects);
-	}
+  constructor({
+    clips,
+    videos,
+    transitionOut,
+    effects,
+  }: {
+    clips: VideoClip[];
+    videos: Record<VideoId, VideoFilename>;
+    transitionOut: VideoTransitionOut | undefined;
+    effects: VideoEffects;
+  }) {
+    this.clips = $state(clips);
+    this.videos = $state(videos);
+    this.transitionOut = $state(transitionOut);
+    this.effects = $state(effects);
+  }
 
-	static createEmpty(): VideoTrack {
-		return new VideoTrack({
-			clips: [],
-			videos: {},
-			transitionOut: undefined,
-			effects: VideoEffects.createEmpty()
-		});
-	}
+  static createEmpty(): VideoTrack {
+    return new VideoTrack({
+      clips: [],
+      videos: {},
+      transitionOut: undefined,
+      effects: VideoEffects.createEmpty(),
+    });
+  }
 
-	addVideo(filename: string) {
-		if (this.videos[filename] != null) {
-			return;
-		}
-		this.videos[filename] = filename;
-	}
+  addVideo(filename: string) {
+    if (this.videos[filename] != null) {
+      return;
+    }
+    this.videos[filename] = filename;
+  }
 
-	removeVideo(filename: string) {
-		delete this.videos[filename];
-	}
+  removeVideo(filename: string) {
+    delete this.videos[filename];
+  }
 
-	getVideoFilenames() {
-		return Object.values(this.videos);
-	}
+  getVideoFilenames() {
+    return Object.values(this.videos);
+  }
 
-	addClip(filename: string, path: string) {
-		if (this.findClip(filename)) {
-			return;
-		}
-		this.clips.push(VideoClip.createFromPath({ videoId: filename, videoPath: path }));
-	}
+  addClip(filename: string, path: string) {
+    if (this.findClip(filename)) {
+      return;
+    }
+    this.clips.push(
+      VideoClip.createFromPath({ videoId: filename, videoPath: path }),
+    );
+  }
 
-	removeClip(id: VideoId) {
-		this.clips = this.clips.filter((clip) => clip.videoId !== id);
-	}
+  removeClip(id: VideoId) {
+    this.clips = this.clips.filter((clip) => clip.videoId !== id);
+  }
 
-	getClip(id: VideoId): VideoClip {
-		return Precondition.checkExists(this.findClip(id));
-	}
+  getClip(id: VideoId): VideoClip {
+    return Precondition.checkExists(this.findClip(id));
+  }
 
-	findClip(id: VideoId) {
-		return this.clips.find((clip) => clip.videoId === id);
-	}
+  findClip(id: VideoId) {
+    return this.clips.find((clip) => clip.videoId === id);
+  }
 
-	moveLeft(id: VideoId) {
-		const index = this.clips.findIndex((clip) => clip.videoId === id);
-		if (index === 0) {
-			return;
-		}
-		const leftIndex = index - 1;
-		const temp = this.clips[index];
-		this.clips[index] = this.clips[leftIndex];
-		this.clips[leftIndex] = temp;
-	}
+  moveLeft(id: VideoId) {
+    const index = this.clips.findIndex((clip) => clip.videoId === id);
+    if (index === 0) {
+      return;
+    }
+    const leftIndex = index - 1;
+    const temp = this.clips[index];
+    this.clips[index] = this.clips[leftIndex];
+    this.clips[leftIndex] = temp;
+  }
 
-	moveRight(id: VideoId) {
-		const index = this.clips.findIndex((clip) => clip.videoId === id);
-		if (index > this.clips.length - 1) {
-			return;
-		}
-		const rightIndex = index + 1;
-		const temp = this.clips[index];
-		this.clips[index] = this.clips[rightIndex];
-		this.clips[rightIndex] = temp;
-	}
+  moveRight(id: VideoId) {
+    const index = this.clips.findIndex((clip) => clip.videoId === id);
+    if (index > this.clips.length - 1) {
+      return;
+    }
+    const rightIndex = index + 1;
+    const temp = this.clips[index];
+    this.clips[index] = this.clips[rightIndex];
+    this.clips[rightIndex] = temp;
+  }
+
+  toRaw(): VideoTrackRaw {
+    return {
+      clips: this.clips.map((clip) => clip.toRaw()),
+      videos: this.videos,
+      effects: this.effects.toRaw(),
+      transitionOut:
+        (this.transitionOut?.duration ?? 0) > 0
+          ? this.transitionOut
+          : undefined,
+    };
+  }
 }
 
 export class VideoClip {
-	readonly videoId: VideoId;
-	readonly videoPath: VideoFilepath;
-	offsetX: number | string | undefined;
-	offsetY: number | string | undefined;
-	rate: number | undefined;
-	trimEnd: number | undefined;
-	transitionOut: VideoTransitionOut | undefined;
-	effects: VideoEffects | undefined;
+  readonly videoId: VideoId;
+  readonly videoPath: VideoFilepath;
+  offsetX: number | string | undefined;
+  offsetY: number | string | undefined;
+  rate: number | undefined;
+  trimEnd: number | undefined;
+  transitionOut: VideoTransitionOut | undefined;
+  effects: VideoEffects | undefined;
 
-	constructor(args: {
-		videoId: VideoId;
-		videoPath: VideoFilepath;
-		offsetX: number | string | undefined;
-		offsetY: number | string | undefined;
-		rate: number | undefined;
-		trimEnd: number | undefined;
-		transitionOut: VideoTransitionOut | undefined;
-		effects: VideoEffects | undefined;
-	}) {
-		this.videoId = args.videoId;
-		this.videoPath = args.videoPath;
-		this.offsetX = $state(args.offsetX);
-		this.offsetY = $state(args.offsetY);
-		this.rate = $state(args.rate);
-		this.trimEnd = $state(args.trimEnd);
-		this.transitionOut = $state(args.transitionOut);
-		this.effects = $state(args.effects);
-	}
+  constructor(args: {
+    videoId: VideoId;
+    videoPath: VideoFilepath;
+    offsetX: number | string | undefined;
+    offsetY: number | string | undefined;
+    rate: number | undefined;
+    trimEnd: number | undefined;
+    transitionOut: VideoTransitionOut | undefined;
+    effects: VideoEffects | undefined;
+  }) {
+    this.videoId = args.videoId;
+    this.videoPath = args.videoPath;
+    this.offsetX = $state(args.offsetX);
+    this.offsetY = $state(args.offsetY);
+    this.rate = $state(args.rate);
+    this.trimEnd = $state(args.trimEnd);
+    this.transitionOut = $state(args.transitionOut);
+    this.effects = $state(args.effects);
+  }
 
-	static createFromPath({ videoId, videoPath }: { videoId: VideoId; videoPath: VideoFilepath }) {
-		return new VideoClip({
-			videoId,
-			videoPath,
-			offsetX: undefined,
-			offsetY: undefined,
-			rate: undefined,
-			trimEnd: undefined,
-			transitionOut: undefined,
-			effects: undefined
-		});
-	}
+  static createFromPath({
+    videoId,
+    videoPath,
+  }: {
+    videoId: VideoId;
+    videoPath: VideoFilepath;
+  }) {
+    return new VideoClip({
+      videoId,
+      videoPath,
+      offsetX: undefined,
+      offsetY: undefined,
+      rate: undefined,
+      trimEnd: undefined,
+      transitionOut: undefined,
+      effects: undefined,
+    });
+  }
+
+  toRaw(): VideoClipRaw {
+    return {
+      videoId: this.videoId,
+      rate: this.rate,
+      offsetX: this.offsetX,
+      offsetY: this.offsetY,
+      trimEnd: this.trimEnd,
+    };
+  }
 }
 
 export class VideoEffects {
-	tint: string | undefined;
-	vignette: boolean | undefined;
-	grain: number | undefined;
-	blur: number | undefined;
+  tint: string | undefined;
+  vignette: boolean | undefined;
+  grain: number | undefined;
+  blur: number | undefined;
 
-	constructor(args: { tint?: string; vignette?: boolean; grain?: number; blur?: number }) {
-		this.tint = $state(args.tint);
-		this.vignette = $state(args.vignette);
-		this.grain = $state(args.grain);
-		this.blur = $state(args.blur);
-	}
+  constructor(args: {
+    tint?: string;
+    vignette?: boolean;
+    grain?: number;
+    blur?: number;
+  }) {
+    this.tint = $state(args.tint);
+    this.vignette = $state(args.vignette);
+    this.grain = $state(args.grain);
+    this.blur = $state(args.blur);
+  }
 
-	static createEmpty(): VideoEffects {
-		return new VideoEffects({
-			tint: undefined,
-			vignette: undefined,
-			grain: undefined,
-			blur: undefined
-		});
-	}
+  static createEmpty(): VideoEffects {
+    return new VideoEffects({
+      tint: undefined,
+      vignette: undefined,
+      grain: undefined,
+      blur: undefined,
+    });
+  }
+
+  toRaw(): VideoEffectsRaw {
+    return {
+      tint: this.tint,
+      vignette: this.vignette,
+      grain: this.grain,
+      blur: this.blur,
+    };
+  }
 }
 
 type AudioId = string;
@@ -198,25 +257,44 @@ type AudioFilename = string;
 type AudioFilepath = string;
 
 export class AudioTrack {
-	clips: AudioClip[];
-	audios: Record<AudioId, AudioFilename>;
+  clips: AudioClip[];
+  audios: Record<AudioId, AudioFilename>;
 
-	constructor({ clips, audios }: { clips: AudioClip[]; audios: Record<AudioId, AudioFilename> }) {
-		this.clips = $state(clips);
-		this.audios = $state(audios);
-	}
+  constructor({
+    clips,
+    audios,
+  }: {
+    clips: AudioClip[];
+    audios: Record<AudioId, AudioFilename>;
+  }) {
+    this.clips = $state(clips);
+    this.audios = $state(audios);
+  }
 
-	static createEmpty() {
-		return new AudioTrack({ clips: [], audios: {} });
-	}
+  static createEmpty() {
+    return new AudioTrack({ clips: [], audios: {} });
+  }
+
+  toRaw(): AudioTrackRaw {
+    return {
+      clips: this.clips.map((clip) => clip.toRaw()),
+      audios: this.audios,
+    };
+  }
 }
 
 export class AudioClip {
-	readonly audioId: AudioId;
-	readonly audioPath: AudioFilepath;
+  readonly audioId: AudioId;
+  readonly audioPath: AudioFilepath;
 
-	constructor(args: { audioId: AudioId; audioPath: AudioFilepath }) {
-		this.audioId = args.audioId;
-		this.audioPath = args.audioPath;
-	}
+  constructor(args: { audioId: AudioId; audioPath: AudioFilepath }) {
+    this.audioId = args.audioId;
+    this.audioPath = args.audioPath;
+  }
+
+  toRaw(): AudioClipRaw {
+    return {
+      audioId: this.audioId,
+    };
+  }
 }

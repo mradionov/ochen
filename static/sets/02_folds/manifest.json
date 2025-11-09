@@ -1,9 +1,5 @@
 {
   "videoTrack": {
-    "transitionOut": {
-      "duration": 0,
-      "kind": "cut"
-    },
     "clips": [
       {
         "videoId": "IMG_0644.MOV",
@@ -16,6 +12,9 @@
     "videos": {
       "IMG_0644.MOV": "IMG_0644.MOV",
       "IMG_0651.MOV": "IMG_0651.MOV"
+    },
+    "effects": {
+      "tint": "#ff1a1a"
     }
   },
   "audioTrack": {
