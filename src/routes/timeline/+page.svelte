@@ -158,8 +158,8 @@
           player={videoPlayer}
           nextPlayer={nextVideoPlayer}
           effects={manifest.videoTrack.effects}
-          width={400}
-          height={400}
+          width={500}
+          height={500}
         />
       {/if}
     </div>

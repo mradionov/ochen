@@ -220,17 +220,20 @@ export class VideoEffects {
   vignette: boolean | undefined;
   grain: number | undefined;
   blur: number | undefined;
+  edge: boolean | undefined;
 
   constructor(args: {
     tint?: string;
     vignette?: boolean;
     grain?: number;
     blur?: number;
+    edge?: boolean;
   }) {
     this.tint = $state(args.tint);
     this.vignette = $state(args.vignette);
     this.grain = $state(args.grain);
     this.blur = $state(args.blur);
+    this.edge = $state(args.edge);
   }
 
   static createEmpty(): VideoEffects {
@@ -239,6 +242,7 @@ export class VideoEffects {
       vignette: undefined,
       grain: undefined,
       blur: undefined,
+      edge: undefined,
     });
   }
 
@@ -248,6 +252,7 @@ export class VideoEffects {
       vignette: this.vignette,
       grain: this.grain,
       blur: this.blur,
+      edge: this.edge,
     };
   }
 }

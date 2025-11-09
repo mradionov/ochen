@@ -13,11 +13,12 @@ export type VideoTrackRaw = {
   videos: Record<string, string>;
 };
 
-type VideoEffectsRaw = {
+export type VideoEffectsRaw = {
   tint?: string;
   vignette?: boolean;
   grain?: number;
   blur?: number;
+  edge?: boolean;
 };
 
 type VideoTransitionOutRaw = {

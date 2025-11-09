@@ -14,7 +14,8 @@
       "IMG_0651.MOV": "IMG_0651.MOV"
     },
     "effects": {
-      "tint": "#ff1a1a"
+      "tint": "#ff1a1a",
+      "edge": true
     }
   },
   "audioTrack": {

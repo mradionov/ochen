@@ -1,54 +1,14 @@
 import type { VideoPlayer } from '$lib/video/video_player';
-import { hexToRgb } from '$lib/color';
 import type { VideoEffects } from '$lib/manifest/manifest.svelte';
 import { Precondition } from '$lib/precondition';
+import { TintEffect } from './effects/tint';
+import type { Effect } from './effect';
+import type { RendererImageSource } from './image_source';
+import { EdgeEffect } from './effects/edge';
 
-type RendererImageSource = (
-  | {
-      source(): HTMLVideoElement;
-    }
-  | {
-      source(): ImageBitmap;
-    }
-) & {
-  width(): number;
-  height(): number;
-};
-
-export class ImageBitmapSource {
-  constructor(private readonly imageBitmap: ImageBitmap) {}
-
-  source() {
-    return this.imageBitmap;
-  }
-
-  width() {
-    return this.imageBitmap.width;
-  }
-
-  height() {
-    return this.imageBitmap.height;
-  }
-}
-
-export class VideoImageSource {
-  constructor(private readonly video: HTMLVideoElement) {}
-
-  source() {
-    return this.video;
-  }
-
-  width() {
-    return this.video.videoWidth;
-  }
-
-  height() {
-    return this.video.videoHeight;
-  }
-}
-
-export class VideoRenderer {
+export class Renderer {
   private readonly ctx: CanvasRenderingContext2D;
+  private readonly effectMap: Record<string, Effect<unknown>>;
 
   private constructor(readonly canvas: HTMLCanvasElement) {
     this.ctx = Precondition.checkExists(
@@ -56,6 +16,11 @@ export class VideoRenderer {
         willReadFrequently: true,
       }),
     );
+
+    this.effectMap = {
+      edge: new EdgeEffect(),
+      tint: new TintEffect(),
+    };
   }
 
   // TODO: async
@@ -63,11 +28,11 @@ export class VideoRenderer {
     const canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
-    return new VideoRenderer(canvas);
+    return new Renderer(canvas);
   }
 
   static createFromCanvas(canvas: HTMLCanvasElement) {
-    return new VideoRenderer(canvas);
+    return new Renderer(canvas);
   }
 
   private get width() {
@@ -100,9 +65,9 @@ export class VideoRenderer {
     // const { timelineClip } = player;
     // const { effects, transitionOut } = player.timelineClip.clip;
 
-    if (effects?.blur != null) {
-      this.ctx.filter = `blur(${effects.blur}px)`;
-    }
+    // if (effects?.blur != null) {
+    //   this.ctx.filter = `blur(${effects.blur}px)`;
+    // }
 
     // const unratedTransitionDuration = transitionOut.duration * timelineClip.rate;
     // const transitionStart =
@@ -146,42 +111,25 @@ export class VideoRenderer {
     // 	this.ctx.globalAlpha = 1;
     // }
 
-    if (effects?.tint) {
-      this.applyTint(effects.tint);
+    if (effects) {
+      this.applyEffects(effects);
     }
-
-    if (effects?.vignette) {
-      this.applyVignette();
-    }
-
-    if (effects?.grain != null) {
-      this.applyGrain(effects.grain);
-    }
-
-    // if (effects.haze) {
-    //   applyHaze(ctx);
-    // }
   }
 
-  private applyTint(tint: string) {
-    const imageData = this.ctx.getImageData(0, 0, this.width, this.height);
-    const tintRGB = hexToRgb(tint);
-
-    const data = imageData.data;
-
-    for (let i = 0; i < data.length; i += 4) {
-      const r = data[i];
-      const g = data[i + 1];
-      const b = data[i + 2];
-
-      const gray = r * 0.299 + g * 0.587 + b * 0.114;
-
-      data[i] = tintRGB.r * (gray / 255);
-      data[i + 1] = (tintRGB.g * gray) / 255;
-      data[i + 2] = (tintRGB.b * gray) / 255;
-    }
-
-    this.ctx.putImageData(imageData, 0, 0);
+  private applyEffects(effects: VideoEffects) {
+    Object.keys(this.effectMap).forEach((effectKey) => {
+      const effectConfig = effects[effectKey];
+      if (effectConfig == null) {
+        return;
+      }
+      const effect = this.effectMap[effectKey];
+      const effectContext = {
+        ctx: this.ctx,
+        width: this.width,
+        height: this.height,
+      };
+      effect.apply(effectContext, effectConfig);
+    });
   }
 
   private applyVignette() {
@@ -217,64 +165,6 @@ export class VideoRenderer {
     this.ctx.fillRect(0, 0, this.width, this.height);
   }
 
-  private applyEdges(
-    imageData: ImageData,
-    options: {
-      kernel?: 'prewitt' | 'laplacian' | 'sobel';
-      threshold?: number;
-    } = {},
-  ) {
-    const { width, height, data } = imageData;
-
-    const srcData = data;
-
-    const gray = new Uint8ClampedArray(width * height);
-    for (let i = 0; i < width * height; i++) {
-      const r = srcData[i * 4];
-      const g = srcData[i * 4 + 1];
-      const b = srcData[i * 4 + 2];
-      gray[i] = 0.3 * r + 0.59 * g + 0.11 * b;
-    }
-
-    let gx, gy;
-    switch (options.kernel) {
-      case 'prewitt':
-        gx = [-1, 0, 1, -1, 0, 1, -1, 0, 1];
-        gy = [-1, -1, -1, 0, 0, 0, 1, 1, 1];
-        break;
-      case 'laplacian':
-        gx = [0, 1, 0, 1, -4, 1, 0, 1, 0];
-        gy = [0, 1, 0, 1, -4, 1, 0, 1, 0];
-        break;
-      case 'sobel':
-      default:
-        gx = [-1, 0, 1, -2, 0, 2, -1, 0, 1];
-        gy = [-1, -2, -1, 0, 0, 0, 1, 2, 1];
-    }
-
-    for (let y = 1; y < height - 1; y++) {
-      for (let x = 1; x < width - 1; x++) {
-        let px = 0,
-          py = 0;
-        for (let ky = -1; ky <= 1; ky++) {
-          for (let kx = -1; kx <= 1; kx++) {
-            const val = gray[(y + ky) * width + (x + kx)];
-            const k = (ky + 1) * 3 + (kx + 1);
-            px += gx[k] * val;
-            py += gy[k] * val;
-          }
-        }
-        let mag = Math.sqrt(px * px + py * py);
-        if (options.threshold != null) {
-          mag = mag > options.threshold ? mag : 0;
-        }
-        const i = (y * width + x) * 4;
-        data[i] = data[i + 1] = data[i + 2] = mag;
-        data[i + 3] = 255;
-      }
-    }
-  }
-
   private getBox(
     imageSource: RendererImageSource,
     offset: {
@@ -301,8 +191,8 @@ export class VideoRenderer {
     const srcWidth = imageSource.width();
     const srcHeight = imageSource.height();
 
-    const surfaceWidth = this.canvas.width;
-    const surfaceHeight = this.canvas.height;
+    const surfaceWidth = this.width;
+    const surfaceHeight = this.height;
 
     const sourceToCanvasRatio =
       srcHeight > srcWidth

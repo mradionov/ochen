@@ -1,10 +1,11 @@
 <script lang="ts">
   import type { VideoPlayer } from '$lib/video/video_player';
   import { getContext, onMount } from 'svelte';
-  import { VideoImageSource, VideoRenderer } from '$lib/video/video_renderer';
+  import { Renderer } from '$lib/renderer/renderer';
   import { RenderLoop } from '$lib/render_loop';
   import { RenderLoopKey } from '$lib/di';
   import type { VideoEffects } from '$lib/manifest/manifest.svelte';
+  import { VideoImageSource } from '$lib/renderer/image_source';
 
   const renderLoop = getContext<RenderLoop>(RenderLoopKey);
 
@@ -15,10 +16,10 @@
   export let height: number = 800;
 
   let canvasElement: HTMLCanvasElement;
-  let renderer: VideoRenderer;
+  let renderer: Renderer;
 
   onMount(() => {
-    renderer = VideoRenderer.createFromCanvas(canvasElement);
+    renderer = Renderer.createFromCanvas(canvasElement);
 
     renderLoop.tick.addListener(() => {
       player.updateFrame();

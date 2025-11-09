@@ -1,18 +1,16 @@
 import { TaskQueue } from '$lib/task_queue';
-import type { VideoResolver } from '$lib/video/video_resolver';
-import type { VideoTimelineClip } from '$lib/video/video_timeline.svelte';
 import { VideoPlayer } from '$lib/video/video_player';
-import {
-  ImageBitmapSource,
-  VideoImageSource,
-  VideoRenderer,
-} from '$lib/video/video_renderer';
+import { Renderer } from '$lib/renderer/renderer';
 import type { VideoEffects } from '$lib/manifest/manifest.svelte';
+import {
+  VideoImageSource,
+  ImageBitmapSource,
+} from '$lib/renderer/image_source';
 
 export class VideoPreview {
   constructor(
     readonly player: VideoPlayer,
-    readonly renderer: VideoRenderer,
+    readonly renderer: Renderer,
     readonly posterImageSource: ImageBitmapSource,
   ) {}
 
@@ -45,7 +43,7 @@ export class VideoPreviewFactory {
         trimmedDuration,
       });
 
-      const renderer = VideoRenderer.createFromSize({
+      const renderer = Renderer.createFromSize({
         width: 200,
         height: 200,
       });
