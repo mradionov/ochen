@@ -4,8 +4,8 @@
   import { ManifestReader } from '$lib/manifest/manifest_reader';
   import { VideoResolver } from '$lib/video/video_resolver';
   import { AudioResolverKey, ProjectsControllerKey, RenderLoopKey, VideoResolverKey } from '$lib/di';
-  import { VideoTimeline } from '$lib/video/video_timeline';
-  import type { VideoTimelineClip } from '$lib/video/video_timeline';
+  import { VideoTimeline } from '$lib/video/video_timeline.svelte';
+  import type { VideoTimelineClip } from '$lib/video/video_timeline.svelte';
   import AudioTrack from './audio_track.svelte';
   import { AudioResolver } from '$lib/audio/audio_resolver';
   import { AudioTimeline } from '$lib/audio/audio_timeline';
@@ -17,7 +17,7 @@
   import { RenderLoop } from '$lib/render_loop';
   import { TimelineClock } from '$lib/timeline_clock';
   import type { VideoPlayer } from '$lib/video/video_player';
-  import VideoRender from '$lib/video/video_render.svelte';
+  import VideoRendererSurface from '$lib/video/video_renderer_surface.svelte';
   import VideoInfo from './video_info.svelte';
   import { Manifest } from '$lib/manifest/manifest.svelte';
   import ManifestSaveButton from '$lib/manifest/manifest_save_button.svelte';
@@ -138,7 +138,7 @@
   <div class='split'>
     <div class='column'>
       {#if videoPlayer}
-        <VideoRender
+        <VideoRendererSurface
           player={videoPlayer}
           nextPlayer={nextVideoPlayer}
           width={400}

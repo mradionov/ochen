@@ -1,12 +1,11 @@
-<script lang='ts'>
+<script lang="ts">
   import { getContext, onMount } from 'svelte';
   import { ManifestReader } from '$lib/manifest/manifest_reader';
   import { ProjectsControllerKey, VideoResolverKey } from '$lib/di';
-  import { VideoTimeline } from '$lib/video/video_timeline';
-  import type { VideoTimelineClip } from '$lib/video/video_timeline';
+  import { VideoTimeline } from '$lib/video/video_timeline.svelte';
+  import type { VideoTimelineClip } from '$lib/video/video_timeline.svelte';
   import { VideoResolver } from '$lib/video/video_resolver';
   import { toMinutesString } from '$lib/time_utils';
-  import ImportedItem from './imported_item.svelte';
   import UnimportedItem from './unimported_item.svelte';
   import { ProjectsController } from '$lib/projects/projects_controller';
   import type { SourceVideoFile } from '$lib/projects/projects_controller';
@@ -14,23 +13,24 @@
   import { Manifest } from '$lib/manifest/manifest.svelte';
   import ClipItem from './clip_item.svelte';
 
-  const projectsController = getContext<ProjectsController>(ProjectsControllerKey);
+  const projectsController = getContext<ProjectsController>(
+    ProjectsControllerKey,
+  );
   const videoResolver = getContext<VideoResolver>(VideoResolverKey);
 
   let manifest = $state<Manifest>(Manifest.createEmpty());
 
-  console.log({ manifest });
-
   let importedNames = $derived(manifest.videoTrack.getVideoFilenames());
   let sourceVideoFiles = $state<SourceVideoFile[]>([]);
-  let importedVideoFiles = $derived(sourceVideoFiles.filter(file => importedNames.includes(file.name)));
-  let unimportedVideoFiles = $derived(sourceVideoFiles.filter(file => !importedNames.includes(file.name)));
+  let unimportedVideoFiles = $derived(
+    sourceVideoFiles.filter((file) => !importedNames.includes(file.name)),
+  );
 
   let timeline = $state(new VideoTimeline(manifest, videoResolver));
   let timelineClips = $derived(timeline.getTimelineClips());
 
   let totalDuration = $derived(timeline.getTotalDuration());
-  let tint = $derived(manifest.videoTrack.effects?.tint);
+  let tint: string | undefined = $state(undefined);
 
   onMount(async () => {
     const projectName = await projectsController.fetchActiveProjectName();
@@ -42,7 +42,16 @@
     await videoResolver.loadMetadata(manifest.videoTrack.clips);
 
     timeline = new VideoTimeline(manifest, videoResolver);
+
+    tint = manifest.videoTrack.effects?.tint;
   });
+
+  function handleTintChange(
+    event: Event & { currentTarget: EventTarget & HTMLInputElement },
+  ) {
+    const tintHex = event.currentTarget?.value;
+    manifest.videoTrack.effects.tint = tintHex;
+  }
 
   function handleMoveLeft(timelineClip: VideoTimelineClip) {
     manifest.videoTrack.moveLeft(timelineClip.videoId);
@@ -64,10 +73,10 @@
 </script>
 
 <div>
-  <ManifestSaveButton manifest={manifest} />
+  <ManifestSaveButton {manifest} />
 
   <div>total duration: {toMinutesString(totalDuration)}</div>
-  <input type='color' bind:value={tint} />
+  <input type="color" value={tint} onchange={handleTintChange} />
 
   <hr />
 
@@ -77,7 +86,7 @@
 
     {#each timelineClips as timelineClip (timelineClip.videoId)}
       <ClipItem
-        timelineClip={timelineClip}
+        {timelineClip}
         onMoveLeft={() => handleMoveLeft(timelineClip)}
         onMoveRight={() => handleMoveRight(timelineClip)}
         onRemove={() => handleRemoveClip(timelineClip)}
@@ -99,8 +108,10 @@
     <h4>Unimported</h4>
     <hr />
     {#each unimportedVideoFiles as sourceVideoFile (sourceVideoFile.name)}
-      <UnimportedItem sourceVideoFile={sourceVideoFile} onImport={() => handleImport(sourceVideoFile)} />
+      <UnimportedItem
+        {sourceVideoFile}
+        onImport={() => handleImport(sourceVideoFile)}
+      />
     {/each}
   {/if}
-
 </div>

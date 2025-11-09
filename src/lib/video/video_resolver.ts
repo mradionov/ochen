@@ -32,9 +32,9 @@ export class VideoResolver {
 		return video;
 	}
 
-	createVideoElement(ref: VideoRef): HTMLVideoElement {
+	createVideoElement(videoPath: string): HTMLVideoElement {
 		const element = document.createElement('video');
-		element.src = ref.videoPath;
+		element.src = videoPath;
 		return element;
 	}
 

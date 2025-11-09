@@ -4,15 +4,17 @@
   import { VideoRenderer } from '$lib/video/video_renderer';
   import { RenderLoop } from '$lib/render_loop';
   import { RenderLoopKey } from '$lib/di';
+  import type { VideoEffects } from '$lib/manifest/manifest.svelte';
 
   const renderLoop = getContext<RenderLoop>(RenderLoopKey);
 
   export let player: VideoPlayer;
-  export let nextPlayer: VideoPlayer | undefined;
+  export let effects: VideoEffects | undefined = undefined;
+  export let nextPlayer: VideoPlayer | undefined = undefined;
   export let width: number = 800;
   export let height: number = 800;
 
-  let canvasElement: HTMLCanvasElement;
+  // let canvasElement: HTMLCanvasElement;
   let renderer: VideoRenderer;
 
   onMount(() => {

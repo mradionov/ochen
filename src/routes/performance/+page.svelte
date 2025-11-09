@@ -1,13 +1,13 @@
 <script lang='ts'>
   import { getContext, onMount } from 'svelte';
   import { ManifestReader } from '$lib/manifest/manifest_reader';
-  import VideoRender from '$lib/video/video_render.svelte';
+  import VideoRendererSurface from '$lib/video/video_renderer_surface.svelte';
   import { AudioResolverKey, ProjectsControllerKey, VideoResolverKey } from '$lib/di';
   import { VideoPlayer } from '$lib/video/video_player';
   import { VideoProducer } from '$lib/video/video_producer';
   import { VideoResolver } from '$lib/video/video_resolver';
   import { AudioResolver } from '$lib/audio/audio_resolver';
-  import { VideoTimeline } from '$lib/video/video_timeline';
+  import { VideoTimeline } from '$lib/video/video_timeline.svelte';
   import { AudioTimeline } from '$lib/audio/audio_timeline';
   import { AudioProducer } from '$lib/audio/audio_producer';
   import { ProjectsController } from '$lib/projects/projects_controller';
@@ -82,7 +82,7 @@
   <hr />
   <div class='content' bind:this={contentElement}>
     {#if videoPlayer}
-      <VideoRender
+      <VideoRendererSurface
         player={videoPlayer}
         nextPlayer={nextVideoPlayer}
         width={800}

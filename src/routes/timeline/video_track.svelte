@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import type { VideoTimelineClip } from '$lib/video/video_timeline';
+  import type { VideoTimelineClip } from '$lib/video/video_timeline.svelte';
   import VideoClip from './video_clip.svelte';
 
   export let timelineClips: VideoTimelineClip[];

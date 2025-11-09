@@ -1,4 +1,4 @@
-import type { VideoTimeline } from '$lib/video/video_timeline';
+import type { VideoTimeline } from '$lib/video/video_timeline.svelte';
 import type { VideoResolver } from '$lib/video/video_resolver';
 import { VideoPlayer } from '$lib/video/video_player';
 import { Subject } from '$lib/subject';
@@ -102,14 +102,14 @@ export class VideoProducer {
 			}
 		} else {
 			this.maybeDestroyNextPlayer();
-			this.currentPlayer = VideoPlayer.create(newCurrentTimelineClip, this.videoResolver);
+			this.currentPlayer = VideoPlayer.createFromClip(newCurrentTimelineClip, this.videoResolver);
 		}
 
 		this.currentPlayer.ended.addListenerOnce(this.onPlayerEnded);
 		this.currentIndex = newCurrentIndex;
 
 		if (newNextTimelineClip) {
-			this.nextPlayer = VideoPlayer.create(newNextTimelineClip, this.videoResolver);
+			this.nextPlayer = VideoPlayer.createFromClip(newNextTimelineClip, this.videoResolver);
 		}
 
 		this.playerChanged.emit({ player: this.currentPlayer, nextPlayer: this.nextPlayer });

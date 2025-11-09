@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import type { VideoTimelineClip } from '$lib/video/video_timeline';
+  import type { VideoTimelineClip } from '$lib/video/video_timeline.svelte';
 
   export let timelineClip: VideoTimelineClip;
   export let maxDuration: number;

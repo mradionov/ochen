@@ -25,9 +25,11 @@ export class VideoTimeline {
 		private readonly videoResolver: VideoResolver
 	) {}
 
-	get clips() {
-		return this.manifest.videoTrack.clips;
-	}
+	getClips = $derived(() => this.manifest.videoTrack.clips);
+
+	// get clips() {
+	// 	return this.manifest.videoTrack.clips;
+	// }
 
 	findClipByTime(time: number): VideoTimelineClip | undefined {
 		return this.getTimelineClips().find((timelineClip) => {
@@ -36,11 +38,11 @@ export class VideoTimeline {
 	}
 
 	getTimelineClips(): VideoTimelineClip[] {
-		return this.clips.map((clip) => this.getTimelineClip(clip.videoId));
+		return this.getClips().map((clip) => this.getTimelineClip(clip.videoId));
 	}
 
 	getClip(id: VideoId): VideoClip {
-		return Precondition.checkExists(this.clips.find((clip) => clip.videoId === id));
+		return Precondition.checkExists(this.getClips().find((clip) => clip.videoId === id));
 	}
 
 	getTimelineClip(id: VideoId): VideoTimelineClip {
@@ -61,11 +63,11 @@ export class VideoTimeline {
 	}
 
 	getIndex(id: VideoId): number {
-		return this.clips.findIndex((clip) => clip.videoId === id);
+		return this.getClips().findIndex((clip) => clip.videoId === id);
 	}
 
 	isFirst(id: VideoId): boolean {
-		const firstClip = this.clips[0];
+		const firstClip = this.getClips()[0];
 		if (!firstClip) {
 			return false;
 		}
@@ -73,7 +75,7 @@ export class VideoTimeline {
 	}
 
 	isLast(id: VideoId): boolean {
-		const lastClip = this.clips[this.clips.length - 1];
+		const lastClip = this.getClips()[this.getClips().length - 1];
 		if (!lastClip) {
 			return false;
 		}
@@ -82,7 +84,7 @@ export class VideoTimeline {
 
 	getStart(id: VideoId): number {
 		let duration = 0;
-		for (const clip of this.clips) {
+		for (const clip of this.getClips()) {
 			if (clip.videoId === id) {
 				break;
 			}
@@ -126,7 +128,7 @@ export class VideoTimeline {
 	}
 
 	getTotalDuration(): number {
-		return this.clips
+		return this.getClips()
 			.map((clip) => this.getDuration(clip.videoId))
 			.reduce((duration, totalDuration) => {
 				return totalDuration + duration;

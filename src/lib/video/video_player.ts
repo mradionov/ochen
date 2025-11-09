@@ -1,75 +1,108 @@
-import type { VideoResolver } from '$lib/video/video_resolver';
 import { Subject } from '$lib/subject';
-import type { VideoTimelineClip } from '$lib/video/video_timeline';
+import { defaults } from '$lib/defaults';
+
+type VideoPlayerOptions = {
+  rate?: number;
+  trimmedDuration?: number;
+};
+
+const defaultOptions: VideoPlayerOptions = {
+  rate: 1,
+  trimmedDuration: undefined,
+};
 
 export class VideoPlayer {
-	readonly ended = new Subject<void>();
-	private _isPlaying = false;
+  readonly element: HTMLVideoElement;
+  readonly options: VideoPlayerOptions;
+  readonly ended = new Subject<void>();
+  private _isPlaying = false;
+  private _isDestroyed = false;
 
-	private constructor(
-		readonly element: HTMLVideoElement,
-		readonly timelineClip: VideoTimelineClip
-	) {
-		element.addEventListener('ended', this.onElementEnded);
-	}
+  constructor(
+    private readonly path: string,
+    argOptions: VideoPlayerOptions = {},
+  ) {
+    this.options = defaults(defaultOptions, argOptions);
 
-	static create(timelineClip: VideoTimelineClip, videoResolver: VideoResolver) {
-		console.log('VideoPlayer.create', timelineClip);
-		const element = videoResolver.createVideoElement(timelineClip.clip);
-		element.playbackRate = timelineClip.rate;
-		element.muted = true;
-		element.currentTime = 0.01;
-		return new VideoPlayer(element, timelineClip);
-	}
+    this.element = document.createElement('video');
+    this.load();
+  }
 
-	get isPlaying() {
-		return this._isPlaying;
-	}
+  get isPlaying() {
+    return this._isPlaying;
+  }
 
-	play() {
-		if (this._isPlaying) {
-			return;
-		}
-		this._isPlaying = true;
-		void this.element.play();
-	}
+  get isDestroyed() {
+    return this._isDestroyed;
+  }
 
-	pause() {
-		if (!this._isPlaying) {
-			return;
-		}
-		this._isPlaying = false;
-		this.element.pause();
-	}
+  async play() {
+    if (this.isDestroyed) {
+      this.load();
+      this._isDestroyed = false;
+    }
 
-	seek(time: number) {
-		this.element.currentTime = time * this.rate;
-	}
+    if (this._isPlaying) {
+      return;
+    }
+    this._isPlaying = true;
+    await this.element.play();
+  }
 
-	updateFrame() {
-		if (!this.isPlaying) return;
+  pause() {
+    if (!this._isPlaying) {
+      return;
+    }
+    this._isPlaying = false;
+    this.element.pause();
+  }
 
-		if (this.element.currentTime > this.timelineClip.trimmedDuration) {
-			this._isPlaying = false;
-			this.ended.emit();
-			this.destroy();
-		}
-	}
+  async togglePlay() {
+    if (this.isPlaying) {
+      this.pause();
+    } else {
+      await this.play();
+    }
+  }
 
-	destroy() {
-		this.element.removeAttribute('src'); // empty source
-		this.element.load();
-		this.element.removeEventListener('ended', this.onElementEnded);
-		this.ended.removeAllListeners();
-		this._isPlaying = false;
-	}
+  seek(time: number) {
+    this.element.currentTime = time * (this.options.rate ?? 1);
+  }
 
-	private get rate() {
-		return this.timelineClip.rate;
-	}
+  updateFrame() {
+    if (!this.isPlaying) return;
 
-	private onElementEnded = () => {
-		this.ended.emit();
-		this._isPlaying = false;
-	};
+    const duration = this.options.trimmedDuration ?? this.element.duration;
+    if (this.element.currentTime > duration) {
+      this._isPlaying = false;
+      this.ended.emit();
+      this.destroy();
+    }
+  }
+
+  destroy() {
+    this._isDestroyed = true;
+    this.element.removeAttribute('src'); // empty source
+    this.element.load();
+    this.element.removeEventListener('ended', this.onElementEnded);
+    this.ended.removeAllListeners();
+    this._isPlaying = false;
+  }
+
+  // private get rate() {
+  // 	return this.timelineClip.rate;
+  // }
+
+  private load() {
+    this.element.src = this.path;
+    this.element.muted = true;
+    this.element.playbackRate = this.options.rate ?? 1;
+    this.element.currentTime = 0.01;
+    this.element.addEventListener('ended', this.onElementEnded);
+  }
+
+  private onElementEnded = () => {
+    this.ended.emit();
+    this._isPlaying = false;
+  };
 }

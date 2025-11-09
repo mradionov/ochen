@@ -1,4 +1,4 @@
-<script lang='ts'>
+<script lang="ts">
   import { toMinutesString } from '$lib/time_utils';
   import { getContext, onMount } from 'svelte';
   import { VideoResolverKey } from '$lib/di';
@@ -7,17 +7,17 @@
   import type { VideoMetadata } from '$lib/video/video_resolver';
   import PreviewBaseItem from './preview_base_item.svelte';
 
+  const videoResolver = getContext<VideoResolver>(VideoResolverKey);
+
   export let sourceVideoFile: SourceVideoFile;
   export let onImport: (sourceVideoFile: SourceVideoFile) => void;
-
-  const videoResolver = getContext<VideoResolver>(VideoResolverKey);
 
   let videoMetadata: VideoMetadata;
 
   onMount(async () => {
     videoMetadata = await videoResolver.loadMetadataOne({
       videoId: sourceVideoFile.name,
-      videoPath: sourceVideoFile.path
+      videoPath: sourceVideoFile.path,
     });
   });
 
@@ -31,5 +31,7 @@
   headerLeft={sourceVideoFile.name}
   headerRight={toMinutesString(videoMetadata?.duration)}
 >
-  <button slot='controls' on:click={handleImport}>import</button>
+  {#snippet controls()}
+    <button on:click={handleImport}>import</button>
+  {/snippet}
 </PreviewBaseItem>

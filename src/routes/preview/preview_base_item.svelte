@@ -1,50 +1,83 @@
-<script lang='ts'>
-  import { getContext, onMount } from 'svelte';
-  import { RenderLoop } from '$lib/render_loop';
-  import { PlayerFactoryKey, RenderLoopKey } from '$lib/di';
-  import type { PlayerFactory } from '$lib/video/player_factory';
-  import type { Player } from '$lib/video/player';
-
-  export let videoPath: string;
-  export let headerLeft: string | undefined = undefined;
-  export let headerRight: string | undefined = undefined;
-  export let footerLeft: string | undefined = undefined;
-  export let footerRight: string | undefined = undefined;
+<script lang="ts">
+  import { getContext, mount, onMount, type Snippet } from 'svelte';
+  import type {
+    VideoPreview,
+    VideoPreviewFactory,
+  } from '$lib/video/video_preview_factory';
+  import type { VideoEffects } from '$lib/manifest/manifest.svelte';
+  import { RenderLoopKey, VideoPreviewFactoryKey } from '$lib/di';
+  import type { RenderLoop } from '$lib/render_loop';
 
   const renderLoop = getContext<RenderLoop>(RenderLoopKey);
-  const playerFactory = getContext<PlayerFactory>(PlayerFactoryKey);
+  const videoPreviewFactory = getContext<VideoPreviewFactory>(
+    VideoPreviewFactoryKey,
+  );
 
   let canvasContainerElement: HTMLDivElement;
 
-  let player: Player;
+  let {
+    controls,
+    videoPath,
+    videoTrimmedDuration,
+    effects,
+    videoPreview,
+    headerLeft,
+    headerRight,
+    footerLeft,
+    footerRight,
+  }: {
+    controls?: Snippet;
+    videoPath: string;
+    videoTrimmedDuration?: number;
+    effects?: VideoEffects;
+    videoPreview?: VideoPreview | undefined;
+    headerLeft?: string;
+    headerRight?: string;
+    footerLeft?: string;
+    footerRight?: string;
+  } = $props();
 
   onMount(async () => {
-    player = await playerFactory.createForPreview(videoPath);
-    // TODO: don't manipulate dom directly
-    canvasContainerElement.appendChild(player.renderer.$canvas);
+    videoPreview = await videoPreviewFactory.create(videoPath, {
+      trimmedDuration: videoTrimmedDuration,
+    });
 
     renderLoop.tick.addListener(() => {
-      player.update();
+      if (videoPreview?.player.isPlaying) {
+        videoPreview?.update({ effects });
+      }
     });
   });
 
-  function onCanvasClick() {
-    player.togglePlay();
+  $effect(() => {
+    if (videoPreview && canvasContainerElement) {
+      canvasContainerElement.appendChild(videoPreview.renderer.canvas);
+    }
+  });
+
+  $effect(() => {
+    if (videoPreview && effects) {
+      videoPreview.update({ effects });
+    }
+  });
+
+  function handleCanvasClick() {
+    videoPreview?.togglePlay();
   }
 </script>
 
-<div class='container'>
-  <div bind:this={canvasContainerElement} on:click={onCanvasClick}></div>
-  <div class='header'>
+<div class="container">
+  <div bind:this={canvasContainerElement} onclick={handleCanvasClick}></div>
+  <div class="header">
     <div>{headerLeft}</div>
     <div>{headerRight}</div>
   </div>
-  <div class='footer'>
+  <div class="footer">
     <div>{footerLeft}</div>
     <div>{footerRight}</div>
   </div>
   <div>
-    <slot name='controls'></slot>
+    {@render controls?.()}
   </div>
 </div>
 

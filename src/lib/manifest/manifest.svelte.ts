@@ -4,13 +4,6 @@ type VideoId = string;
 type VideoFilename = string;
 type VideoFilepath = string;
 
-type VideoEffects = {
-	tint?: string;
-	vignette?: boolean;
-	grain?: number;
-	blur?: number;
-};
-
 export type VideoTransitionOut = {
 	duration: number;
 	kind: 'cut' | 'fade';
@@ -45,10 +38,10 @@ export class Manifest {
 }
 
 export class VideoTrack {
-	clips;
+	clips: VideoClip[];
 	videos: Record<VideoId, VideoFilename>;
 	transitionOut: VideoTransitionOut | undefined;
-	effects: VideoEffects | undefined;
+	effects: VideoEffects;
 
 	constructor({
 		clips,
@@ -59,7 +52,7 @@ export class VideoTrack {
 		clips: VideoClip[];
 		videos: Record<VideoId, VideoFilename>;
 		transitionOut: VideoTransitionOut | undefined;
-		effects: VideoEffects | undefined;
+		effects: VideoEffects;
 	}) {
 		this.clips = $state(clips);
 		this.videos = $state(videos);
@@ -67,8 +60,13 @@ export class VideoTrack {
 		this.effects = $state(effects);
 	}
 
-	static createEmpty() {
-		return new VideoTrack({ clips: [], videos: {}, transitionOut: undefined, effects: undefined });
+	static createEmpty(): VideoTrack {
+		return new VideoTrack({
+			clips: [],
+			videos: {},
+			transitionOut: undefined,
+			effects: VideoEffects.createEmpty()
+		});
 	}
 
 	addVideo(filename: string) {
@@ -168,6 +166,29 @@ export class VideoClip {
 			trimEnd: undefined,
 			transitionOut: undefined,
 			effects: undefined
+		});
+	}
+}
+
+export class VideoEffects {
+	tint: string | undefined;
+	vignette: boolean | undefined;
+	grain: number | undefined;
+	blur: number | undefined;
+
+	constructor(args: { tint?: string; vignette?: boolean; grain?: number; blur?: number }) {
+		this.tint = $state(args.tint);
+		this.vignette = $state(args.vignette);
+		this.grain = $state(args.grain);
+		this.blur = $state(args.blur);
+	}
+
+	static createEmpty(): VideoEffects {
+		return new VideoEffects({
+			tint: undefined,
+			vignette: undefined,
+			grain: undefined,
+			blur: undefined
 		});
 	}
 }

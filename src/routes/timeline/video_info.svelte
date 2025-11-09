@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import type { VideoTimelineClip } from '$lib/video/video_timeline';
+  import type { VideoTimelineClip } from '$lib/video/video_timeline.svelte';
   import { toMinutesString } from '$lib/time_utils.js';
   import OffsetPicker from './offset_picker.svelte';
   import type { Manifest } from '$lib/manifest/manifest.svelte';
