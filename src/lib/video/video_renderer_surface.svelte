@@ -14,6 +14,7 @@
   export let nextPlayer: VideoPlayer | undefined = undefined;
   export let width: number = 800;
   export let height: number = 800;
+  export let onClick: (() => void) | undefined = undefined;
 
   let canvasElement: HTMLCanvasElement;
   let renderer: Renderer;
@@ -36,4 +37,4 @@
   });
 </script>
 
-<canvas bind:this={canvasElement} {width} {height}></canvas>
+<canvas bind:this={canvasElement} {width} {height} onclick={onClick}></canvas>

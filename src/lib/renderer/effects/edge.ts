@@ -6,12 +6,25 @@ type EdgeEffectConfig = {
 };
 
 export class EdgeEffect implements Effect<EdgeEffectConfig> {
-  apply({ ctx, width, height }: EffectContext, config: EdgeEffectConfig = {}) {
+  async apply(
+    { ctx, width, height }: EffectContext,
+    config: EdgeEffectConfig = {
+      threshold: 250,
+    },
+  ) {
+    const options = {
+      threshold: 0,
+    };
+
+    // const frame = ctx.getImageData(0, 0, width, height);
+
     const imageData = ctx.getImageData(0, 0, width, height);
 
     const { data } = imageData;
 
     const srcData = data;
+
+    const dst = new Uint8ClampedArray(srcData.length);
 
     const gray = new Uint8ClampedArray(width * height);
     for (let i = 0; i < width * height; i++) {
@@ -22,7 +35,7 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
     }
 
     let gx, gy;
-    switch (config.kernel) {
+    switch (options.kernel) {
       case 'prewitt':
         gx = [-1, 0, 1, -1, 0, 1, -1, 0, 1];
         gy = [-1, -1, -1, 0, 0, 0, 1, 1, 1];
@@ -50,15 +63,35 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
           }
         }
         let mag = Math.sqrt(px * px + py * py);
-        if (config.threshold != null) {
-          mag = mag > config.threshold ? mag : 0;
+        if (options.threshold != null) {
+          mag = mag > options.threshold ? mag : 0;
         }
         const i = (y * width + x) * 4;
-        data[i] = data[i + 1] = data[i + 2] = mag;
-        data[i + 3] = 255;
+
+        dst[i] = dst[i + 1] = dst[i + 2] = mag;
+        dst[i + 3] = 100;
       }
     }
 
-    ctx.putImageData(imageData, 0, 0);
+    // const count = 200;
+    // for (let i = 0; i < count; i++) {
+    //   const idx = Math.floor(Math.random() * edgePixels.length);
+    //   highlightedEdges.push(edgePixels[idx]);
+    // }
+
+    // for (const { x, y } of highlightedEdges) {
+    //   ctx.fillStyle = 'cyan';
+    //   ctx.beginPath();
+    //   ctx.arc(x, y, 2.5, 0, Math.PI * 2); // 2.5px radius
+    //   ctx.fill();
+    // }
+
+    const ddd = new ImageData(dst, width, height);
+
+    const im = await createImageBitmap(ddd);
+
+    // ctx.putImageData(ddd, 0, 0);
+
+    ctx.drawImage(im, 0, 0);
   }
 }

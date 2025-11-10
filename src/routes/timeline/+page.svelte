@@ -114,6 +114,14 @@
     timelineClock.pause();
   }
 
+  function handleTogglePlay() {
+    if (videoProducer.isPlaying) {
+      handlePause();
+    } else {
+      handlePlay();
+    }
+  }
+
   function handlePlayheadSeek(newTime: number) {
     audioProducer.seek(newTime);
     videoProducer.seek(newTime);
@@ -155,6 +163,7 @@
     <div class="column">
       {#if videoPlayer}
         <VideoRendererSurface
+          onClick={handleTogglePlay}
           player={videoPlayer}
           nextPlayer={nextVideoPlayer}
           effects={manifest.videoTrack.effects}

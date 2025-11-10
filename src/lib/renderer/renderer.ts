@@ -116,8 +116,8 @@ export class Renderer {
     }
   }
 
-  private applyEffects(effects: VideoEffects) {
-    Object.keys(this.effectMap).forEach((effectKey) => {
+  private async applyEffects(effects: VideoEffects) {
+    for (const effectKey of Object.keys(this.effectMap)) {
       const effectConfig = effects[effectKey];
       if (effectConfig == null) {
         return;
@@ -128,8 +128,8 @@ export class Renderer {
         width: this.width,
         height: this.height,
       };
-      effect.apply(effectContext, effectConfig);
-    });
+      await effect.apply(effectContext, effectConfig);
+    }
   }
 
   private applyVignette() {

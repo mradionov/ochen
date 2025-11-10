@@ -5,5 +5,5 @@ export type EffectContext = {
 };
 
 export interface Effect<T> {
-  apply(context: EffectContext, config: T): void;
+  apply(context: EffectContext, config: T): void | Promise<void>;
 }

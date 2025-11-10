@@ -7,7 +7,7 @@ export class VideoProducer {
   private currentIndex: number | undefined;
   private currentPlayer: VideoPlayer | undefined;
   private nextPlayer: VideoPlayer | undefined;
-  private isPlaying = false;
+  private _isPlaying = false;
 
   readonly playerChanged = new Subject<{
     player: VideoPlayer;
@@ -25,6 +25,10 @@ export class VideoProducer {
     this.seek(time);
   }
 
+  get isPlaying() {
+    return this._isPlaying;
+  }
+
   load() {
     this.ensurePlayer();
   }
@@ -33,7 +37,7 @@ export class VideoProducer {
     if (this.isPlaying) {
       return;
     }
-    this.isPlaying = true;
+    this._isPlaying = true;
     this.ensurePlayer();
     this.currentPlayer?.play();
   }
@@ -42,7 +46,7 @@ export class VideoProducer {
     if (!this.isPlaying) {
       return;
     }
-    this.isPlaying = false;
+    this._isPlaying = false;
     this.ensurePlayer();
     this.currentPlayer?.pause();
   }
