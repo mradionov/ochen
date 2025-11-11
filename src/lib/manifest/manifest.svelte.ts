@@ -1,4 +1,5 @@
 import { Precondition } from '$lib/precondition';
+import { EffectsMap } from '$lib/renderer/effects_map.svelte';
 import type {
   AudioClipRaw,
   AudioTrackRaw,
@@ -56,7 +57,7 @@ export class VideoTrack {
   clips: VideoClip[];
   videos: Record<VideoId, VideoFilename>;
   transitionOut: VideoTransitionOut | undefined;
-  effects: VideoEffects;
+  effects: EffectsMap;
 
   constructor({
     clips,
@@ -67,7 +68,7 @@ export class VideoTrack {
     clips: VideoClip[];
     videos: Record<VideoId, VideoFilename>;
     transitionOut: VideoTransitionOut | undefined;
-    effects: VideoEffects;
+    effects: EffectsMap;
   }) {
     this.clips = $state(clips);
     this.videos = $state(videos);
@@ -80,7 +81,7 @@ export class VideoTrack {
       clips: [],
       videos: {},
       transitionOut: undefined,
-      effects: VideoEffects.createEmpty(),
+      effects: EffectsMap.createEmpty(),
     });
   }
 
@@ -163,7 +164,7 @@ export class VideoClip {
   rate: number | undefined;
   trimEnd: number | undefined;
   transitionOut: VideoTransitionOut | undefined;
-  effects: VideoEffects | undefined;
+  effects: EffectsMap | undefined;
 
   constructor(args: {
     videoId: VideoId;
@@ -173,7 +174,7 @@ export class VideoClip {
     rate: number | undefined;
     trimEnd: number | undefined;
     transitionOut: VideoTransitionOut | undefined;
-    effects: VideoEffects | undefined;
+    effects: EffectsMap | undefined;
   }) {
     this.videoId = args.videoId;
     this.videoPath = args.videoPath;
@@ -211,48 +212,6 @@ export class VideoClip {
       offsetX: this.offsetX,
       offsetY: this.offsetY,
       trimEnd: this.trimEnd,
-    };
-  }
-}
-
-export class VideoEffects {
-  tint: string | undefined;
-  vignette: boolean | undefined;
-  grain: number | undefined;
-  blur: number | undefined;
-  edge: boolean | undefined;
-
-  constructor(args: {
-    tint?: string;
-    vignette?: boolean;
-    grain?: number;
-    blur?: number;
-    edge?: boolean;
-  }) {
-    this.tint = $state(args.tint);
-    this.vignette = $state(args.vignette);
-    this.grain = $state(args.grain);
-    this.blur = $state(args.blur);
-    this.edge = $state(args.edge);
-  }
-
-  static createEmpty(): VideoEffects {
-    return new VideoEffects({
-      tint: undefined,
-      vignette: undefined,
-      grain: undefined,
-      blur: undefined,
-      edge: undefined,
-    });
-  }
-
-  toRaw(): VideoEffectsRaw {
-    return {
-      tint: this.tint,
-      vignette: this.vignette,
-      grain: this.grain,
-      blur: this.blur,
-      edge: this.edge,
     };
   }
 }

@@ -1,10 +1,10 @@
 import type { VideoPlayer } from '$lib/video/video_player';
-import type { VideoEffects } from '$lib/manifest/manifest.svelte';
 import { Precondition } from '$lib/precondition';
 import { TintEffect } from './effects/tint';
 import type { Effect } from './effect';
 import type { RendererImageSource } from './image_source';
 import { EdgeEffect } from './effects/edge';
+import type { EffectsMap } from './effects.svelte';
 
 export class Renderer {
   private readonly ctx: CanvasRenderingContext2D;
@@ -50,7 +50,7 @@ export class Renderer {
       offset,
     }: {
       imageSource: RendererImageSource;
-      effects?: VideoEffects;
+      effects?: EffectsMap;
       offset?: {
         offsetX: number | string | undefined;
         offsetY: number | string | undefined;
@@ -116,11 +116,11 @@ export class Renderer {
     }
   }
 
-  private async applyEffects(effects: VideoEffects) {
+  private async applyEffects(effects: EffectsMap) {
     for (const effectKey of Object.keys(this.effectMap)) {
       const effectConfig = effects[effectKey];
       if (effectConfig == null) {
-        return;
+        continue;
       }
       const effect = this.effectMap[effectKey];
       const effectContext = {

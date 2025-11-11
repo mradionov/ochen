@@ -13,24 +13,34 @@ const defaultOptions: VideoPlayerOptions = {
 };
 
 export class VideoPlayer {
-  readonly element: HTMLVideoElement;
   readonly options: VideoPlayerOptions;
   readonly ended = new Subject<void>();
   private _isPlaying = false;
   private _isDestroyed = false;
 
   constructor(
-    private readonly path: string,
+    readonly element: HTMLVideoElement,
     argOptions: VideoPlayerOptions = {},
   ) {
     this.options = defaults(defaultOptions, argOptions);
-
-    this.element = document.createElement('video');
     this.load();
   }
 
+  static createFromPath(path: string, options: VideoPlayerOptions = {}) {
+    const element = document.createElement('video');
+    element.src = path;
+    return this.createFromElement(element, options);
+  }
+
+  static createFromElement(
+    element: HTMLVideoElement,
+    options: VideoPlayerOptions = {},
+  ) {
+    return new VideoPlayer(element, options);
+  }
+
   static createFromTimelineClip(timelineClip: VideoTimelineClip) {
-    return new VideoPlayer(timelineClip.clip.videoPath, {
+    return this.createFromPath(timelineClip.clip.videoPath, {
       trimmedDuration: timelineClip.trimmedDuration,
       rate: timelineClip.rate,
     });
@@ -102,7 +112,7 @@ export class VideoPlayer {
   // }
 
   private load() {
-    this.element.src = this.path;
+    // this.element.src = this.path;
     this.element.muted = true;
     this.element.playbackRate = this.options.rate ?? 1;
     this.element.currentTime = 0.01;

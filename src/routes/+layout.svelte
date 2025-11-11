@@ -1,11 +1,11 @@
-<script lang='ts'>
+<script lang="ts">
   import { setContext } from 'svelte';
   import {
     AudioResolverKey,
     ProjectsControllerKey,
     RenderLoopKey,
     VideoPreviewFactoryKey,
-    VideoResolverKey
+    VideoResolverKey,
   } from '$lib/di';
   import { VideoResolver } from '$lib/video/video_resolver';
   import { AudioResolver } from '$lib/audio/audio_resolver';
@@ -20,10 +20,9 @@
   const setsDir = new ProjectsController(dirHandlesRepo);
 
   const renderLoop = new RenderLoop();
-  renderLoop.start();
 
   const videoResolver = new VideoResolver();
-  const videoPreviewFactory = new VideoPreviewFactory(videoResolver);
+  const videoPreviewFactory = new VideoPreviewFactory();
 
   setContext(ProjectsControllerKey, setsDir);
   setContext(VideoResolverKey, videoResolver);

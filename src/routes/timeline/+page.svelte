@@ -22,7 +22,7 @@
   import { RenderLoop } from '$lib/render_loop';
   import { TimelineClock } from '$lib/timeline_clock';
   import type { VideoPlayer } from '$lib/video/video_player';
-  import VideoRendererSurface from '$lib/video/video_renderer_surface.svelte';
+  import RendererSurface from '$lib/renderer/renderer_surface.svelte';
   import VideoInfo from './video_info.svelte';
   import { Manifest } from '$lib/manifest/manifest.svelte';
   import ManifestSaveButton from '$lib/manifest/manifest_save_button.svelte';
@@ -31,7 +31,10 @@
   const projectsController = getContext<ProjectsController>(
     ProjectsControllerKey,
   );
+
   const renderLoop = getContext<RenderLoop>(RenderLoopKey);
+  renderLoop.start();
+
   const videoResolver = getContext<VideoResolver>(VideoResolverKey);
   const audioResolver = getContext<AudioResolver>(AudioResolverKey);
 
@@ -162,7 +165,7 @@
   <div class="split">
     <div class="column">
       {#if videoPlayer}
-        <VideoRendererSurface
+        <RendererSurface
           onClick={handleTogglePlay}
           player={videoPlayer}
           nextPlayer={nextVideoPlayer}

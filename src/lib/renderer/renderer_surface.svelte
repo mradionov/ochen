@@ -4,13 +4,14 @@
   import { Renderer } from '$lib/renderer/renderer';
   import { RenderLoop } from '$lib/render_loop';
   import { RenderLoopKey } from '$lib/di';
-  import type { VideoEffects } from '$lib/manifest/manifest.svelte';
   import { VideoImageSource } from '$lib/renderer/image_source';
+  import type { EffectsMap } from './effects.svelte';
 
   const renderLoop = getContext<RenderLoop>(RenderLoopKey);
+  // renderLoop.start();
 
   export let player: VideoPlayer;
-  export let effects: VideoEffects | undefined = undefined;
+  export let effects: EffectsMap | undefined = undefined;
   export let nextPlayer: VideoPlayer | undefined = undefined;
   export let width: number = 800;
   export let height: number = 800;
@@ -24,7 +25,7 @@
 
     renderLoop.tick.addListener(() => {
       player.updateFrame();
-      nextPlayer?.updateFrame();
+      // nextPlayer?.updateFrame();
 
       const videoImageSource = new VideoImageSource(player.element);
 

@@ -4,10 +4,10 @@ import {
   VideoClip,
   AudioTrack,
   AudioClip,
-  VideoEffects,
 } from './manifest.svelte';
 import type { VideoTransitionOut } from './manifest.svelte';
 import type { ManifestRaw } from '$lib/manifest/manifest_raw';
+import { EffectsMap } from '$lib/renderer/effects_map.svelte';
 
 type VideoId = string;
 type AudioId = string;
@@ -35,7 +35,7 @@ export class ManifestReader {
     const videoClipsRaw = videoTrackRaw.clips ?? [];
     const videoMap = this.parseVideoMap(projectName, manifest);
 
-    const effects = new VideoEffects(effectsRaw ?? {});
+    const effects = new EffectsMap(effectsRaw ?? {});
 
     const transitionOut: VideoTransitionOut = {
       duration: transitionOutRaw?.duration ?? 0,
