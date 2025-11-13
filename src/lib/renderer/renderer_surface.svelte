@@ -5,7 +5,7 @@
   import { RenderLoop } from '$lib/render_loop';
   import { RenderLoopKey } from '$lib/di';
   import { VideoImageSource } from '$lib/renderer/image_source';
-  import type { EffectsMap } from './effects.svelte';
+  import type { EffectsMap } from './effects_map.svelte';
 
   const renderLoop = getContext<RenderLoop>(RenderLoopKey);
   // renderLoop.start();

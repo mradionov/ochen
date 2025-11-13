@@ -1,20 +1,11 @@
 import type { Effect, EffectContext } from '../effect';
-
-type EdgeEffectConfig = {
-  kernel?: 'prewitt' | 'laplacian' | 'sobel';
-  threshold?: number;
-};
+import type { EdgeEffectConfig } from '../effects_map.svelte';
 
 export class EdgeEffect implements Effect<EdgeEffectConfig> {
-  async apply(
-    { ctx, width, height }: EffectContext,
-    config: EdgeEffectConfig = {
-      threshold: 250,
-    },
-  ) {
-    const options = {
-      threshold: 0,
-    };
+  async apply({ ctx, width, height }: EffectContext, config: EdgeEffectConfig) {
+    const kernel = 'sobel';
+    const threshold = config.threshold ?? 0;
+    const transparency = config.transparency ?? 0;
 
     // const frame = ctx.getImageData(0, 0, width, height);
 
@@ -35,15 +26,15 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
     }
 
     let gx, gy;
-    switch (options.kernel) {
-      case 'prewitt':
-        gx = [-1, 0, 1, -1, 0, 1, -1, 0, 1];
-        gy = [-1, -1, -1, 0, 0, 0, 1, 1, 1];
-        break;
-      case 'laplacian':
-        gx = [0, 1, 0, 1, -4, 1, 0, 1, 0];
-        gy = [0, 1, 0, 1, -4, 1, 0, 1, 0];
-        break;
+    switch (kernel) {
+      // case 'prewitt':
+      //   gx = [-1, 0, 1, -1, 0, 1, -1, 0, 1];
+      //   gy = [-1, -1, -1, 0, 0, 0, 1, 1, 1];
+      //   break;
+      // case 'laplacian':
+      //   gx = [0, 1, 0, 1, -4, 1, 0, 1, 0];
+      //   gy = [0, 1, 0, 1, -4, 1, 0, 1, 0];
+      //   break;
       case 'sobel':
       default:
         gx = [-1, 0, 1, -2, 0, 2, -1, 0, 1];
@@ -63,13 +54,13 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
           }
         }
         let mag = Math.sqrt(px * px + py * py);
-        if (options.threshold != null) {
-          mag = mag > options.threshold ? mag : 0;
+        if (threshold != null) {
+          mag = mag > threshold ? mag : 0;
         }
         const i = (y * width + x) * 4;
 
         dst[i] = dst[i + 1] = dst[i + 2] = mag;
-        dst[i + 3] = 100;
+        dst[i + 3] = transparency;
       }
     }
 
@@ -90,8 +81,13 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
 
     const im = await createImageBitmap(ddd);
 
+    ctx.fillStyle = 'rgba(0,0,0,0.1)';
+    ctx.fillRect(0, 0, width, height);
+
     // ctx.putImageData(ddd, 0, 0);
 
+    // ctx.filter = `blur(3px)`;
     ctx.drawImage(im, 0, 0);
+    // ctx.filter = '';
   }
 }

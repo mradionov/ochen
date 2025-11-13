@@ -16,7 +16,10 @@
   let videoPlayer = $state<VideoPlayer | undefined>(undefined);
   let effects = $state(
     new EffectsMap({
+      order: ['tint', 'edge', 'grain'],
       tint: '#ff0000',
+      edge: {},
+      grain: {},
     }),
   );
 
@@ -37,20 +40,44 @@
   function handleStart() {
     renderLoop.start();
     audioCapture.start();
-    // videoCapture.start();
   }
 
   function handleStop() {
     renderLoop.stop();
     audioCapture.stop();
-    // videoCapture
   }
 </script>
 
-<EffectsPanel {effects} />
-<button onclick={handleStart}>start</button>
-<button onclick={handleStop}>stop</button>
-<hr />
-{#if videoPlayer}
-  <RendererSurface player={videoPlayer} {effects} width={600} height={600} />
-{/if}
+<div class="container">
+  <div class="left">
+    <button onclick={handleStart}>start</button>
+    <button onclick={handleStop}>stop</button>
+    {#if videoPlayer}
+      <RendererSurface
+        player={videoPlayer}
+        {effects}
+        width={600}
+        height={600}
+      />
+    {/if}
+  </div>
+  <div class="right">
+    <EffectsPanel {effects} />
+  </div>
+</div>
+
+<style>
+  .container {
+    display: flex;
+  }
+  .left,
+  .right {
+    flex: 1;
+    flex-direction: column;
+    display: flex;
+  }
+
+  .left {
+    align-items: flex-start;
+  }
+</style>

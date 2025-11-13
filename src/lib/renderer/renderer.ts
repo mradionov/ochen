@@ -4,7 +4,8 @@ import { TintEffect } from './effects/tint';
 import type { Effect } from './effect';
 import type { RendererImageSource } from './image_source';
 import { EdgeEffect } from './effects/edge';
-import type { EffectsMap } from './effects.svelte';
+import type { EffectsMap } from './effects_map.svelte';
+import { GrainEffect } from './effects/grain';
 
 export class Renderer {
   private readonly ctx: CanvasRenderingContext2D;
@@ -18,6 +19,7 @@ export class Renderer {
     );
 
     this.effectMap = {
+      grain: new GrainEffect(),
       edge: new EdgeEffect(),
       tint: new TintEffect(),
     };
@@ -117,12 +119,17 @@ export class Renderer {
   }
 
   private async applyEffects(effects: EffectsMap) {
-    for (const effectKey of Object.keys(this.effectMap)) {
+    const defaultOrder = effects.order ?? ['tint', 'edge', 'grain'];
+
+    for (const effectKey of defaultOrder) {
       const effectConfig = effects[effectKey];
       if (effectConfig == null) {
         continue;
       }
       const effect = this.effectMap[effectKey];
+      if (!effect) {
+        continue;
+      }
       const effectContext = {
         ctx: this.ctx,
         width: this.width,
