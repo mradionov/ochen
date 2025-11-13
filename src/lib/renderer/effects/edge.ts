@@ -1,11 +1,25 @@
+import type { AudioInfo } from '$lib/audio/audio_analyser';
 import type { Effect, EffectContext } from '../effect';
 import type { EdgeEffectConfig } from '../effects_map.svelte';
 
 export class EdgeEffect implements Effect<EdgeEffectConfig> {
-  async apply({ ctx, width, height }: EffectContext, config: EdgeEffectConfig) {
+  async apply(
+    { ctx, width, height }: EffectContext,
+    config: EdgeEffectConfig,
+    audioInfo?: AudioInfo,
+  ) {
     const kernel = 'sobel';
     const threshold = config.threshold ?? 0;
     const transparency = config.transparency ?? 0;
+
+    let strength = config.strength ?? 1;
+    if (audioInfo) {
+      // if (audioInfo?.isBeat) {
+      //   strength = 3.0;
+      // }
+      // strength += (1.0 - strength) * 0.1;
+      strength = 0.5 + audioInfo.treble * 4.0;
+    }
 
     // const frame = ctx.getImageData(0, 0, width, height);
 
@@ -43,6 +57,8 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
 
     for (let y = 1; y < height - 1; y++) {
       for (let x = 1; x < width - 1; x++) {
+        const i = (y * width + x) * 4;
+
         let px = 0,
           py = 0;
         for (let ky = -1; ky <= 1; ky++) {
@@ -54,10 +70,12 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
           }
         }
         let mag = Math.sqrt(px * px + py * py);
+
+        mag *= strength;
+
         if (threshold != null) {
           mag = mag > threshold ? mag : 0;
         }
-        const i = (y * width + x) * 4;
 
         dst[i] = dst[i + 1] = dst[i + 2] = mag;
         dst[i + 3] = transparency;

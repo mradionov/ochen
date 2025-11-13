@@ -6,6 +6,7 @@
   import { RenderLoopKey } from '$lib/di';
   import { hexToHsl, hslToHex } from '$lib/color';
   import { Timer } from '$lib/timer';
+  import type { AudioInfo } from '$lib/audio/audio_analyser';
 
   const renderLoop = getContext<RenderLoop>(RenderLoopKey);
 
@@ -13,6 +14,8 @@
 
   let { effects = EffectsMap.createEmpty() }: { effects?: EffectsMap } =
     $props();
+
+  let audioInfo = $state<AudioInfo | undefined>(undefined);
 
   let enableTint = $state(!!effects.tint);
   let shouldLoopTint = $state(true);
@@ -40,7 +43,7 @@
     });
   });
 
-  function handleOreder(event) {
+  function handleOrder(event) {
     effects.order = event.target?.value.split(',');
   }
 
@@ -96,7 +99,7 @@
 <div>
   <hr />
   <h3>order</h3>
-  <input type="text" value={effects.order?.join(',')} onchange={handleOreder} />
+  <input type="text" value={effects.order?.join(',')} onchange={handleOrder} />
   <hr />
   <h3>tint</h3>
   <input

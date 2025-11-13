@@ -6,12 +6,14 @@
   import { RenderLoopKey } from '$lib/di';
   import { VideoImageSource } from '$lib/renderer/image_source';
   import type { EffectsMap } from './effects_map.svelte';
+  import type { AudioInfo } from '$lib/audio/audio_analyser';
 
   const renderLoop = getContext<RenderLoop>(RenderLoopKey);
   // renderLoop.start();
 
   export let player: VideoPlayer;
   export let effects: EffectsMap | undefined = undefined;
+  export let audioInfo: AudioInfo | undefined = undefined;
   export let nextPlayer: VideoPlayer | undefined = undefined;
   export let width: number = 800;
   export let height: number = 800;
@@ -31,7 +33,7 @@
 
       // TODO: compositor
       renderer.updateFrame(
-        { imageSource: videoImageSource, effects },
+        { imageSource: videoImageSource, effects, audioInfo },
         undefined,
       );
     });

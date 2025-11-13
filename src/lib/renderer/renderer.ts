@@ -6,6 +6,8 @@ import type { RendererImageSource } from './image_source';
 import { EdgeEffect } from './effects/edge';
 import type { EffectsMap } from './effects_map.svelte';
 import { GrainEffect } from './effects/grain';
+import type { AudioInfo } from '$lib/audio/audio_analyser';
+import { GlitchEffect } from './effects/glitch';
 
 export class Renderer {
   private readonly ctx: CanvasRenderingContext2D;
@@ -22,6 +24,7 @@ export class Renderer {
       grain: new GrainEffect(),
       edge: new EdgeEffect(),
       tint: new TintEffect(),
+      glitch: new GlitchEffect(),
     };
   }
 
@@ -49,10 +52,12 @@ export class Renderer {
     {
       imageSource,
       effects,
+      audioInfo,
       offset,
     }: {
       imageSource: RendererImageSource;
       effects?: EffectsMap;
+      audioInfo?: AudioInfo;
       offset?: {
         offsetX: number | string | undefined;
         offsetY: number | string | undefined;
@@ -114,12 +119,15 @@ export class Renderer {
     // }
 
     if (effects) {
-      this.applyEffects(effects);
+      this.applyEffects(effects, audioInfo);
     }
   }
 
-  private async applyEffects(effects: EffectsMap) {
-    const defaultOrder = effects.order ?? ['tint', 'edge', 'grain'];
+  private async applyEffects(
+    effects: EffectsMap,
+    audioInfo: AudioInfo | undefined,
+  ) {
+    const defaultOrder = effects.order ?? ['tint', 'edge', 'glitch', 'grain'];
 
     for (const effectKey of defaultOrder) {
       const effectConfig = effects[effectKey];
@@ -135,7 +143,7 @@ export class Renderer {
         width: this.width,
         height: this.height,
       };
-      await effect.apply(effectContext, effectConfig);
+      await effect.apply(effectContext, effectConfig, audioInfo);
     }
   }
 

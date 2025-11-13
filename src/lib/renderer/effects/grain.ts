@@ -1,9 +1,17 @@
+import type { AudioInfo } from '$lib/audio/audio_analyser';
 import type { Effect, EffectContext } from '../effect';
 import type { GrainEffectConfig } from '../effects_map.svelte';
 
 export class GrainEffect implements Effect<GrainEffectConfig> {
-  apply({ ctx, width, height }: EffectContext, config: GrainEffectConfig) {
-    const intensity = config.intensity ?? 0;
+  apply(
+    { ctx, width, height }: EffectContext,
+    config: GrainEffectConfig,
+    audioInfo?: AudioInfo,
+  ) {
+    let intensity = config.intensity ?? 0;
+    if (audioInfo?.isBeat) {
+      intensity *= 1.5;
+    }
 
     const imageData = ctx.getImageData(0, 0, width, height);
     const data = imageData.data;

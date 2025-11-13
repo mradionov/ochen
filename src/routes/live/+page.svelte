@@ -8,10 +8,15 @@
   import { VideoPlayer } from '$lib/video/video_player';
   import { EffectsMap } from '$lib/renderer/effects_map.svelte';
   import EffectsPanel from '$lib/renderer/effects_panel.svelte';
+  import { AudioAnalyser, type AudioInfo } from '$lib/audio/audio_analyser';
 
   const renderLoop = getContext<RenderLoop>(RenderLoopKey);
   const audioCapture = new AudioCapture();
   const videoCapture = new VideoCapture();
+  const audioAnalyser = new AudioAnalyser();
+
+  let isLive = $state(true);
+  let audioInfo = $state<AudioInfo | undefined>(undefined);
 
   let videoPlayer = $state<VideoPlayer | undefined>(undefined);
   let effects = $state(
@@ -20,6 +25,7 @@
       tint: '#ff0000',
       edge: {},
       grain: {},
+      glitch: {},
     }),
   );
 
@@ -30,12 +36,16 @@
     videoPlayer = VideoPlayer.createFromElement(video);
 
     renderLoop.tick.addListener(() => {
-      const { data, bufferLength } = audioCapture.update();
-      //   console.log(data);
+      const { data, sampleRate, fftSize } = audioCapture.update();
+      audioInfo = audioAnalyser.process(data, sampleRate);
     });
 
     handleStart();
   });
+
+  function handleIsLive(event) {
+    isLive = event.target?.checked;
+  }
 
   function handleStart() {
     renderLoop.start();
@@ -52,9 +62,12 @@
   <div class="left">
     <button onclick={handleStart}>start</button>
     <button onclick={handleStop}>stop</button>
+    <input type="checkbox" checked={isLive} onchange={handleIsLive} />live
+
     {#if videoPlayer}
       <RendererSurface
         player={videoPlayer}
+        audioInfo={isLive ? audioInfo : undefined}
         {effects}
         width={600}
         height={600}

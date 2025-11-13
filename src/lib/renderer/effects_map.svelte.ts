@@ -1,7 +1,10 @@
 export type EdgeEffectConfig = {
   threshold?: number;
   transparency?: number;
+  strength?: number;
 };
+
+export type GlitchEffectConfig = {};
 
 export type GrainEffectConfig = {
   intensity?: number;
@@ -13,6 +16,7 @@ export type EffectsMapRaw = {
   grain?: GrainEffectConfig;
   blur?: number;
   edge?: EdgeEffectConfig;
+  glitch?: GlitchEffectConfig;
   order?: string[];
 };
 
@@ -22,6 +26,7 @@ export class EffectsMap {
   grain: GrainEffectConfig | undefined;
   blur: number | undefined;
   edge: EdgeEffectConfig | undefined;
+  glitch: GlitchEffectConfig | undefined;
   order?: string[];
 
   constructor(args: {
@@ -30,6 +35,7 @@ export class EffectsMap {
     grain?: GrainEffectConfig;
     blur?: number;
     edge?: EdgeEffectConfig;
+    glitch?: GlitchEffectConfig;
     order?: string[];
   }) {
     this.tint = $state(args.tint);
@@ -37,6 +43,7 @@ export class EffectsMap {
     this.grain = $state(args.grain);
     this.blur = $state(args.blur);
     this.edge = $state(args.edge);
+    this.glitch = $state(args.glitch);
     this.order = $state(args.order);
   }
 
@@ -47,6 +54,7 @@ export class EffectsMap {
       grain: undefined,
       blur: undefined,
       edge: undefined,
+      glitch: undefined,
       order: undefined,
     });
   }

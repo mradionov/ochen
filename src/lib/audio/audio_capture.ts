@@ -2,21 +2,33 @@ export class AudioCapture {
   private audioCtx: AudioContext;
   private analyser: AnalyserNode;
   private dataArray: Uint8Array<ArrayBuffer>;
+  private fftSize = 2048;
+  // private fftSize = 16384;
+  // private fftSize = 32768;
+  // private sampleRate = 44100;
 
   constructor() {}
 
   async connect() {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const audioCtx = new AudioContext();
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: false,
+        noiseSuppression: false,
+        autoGainControl: false,
+        channelCount: 2,
+        sampleRate: 48000,
+      },
+    });
+    const audioCtx = new AudioContext({
+      // sampleRate: this.sampleRate,
+    });
     await audioCtx.suspend();
     const src = audioCtx.createMediaStreamSource(stream);
     const analyser = audioCtx.createAnalyser();
-    analyser.fftSize = 2048;
-    // analyser.fftSize = 8192;
-    // analyser.fftSize = 16384;
+    analyser.fftSize = this.fftSize;
     src.connect(analyser);
 
-    // src.connect(audioCtx.destination);
+    src.connect(audioCtx.destination);
 
     this.analyser = analyser;
 
@@ -37,6 +49,11 @@ export class AudioCapture {
 
   update() {
     this.analyser.getByteFrequencyData(this.dataArray);
-    return { data: this.dataArray, bufferLength: this.dataArray.length };
+    return {
+      data: this.dataArray,
+      sampleRate: this.audioCtx.sampleRate,
+      fftSize: this.fftSize,
+      bufferLength: this.dataArray.length,
+    };
   }
 }
