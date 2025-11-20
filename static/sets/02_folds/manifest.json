@@ -115,7 +115,14 @@
     }
   },
   "audioTrack": {
-    "clips": [],
-    "audios": {}
+    "clips": [{
+      "audioId": "matt"
+    },{
+      "audioId": "mcdonalds"
+    }],
+    "audios": {
+      "matt": "matthew-butterandgold.wav",
+      "mcdonalds": "mcdonalds-break.wav"
+    }
   }
 }

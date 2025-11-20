@@ -249,15 +249,22 @@ export class AudioTrack {
 export class AudioClip {
   readonly audioId: AudioId;
   readonly audioPath: AudioFilepath;
+  trimEnd: number | undefined;
 
-  constructor(args: { audioId: AudioId; audioPath: AudioFilepath }) {
+  constructor(args: {
+    audioId: AudioId;
+    audioPath: AudioFilepath;
+    trimEnd: number | undefined;
+  }) {
     this.audioId = args.audioId;
     this.audioPath = args.audioPath;
+    this.trimEnd = $state(args.trimEnd);
   }
 
   toRaw(): AudioClipRaw {
     return {
       audioId: this.audioId,
+      trimEnd: this.trimEnd,
     };
   }
 }

@@ -32,6 +32,7 @@ type AudioId = string;
 
 export type AudioClipRaw = {
   audioId: AudioId;
+  trimEnd?: number;
 };
 
 export type AudioTrackRaw = {

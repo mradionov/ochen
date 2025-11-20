@@ -20,7 +20,7 @@ export class VideoPlayer {
   private _isPlaying = false;
   private _isDestroyed = false;
 
-  constructor(
+  private constructor(
     readonly element: HTMLVideoElement,
     argOptions: VideoPlayerOptions = {},
   ) {
@@ -30,17 +30,17 @@ export class VideoPlayer {
     this.load();
   }
 
-  static createFromPath(path: string, options: VideoPlayerOptions = {}) {
-    const element = document.createElement('video');
-    element.src = path;
-    return this.createFromElement(element, options);
-  }
-
   static createFromElement(
     element: HTMLVideoElement,
     options: VideoPlayerOptions = {},
   ) {
     return new VideoPlayer(element, options);
+  }
+
+  static createFromPath(path: string, options: VideoPlayerOptions = {}) {
+    const element = document.createElement('video');
+    element.src = path;
+    return this.createFromElement(element, options);
   }
 
   static createFromTimelineClip(timelineClip: VideoTimelineClip) {

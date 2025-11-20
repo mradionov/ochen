@@ -1,23 +1,59 @@
 import type { AudioResolver } from '$lib/audio/audio_resolver';
-import type { AudioClip } from '$lib/manifest/manifest_reader';
+import type { AudioClip } from '$lib/manifest/manifest.svelte';
+import { Subject } from '$lib/subject';
+import type { AudioTimelineClip } from './audio_timeline.svelte';
 
 export class AudioPlayer {
-	constructor(private readonly element: HTMLAudioElement) {}
+  readonly ended = new Subject<void>();
 
-	static create(clip: AudioClip, audioResolver: AudioResolver) {
-		const element = audioResolver.createAudioElement(clip);
-		return new AudioPlayer(element);
-	}
+  private constructor(readonly element: HTMLAudioElement) {
+    this.load();
+  }
 
-	play() {
-		void this.element.play();
-	}
+  static create(clip: AudioClip, audioResolver: AudioResolver) {
+    const element = audioResolver.createAudioElement(clip);
+    return new AudioPlayer(element);
+  }
 
-	pause() {
-		this.element.pause();
-	}
+  static createFromElement(element: HTMLAudioElement) {
+    return new AudioPlayer(element);
+  }
 
-	seek(time: number) {
-		this.element.currentTime = time;
-	}
+  static createFromPath(path: string) {
+    const element = document.createElement('video');
+    element.src = path;
+    return this.createFromElement(element);
+  }
+
+  static createFromTimelineClip(timelineClip: AudioTimelineClip) {
+    return this.createFromPath(timelineClip.clip.audioPath);
+  }
+
+  play() {
+    void this.element.play();
+  }
+
+  pause() {
+    this.element.pause();
+  }
+
+  seek(time: number) {
+    this.element.currentTime = time;
+  }
+
+  destroy() {
+    this.element.removeAttribute('src'); // empty source
+    this.element.load();
+    this.element.removeEventListener('ended', this.onElementEnded);
+    this.ended.removeAllListeners();
+  }
+
+  private load() {
+    this.element.currentTime = 0.01;
+    this.element.addEventListener('ended', this.onElementEnded);
+  }
+
+  private onElementEnded = () => {
+    this.ended.emit();
+  };
 }

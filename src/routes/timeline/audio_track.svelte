@@ -1,14 +1,14 @@
-<script lang='ts'>
+<script lang="ts">
   import AudioClip from './audio_clip.svelte';
-  import type { AudioTimelineClip } from '$lib/audio/audio_timeline';
+  import type { AudioTimelineClip } from '$lib/audio/audio_timeline.svelte';
 
   export let timelineClips: AudioTimelineClip[];
   export let maxDuration: number;
 </script>
 
-<div class='container'>
+<div class="container">
   {#each timelineClips as timelineClip}
-    <AudioClip timelineClip={timelineClip} maxDuration={maxDuration} />
+    <AudioClip {timelineClip} {maxDuration} />
   {/each}
 </div>
 

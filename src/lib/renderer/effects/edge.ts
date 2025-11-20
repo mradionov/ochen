@@ -45,7 +45,7 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
     }
 
     const wobbleAmount = 4 * audioInfo?.mid;
-    console.log(wobbleAmount);
+    // console.log(wobbleAmount);
 
     let gx, gy;
     switch (kernel) {

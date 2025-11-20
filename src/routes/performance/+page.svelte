@@ -1,18 +1,24 @@
-<script lang='ts'>
+<script lang="ts">
   import { getContext, onMount } from 'svelte';
   import { ManifestReader } from '$lib/manifest/manifest_reader';
   import VideoRendererSurface from '$lib/video/video_renderer_surface.svelte';
-  import { AudioResolverKey, ProjectsControllerKey, VideoResolverKey } from '$lib/di';
+  import {
+    AudioResolverKey,
+    ProjectsControllerKey,
+    VideoResolverKey,
+  } from '$lib/di';
   import { VideoPlayer } from '$lib/video/video_player';
   import { VideoProducer } from '$lib/video/video_producer';
   import { VideoResolver } from '$lib/video/video_resolver';
   import { AudioResolver } from '$lib/audio/audio_resolver';
   import { VideoTimeline } from '$lib/video/video_timeline.svelte';
-  import { AudioTimeline } from '$lib/audio/audio_timeline';
+  import { AudioTimeline } from '$lib/audio/audio_timeline.svelte';
   import { AudioProducer } from '$lib/audio/audio_producer';
   import { ProjectsController } from '$lib/projects/projects_controller';
 
-  const projectsController = getContext<ProjectsController>(ProjectsControllerKey);
+  const projectsController = getContext<ProjectsController>(
+    ProjectsControllerKey,
+  );
   const videoResolver = getContext<VideoResolver>(VideoResolverKey);
   const audioResolver = getContext<AudioResolver>(AudioResolverKey);
 
@@ -70,9 +76,7 @@
 </script>
 
 <div>
-  <button on:click={handleFullscreen}>
-    fullscreen
-  </button>
+  <button on:click={handleFullscreen}> fullscreen </button>
   <button on:click={handleFullscreenPlay}>
     fullscreen and play (only video)
   </button>
@@ -80,7 +84,7 @@
     fullscreen and play (with audio)
   </button>
   <hr />
-  <div class='content' bind:this={contentElement}>
+  <div class="content" bind:this={contentElement}>
     {#if videoPlayer}
       <VideoRendererSurface
         player={videoPlayer}

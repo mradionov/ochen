@@ -13,8 +13,8 @@
   import type { VideoTimelineClip } from '$lib/video/video_timeline.svelte';
   import AudioTrack from './audio_track.svelte';
   import { AudioResolver } from '$lib/audio/audio_resolver';
-  import { AudioTimeline } from '$lib/audio/audio_timeline';
-  import type { AudioTimelineClip } from '$lib/audio/audio_timeline';
+  import { AudioTimeline } from '$lib/audio/audio_timeline.svelte.ts';
+  import type { AudioTimelineClip } from '$lib/audio/audio_timeline.svelte';
   import { toClockString, toMinutesString } from '$lib/time_utils.js';
   import { AudioProducer } from '$lib/audio/audio_producer';
   import PlayheadTrack from './playhead_track.svelte';
@@ -76,8 +76,10 @@
   $effect(() => {
     // Makes sure to reset the players when timeline changes
     videoTimelineClips;
+    audioTimelineClips;
     // But also skips updates if playhead time changes during playing
     videoProducer?.reset(untrack(() => playheadTime));
+    audioProducer?.reset(untrack(() => playheadTime));
   });
 
   onMount(async () => {

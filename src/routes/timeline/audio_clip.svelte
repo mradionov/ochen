@@ -1,13 +1,13 @@
-<script lang='ts'>
-  import type { AudioTimelineClip } from '$lib/audio/audio_timeline';
+<script lang="ts">
+  import type { AudioTimelineClip } from '$lib/audio/audio_timeline.svelte';
 
   export let timelineClip: AudioTimelineClip;
   export let maxDuration: number;
 
-  $: width = timelineClip.duration / maxDuration * 100;
+  $: width = (timelineClip.duration / maxDuration) * 100;
 </script>
 
-<div class='container' style='width: {width}%'>
+<div class="container" style="width: {width}%">
   {timelineClip.audioId}
 </div>
 
