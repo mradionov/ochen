@@ -1,3 +1,5 @@
+import type { EffectsMapRaw } from '$lib/renderer/effects_map.svelte';
+
 // Original JSON format
 export type ManifestRaw = {
   videoTrack: VideoTrackRaw;
@@ -8,17 +10,9 @@ type VideoId = string;
 
 export type VideoTrackRaw = {
   transitionOut?: VideoTransitionOutRaw;
-  effects?: VideoEffectsRaw;
+  effects?: EffectsMapRaw;
   clips: VideoClipRaw[];
   videos: Record<string, string>;
-};
-
-export type VideoEffectsRaw = {
-  tint?: string;
-  vignette?: boolean;
-  grain?: number;
-  blur?: number;
-  edge?: boolean;
 };
 
 type VideoTransitionOutRaw = {

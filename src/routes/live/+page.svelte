@@ -15,6 +15,8 @@
   const videoCapture = new VideoCapture();
   const audioAnalyser = new AudioAnalyser();
 
+  let contentElement: HTMLDivElement;
+
   let isLive = $state(true);
   let audioInfo = $state<AudioInfo | undefined>(undefined);
 
@@ -56,22 +58,29 @@
     renderLoop.stop();
     audioCapture.stop();
   }
+
+  function handleFullscreen() {
+    contentElement.requestFullscreen();
+  }
 </script>
 
 <div class="container">
   <div class="left">
+    <button onclick={handleFullscreen}> fullscreen </button>
     <button onclick={handleStart}>start</button>
     <button onclick={handleStop}>stop</button>
     <input type="checkbox" checked={isLive} onchange={handleIsLive} />live
 
     {#if videoPlayer}
-      <RendererSurface
-        player={videoPlayer}
-        audioInfo={isLive ? audioInfo : undefined}
-        {effects}
-        width={600}
-        height={600}
-      />
+      <div class="content" bind:this={contentElement}>
+        <RendererSurface
+          player={videoPlayer}
+          audioInfo={isLive ? audioInfo : undefined}
+          {effects}
+          width={800}
+          height={800}
+        />
+      </div>
     {/if}
   </div>
   <div class="right">
@@ -92,5 +101,10 @@
 
   .left {
     align-items: flex-start;
+  }
+
+  .content {
+    position: relative;
+    padding-left: 400px;
   }
 </style>

@@ -7,15 +7,111 @@
       },
       {
         "videoId": "IMG_0651.MOV"
+      },
+      {
+        "videoId": "IMG_0647.MOV"
+      },
+      {
+        "videoId": "IMG_0645.MOV"
+      },
+      {
+        "videoId": "IMG_0643.MOV"
+      },
+      {
+        "videoId": "IMG_0640.MOV"
+      },
+      {
+        "videoId": "IMG_0657.MOV"
+      },
+      {
+        "videoId": "IMG_0626.MOV"
+      },
+      {
+        "videoId": "IMG_0618.MOV"
+      },
+      {
+        "videoId": "IMG_0619.MOV"
+      },
+      {
+        "videoId": "IMG_0620.MOV"
+      },
+      {
+        "videoId": "IMG_0630.MOV"
+      },
+      {
+        "videoId": "IMG_0953.MOV"
+      },
+      {
+        "videoId": "IMG_0627.MOV"
+      },
+      {
+        "videoId": "IMG_0949.MOV"
+      },
+      {
+        "videoId": "IMG_0629.MOV"
+      },
+      {
+        "videoId": "IMG_0641.MOV"
+      },
+      {
+        "videoId": "IMG_0952.MOV"
+      },
+      {
+        "videoId": "IMG_0946.MOV"
+      },
+      {
+        "videoId": "IMG_0950.MOV"
+      },
+      {
+        "videoId": "IMG_0633.MOV"
+      },
+      {
+        "videoId": "IMG_0840.MOV"
+      },
+      {
+        "videoId": "IMG_0947.MOV"
+      },
+      {
+        "videoId": "IMG_0648.MOV"
+      },
+      {
+        "videoId": "IMG_0624.MOV"
       }
     ],
     "videos": {
       "IMG_0644.MOV": "IMG_0644.MOV",
-      "IMG_0651.MOV": "IMG_0651.MOV"
+      "IMG_0651.MOV": "IMG_0651.MOV",
+      "IMG_0647.MOV": "IMG_0647.MOV",
+      "IMG_0645.MOV": "IMG_0645.MOV",
+      "IMG_0643.MOV": "IMG_0643.MOV",
+      "IMG_0640.MOV": "IMG_0640.MOV",
+      "IMG_0657.MOV": "IMG_0657.MOV",
+      "IMG_0626.MOV": "IMG_0626.MOV",
+      "IMG_0618.MOV": "IMG_0618.MOV",
+      "IMG_0619.MOV": "IMG_0619.MOV",
+      "IMG_0620.MOV": "IMG_0620.MOV",
+      "IMG_0630.MOV": "IMG_0630.MOV",
+      "IMG_0953.MOV": "IMG_0953.MOV",
+      "IMG_0627.MOV": "IMG_0627.MOV",
+      "IMG_0949.MOV": "IMG_0949.MOV",
+      "IMG_0629.MOV": "IMG_0629.MOV",
+      "IMG_0641.MOV": "IMG_0641.MOV",
+      "IMG_0952.MOV": "IMG_0952.MOV",
+      "IMG_0946.MOV": "IMG_0946.MOV",
+      "IMG_0950.MOV": "IMG_0950.MOV",
+      "IMG_0633.MOV": "IMG_0633.MOV",
+      "IMG_0840.MOV": "IMG_0840.MOV",
+      "IMG_0947.MOV": "IMG_0947.MOV",
+      "IMG_0648.MOV": "IMG_0648.MOV",
+      "IMG_0624.MOV": "IMG_0624.MOV"
     },
     "effects": {
+      "order": ["edge", "tint"],
       "tint": "#ff1a1a",
-      "edge": true
+      "grain": {},
+      "edge": {
+        "threshold": 0
+      }
     }
   },
   "audioTrack": {

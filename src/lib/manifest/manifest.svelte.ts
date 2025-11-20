@@ -5,7 +5,6 @@ import type {
   AudioTrackRaw,
   ManifestRaw,
   VideoClipRaw,
-  VideoEffectsRaw,
   VideoTrackRaw,
 } from './manifest_raw';
 

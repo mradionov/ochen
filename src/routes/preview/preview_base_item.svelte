@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { getContext, mount, onMount, type Snippet } from 'svelte';
+  import { getContext, onMount, type Snippet } from 'svelte';
   import type {
     VideoPreview,
     VideoPreviewFactory,
   } from '$lib/video/video_preview_factory';
-  import type { VideoEffects } from '$lib/manifest/manifest.svelte';
   import { RenderLoopKey, VideoPreviewFactoryKey } from '$lib/di';
   import type { RenderLoop } from '$lib/render_loop';
+  import type { EffectsMap } from '$lib/renderer/effects_map.svelte';
 
   const renderLoop = getContext<RenderLoop>(RenderLoopKey);
   const videoPreviewFactory = getContext<VideoPreviewFactory>(
@@ -29,7 +29,7 @@
     controls?: Snippet;
     videoPath: string;
     videoTrimmedDuration?: number;
-    effects?: VideoEffects;
+    effects?: EffectsMap;
     videoPreview?: VideoPreview | undefined;
     headerLeft?: string;
     headerRight?: string;

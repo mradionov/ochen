@@ -11,8 +11,6 @@ export class AudioAnalyser {
   private lastTreble = 0;
 
   process(data: Uint8Array<ArrayBuffer>, sampleRate: number): AudioInfo {
-    // console.log({ data, sampleRate });
-
     const bass = this.bandEnergy(data, 20, 250, sampleRate);
     const mid = this.bandEnergy(data, 250, 2000, sampleRate);
     const treble = this.bandEnergy(data, 2000, 8000, sampleRate);

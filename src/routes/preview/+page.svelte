@@ -1,7 +1,11 @@
 <script lang="ts">
   import { getContext, onMount } from 'svelte';
   import { ManifestReader } from '$lib/manifest/manifest_reader';
-  import { ProjectsControllerKey, VideoResolverKey } from '$lib/di';
+  import {
+    ProjectsControllerKey,
+    RenderLoopKey,
+    VideoResolverKey,
+  } from '$lib/di';
   import { VideoTimeline } from '$lib/video/video_timeline.svelte';
   import type { VideoTimelineClip } from '$lib/video/video_timeline.svelte';
   import { VideoResolver } from '$lib/video/video_resolver';
@@ -12,7 +16,9 @@
   import ManifestSaveButton from '$lib/manifest/manifest_save_button.svelte';
   import { Manifest } from '$lib/manifest/manifest.svelte';
   import ClipItem from './clip_item.svelte';
+  import type { RenderLoop } from '$lib/render_loop';
 
+  const renderLoop = getContext<RenderLoop>(RenderLoopKey);
   const projectsController = getContext<ProjectsController>(
     ProjectsControllerKey,
   );
@@ -44,6 +50,8 @@
     timeline = new VideoTimeline(manifest, videoResolver);
 
     tint = manifest.videoTrack.effects?.tint;
+
+    renderLoop.start();
   });
 
   function handleTintChange(

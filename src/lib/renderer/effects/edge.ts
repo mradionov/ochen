@@ -4,13 +4,13 @@ import type { EdgeEffectConfig } from '../effects_map.svelte';
 
 export class EdgeEffect implements Effect<EdgeEffectConfig> {
   async apply(
-    { ctx, width, height }: EffectContext,
+    { ctx, width, height, lastTime }: EffectContext,
     config: EdgeEffectConfig,
     audioInfo?: AudioInfo,
   ) {
     const kernel = 'sobel';
-    const threshold = config.threshold ?? 0;
-    const transparency = config.transparency ?? 0;
+    let threshold = config.threshold ?? 0;
+    let transparency = config.transparency ?? 0;
 
     let strength = config.strength ?? 1;
     if (audioInfo) {
@@ -18,8 +18,13 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
       //   strength = 3.0;
       // }
       // strength += (1.0 - strength) * 0.1;
-      strength = 0.5 + audioInfo.treble * 4.0;
+      strength = 0 + audioInfo.treble * 10;
+
+      transparency = 0 + 300 * audioInfo.bass;
+      // threshold = 0 + 100 * (audioInfo.mid * 2);
     }
+
+    // console.log(audioInfo);
 
     // const frame = ctx.getImageData(0, 0, width, height);
 
@@ -39,6 +44,9 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
       gray[i] = 0.3 * r + 0.59 * g + 0.11 * b;
     }
 
+    const wobbleAmount = 4 * audioInfo?.mid;
+    console.log(wobbleAmount);
+
     let gx, gy;
     switch (kernel) {
       // case 'prewitt':
@@ -57,7 +65,7 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
 
     for (let y = 1; y < height - 1; y++) {
       for (let x = 1; x < width - 1; x++) {
-        const i = (y * width + x) * 4;
+        let i = (y * width + x) * 4;
 
         let px = 0,
           py = 0;
@@ -73,12 +81,60 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
 
         mag *= strength;
 
-        if (threshold != null) {
-          mag = mag > threshold ? mag : 0;
-        }
+        // if (threshold != null) {
+        //   mag = mag > threshold ? mag : 0;
+        // }
 
-        dst[i] = dst[i + 1] = dst[i + 2] = mag;
-        dst[i + 3] = transparency;
+        // const stripeWidth = 12;
+        // const stagger = (x + y + Math.floor(lastTime * 10)) % stripeWidth;
+        // const intensity = mag * (stagger < stripeWidth / 2 ? 1 : 0.5);
+
+        // console.log(lastTime);
+
+        if (mag > threshold) {
+          const phase = (x + y) * 0.1 + lastTime;
+          const offsetX = Math.round(x + squareWave(phase) * wobbleAmount);
+          const offsetY = Math.round(
+            y + squareWave(phase + 0.3) * wobbleAmount,
+          );
+
+          // pixels
+          // const phase = (x + y) * 0.1 + lastTime * 0.5;
+          // const offsetX = Math.round(x + Math.sin(phase) * wobbleAmount * 2);
+          // const offsetY = Math.round(y + Math.cos(phase) * wobbleAmount * 2);
+
+          // const snap = (Math.floor(lastTime * 10) % 3) - 1; // -1, 0, or +1
+          // const offsetX = x + snap;
+          // const offsetY = y + snap;
+
+          if (
+            offsetX < 0 ||
+            offsetX >= width ||
+            offsetY < 0 ||
+            offsetY >= height
+          )
+            continue;
+
+          if (wobbleAmount > 1.9) {
+            // if (audioInfo?.isBeat) {
+            i = (offsetY * width + offsetX) * 4;
+          }
+          // }
+          // }
+          // const val = Math.min(255, mag);
+
+          const intensity = Math.min(255, mag);
+
+          // const angle = Math.atan2(gy, gx); // between -π and π
+          // const angleBand = Math.floor((angle + Math.PI) / (Math.PI / 6)); // 12 steps
+          // const phase = (angleBand + Math.floor(lastTime * 4)) % 12;
+          // const visible = phase < 6 ? 1 : 0.2;
+
+          dst[i] = intensity;
+          dst[i + 1] = intensity;
+          dst[i + 2] = intensity;
+          dst[i + 3] = transparency;
+        }
       }
     }
 
@@ -108,4 +164,12 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
     ctx.drawImage(im, 0, 0);
     // ctx.filter = '';
   }
+}
+
+function triangleWave(t: number) {
+  return 2 * Math.abs((t % 1) - 0.5) - 1; // range: [-1, 1]
+}
+
+function squareWave(t: number) {
+  return t % 1 < 0.5 ? -1 : 1;
 }

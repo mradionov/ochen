@@ -70,7 +70,7 @@ export class EffectsMap {
       edge: {
         threshold: this.edge?.threshold,
       },
-      order: undefined,
+      order: this.order,
     };
   }
 }

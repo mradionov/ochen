@@ -25,7 +25,7 @@
   onMount(() => {
     renderer = Renderer.createFromCanvas(canvasElement);
 
-    renderLoop.tick.addListener(() => {
+    renderLoop.tick.addListener(({ lastTime }) => {
       player.updateFrame();
       // nextPlayer?.updateFrame();
 
@@ -33,7 +33,7 @@
 
       // TODO: compositor
       renderer.updateFrame(
-        { imageSource: videoImageSource, effects, audioInfo },
+        { imageSource: videoImageSource, effects, lastTime, audioInfo },
         undefined,
       );
     });

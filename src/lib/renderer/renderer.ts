@@ -54,10 +54,12 @@ export class Renderer {
       effects,
       audioInfo,
       offset,
+      lastTime,
     }: {
       imageSource: RendererImageSource;
       effects?: EffectsMap;
       audioInfo?: AudioInfo;
+      lastTime: number;
       offset?: {
         offsetX: number | string | undefined;
         offsetY: number | string | undefined;
@@ -119,12 +121,13 @@ export class Renderer {
     // }
 
     if (effects) {
-      this.applyEffects(effects, audioInfo);
+      this.applyEffects(effects, lastTime, audioInfo);
     }
   }
 
   private async applyEffects(
     effects: EffectsMap,
+    lastTime: number,
     audioInfo: AudioInfo | undefined,
   ) {
     const defaultOrder = effects.order ?? ['tint', 'edge', 'glitch', 'grain'];
@@ -142,6 +145,7 @@ export class Renderer {
         ctx: this.ctx,
         width: this.width,
         height: this.height,
+        lastTime,
       };
       await effect.apply(effectContext, effectConfig, audioInfo);
     }

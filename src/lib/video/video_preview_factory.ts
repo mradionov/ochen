@@ -1,11 +1,11 @@
 import { TaskQueue } from '$lib/task_queue';
 import { VideoPlayer } from '$lib/video/video_player';
 import { Renderer } from '$lib/renderer/renderer';
-import type { VideoEffects } from '$lib/manifest/manifest.svelte';
 import {
   VideoImageSource,
   ImageBitmapSource,
 } from '$lib/renderer/image_source';
+import type { EffectsMap } from '$lib/renderer/effects_map.svelte';
 
 export class VideoPreview {
   constructor(
@@ -14,7 +14,7 @@ export class VideoPreview {
     readonly posterImageSource: ImageBitmapSource,
   ) {}
 
-  update({ effects }: { effects?: VideoEffects }) {
+  update({ effects }: { effects?: EffectsMap }) {
     if (this.player.isPlaying || !this.player.isDestroyed) {
       const imageSource = new VideoImageSource(this.player.element);
       this.renderer.updateFrame({ imageSource, effects }, undefined);
@@ -38,7 +38,7 @@ export class VideoPreviewFactory {
     { trimmedDuration }: { trimmedDuration?: number } = {},
   ): Promise<VideoPreview> {
     return this.taskQueue.run(async () => {
-      const player = new VideoPlayer(videoPath, {
+      const player = VideoPlayer.createFromPath(videoPath, {
         rate: 10,
         trimmedDuration,
       });

@@ -27,6 +27,8 @@
   import { Manifest } from '$lib/manifest/manifest.svelte';
   import ManifestSaveButton from '$lib/manifest/manifest_save_button.svelte';
   import { ProjectsController } from '$lib/projects/projects_controller';
+  import { AudioCapture } from '$lib/audio/audio_capture';
+  import { AudioAnalyser, type AudioInfo } from '$lib/audio/audio_analyser';
 
   const projectsController = getContext<ProjectsController>(
     ProjectsControllerKey,
@@ -37,6 +39,11 @@
 
   const videoResolver = getContext<VideoResolver>(VideoResolverKey);
   const audioResolver = getContext<AudioResolver>(AudioResolverKey);
+
+  const audioCapture = new AudioCapture();
+  const audioAnalyser = new AudioAnalyser();
+
+  let audioInfo = $state<AudioInfo | undefined>(undefined);
 
   let manifest: Manifest = $state(Manifest.createEmpty());
 
@@ -94,9 +101,15 @@
     audioProducer = new AudioProducer(audioTimeline, audioResolver);
     audioProducer.load();
 
+    await audioCapture.connect();
+    audioCapture.start();
+
     timelineClock = new TimelineClock();
 
     renderLoop.tick.addListener(({ deltaTime }) => {
+      const { data, sampleRate, fftSize } = audioCapture.update();
+      audioInfo = audioAnalyser.process(data, sampleRate);
+
       timelineClock.update({ deltaTime });
     });
 
@@ -109,6 +122,7 @@
     audioProducer.play();
     videoProducer.play();
     timelineClock.play();
+    audioCapture.start();
   }
 
   function handlePause() {
@@ -170,6 +184,7 @@
           player={videoPlayer}
           nextPlayer={nextVideoPlayer}
           effects={manifest.videoTrack.effects}
+          {audioInfo}
           width={500}
           height={500}
         />

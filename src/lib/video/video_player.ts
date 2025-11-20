@@ -14,6 +14,8 @@ const defaultOptions: VideoPlayerOptions = {
 
 export class VideoPlayer {
   readonly options: VideoPlayerOptions;
+  readonly src: string | undefined;
+  readonly srcObject: MediaProvider | null;
   readonly ended = new Subject<void>();
   private _isPlaying = false;
   private _isDestroyed = false;
@@ -22,6 +24,8 @@ export class VideoPlayer {
     readonly element: HTMLVideoElement,
     argOptions: VideoPlayerOptions = {},
   ) {
+    this.src = element.src;
+    this.srcObject = element.srcObject;
     this.options = defaults(defaultOptions, argOptions);
     this.load();
   }
@@ -112,7 +116,12 @@ export class VideoPlayer {
   // }
 
   private load() {
-    // this.element.src = this.path;
+    if (this.src != null) {
+      this.element.src = this.src;
+    }
+    if (this.srcObject != null) {
+      this.element.srcObject = this.srcObject;
+    }
     this.element.muted = true;
     this.element.playbackRate = this.options.rate ?? 1;
     this.element.currentTime = 0.01;
