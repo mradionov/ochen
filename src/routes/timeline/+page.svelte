@@ -208,10 +208,18 @@
     </div>
     <div class="column">
       {#if selectedVideoTimelineClip}
-        <VideoClipDetails {manifest} timelineClip={selectedVideoTimelineClip} />
+        <VideoClipDetails
+          {playheadTime}
+          {manifest}
+          timelineClip={selectedVideoTimelineClip}
+        />
       {/if}
       {#if selectedAudioTimelineClip}
-        <AudioClipDetails {manifest} timelineClip={selectedAudioTimelineClip} />
+        <AudioClipDetails
+          {playheadTime}
+          {manifest}
+          timelineClip={selectedAudioTimelineClip}
+        />
       {/if}
     </div>
   </div>

@@ -5,6 +5,7 @@
 
   export let manifest: Manifest;
   export let timelineClip: AudioTimelineClip;
+  export let playheadTime: number;
 
   function handleTrimEndChange(e: Event & { currentTarget: HTMLInputElement }) {
     manifest.audioTrack.getClip(timelineClip.audioId).trimEnd = Number(
@@ -50,6 +51,17 @@
       <tr>
         <th class="head">trimmed duration</th>
         <td class="cell">{toMinutesString(timelineClip.trimmedDuration)}</td>
+      </tr>
+      <tr class="divider">
+        <td colspan="2"></td>
+      </tr>
+      <tr>
+        <th class="head">time left</th>
+        <td class="cell">
+          {playheadTime > timelineClip.end
+            ? '-'
+            : toMinutesString(timelineClip.end - playheadTime, true)}
+        </td>
       </tr>
       <tr class="divider">
         <td colspan="2"></td>

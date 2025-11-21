@@ -50,10 +50,10 @@ export class VideoTimeline {
   getTimelineClip(id: VideoId): VideoTimelineClip {
     return {
       videoId: id,
+      clip: this.getClip(id),
       index: this.getIndex(id),
       isFirst: this.isFirst(id),
       isLast: this.isLast(id),
-      clip: this.getClip(id),
       start: this.getStart(id),
       end: this.getEnd(id),
       sourceDuration: this.getSourceDuration(id),
