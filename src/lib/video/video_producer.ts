@@ -14,10 +14,7 @@ export class VideoProducer {
     nextPlayer: VideoPlayer | undefined;
   }>();
 
-  constructor(
-    private readonly videoTimeline: VideoTimeline,
-    private readonly videoResolver: VideoResolver,
-  ) {}
+  constructor(private readonly videoTimeline: VideoTimeline) {}
 
   reset(time: number) {
     this.currentIndex = undefined;

@@ -31,7 +31,7 @@ export class AudioPlayer {
   }
 
   static createFromPath(path: string, options: AudioPlayerOptions = {}) {
-    const element = document.createElement('video');
+    const element = document.createElement('audio');
     element.src = path;
     return this.createFromElement(element, options);
   }

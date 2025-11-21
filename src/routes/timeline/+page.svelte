@@ -96,7 +96,7 @@
     await audioResolver.loadMetadata(manifest.audioTrack.clips);
     audioTimeline = new AudioTimeline(manifest, audioResolver);
 
-    videoProducer = new VideoProducer(videoTimeline, videoResolver);
+    videoProducer = new VideoProducer(videoTimeline);
     videoProducer.playerChanged.addListener(({ player, nextPlayer }) => {
       videoPlayer = player;
       nextVideoPlayer = nextPlayer;
@@ -104,10 +104,14 @@
     videoProducer.load();
 
     audioProducer = new AudioProducer(audioTimeline, audioResolver);
+    audioProducer.playerChanged.addListener(({ player }) => {
+      console.log('playerchanged', player);
+      audioCapture.connectElement(player.element);
+    });
     audioProducer.load();
 
-    await audioCapture.connect();
-    audioCapture.start();
+    // await audioCapture.connect();
+    // audioCapture.start();
 
     timelineClock = new TimelineClock();
 

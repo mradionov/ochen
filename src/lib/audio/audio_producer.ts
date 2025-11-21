@@ -1,12 +1,18 @@
 import type { AudioResolver } from '$lib/audio/audio_resolver';
 import type { AudioTimeline } from '$lib/audio/audio_timeline.svelte';
 import { AudioPlayer } from '$lib/audio/audio_player';
+import { Subject } from '$lib/subject';
 
 export class AudioProducer {
   private currentIndex: number | undefined;
   private currentPlayer: AudioPlayer | undefined;
   private nextPlayer: AudioPlayer | undefined;
   private isPlaying = false;
+
+  readonly playerChanged = new Subject<{
+    player: AudioPlayer;
+    nextPlayer: AudioPlayer | undefined;
+  }>();
 
   constructor(
     private readonly audioTimeline: AudioTimeline,
@@ -117,6 +123,11 @@ export class AudioProducer {
     if (newNextTimelineClip) {
       this.nextPlayer = AudioPlayer.createFromTimelineClip(newNextTimelineClip);
     }
+
+    this.playerChanged.emit({
+      player: this.currentPlayer,
+      nextPlayer: this.nextPlayer,
+    });
   }
 
   private maybeDestroyCurrentPlayer() {

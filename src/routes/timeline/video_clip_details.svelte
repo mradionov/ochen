@@ -101,7 +101,7 @@
       <tr>
         <th class="head">time left</th>
         <td class="cell">
-          {playheadTime > timelineClip.end
+          {playheadTime > timelineClip.end || playheadTime < timelineClip.start
             ? '-'
             : toMinutesString(timelineClip.end - playheadTime, true)}
         </td>

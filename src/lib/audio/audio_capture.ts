@@ -9,7 +9,7 @@ export class AudioCapture {
 
   constructor() {}
 
-  async connect() {
+  async connectStream() {
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: {
         echoCancellation: false,
@@ -19,24 +19,43 @@ export class AudioCapture {
         sampleRate: 48000,
       },
     });
-    const audioCtx = new AudioContext({
-      // sampleRate: this.sampleRate,
-    });
-    await audioCtx.suspend();
+
+    const { audioCtx, analyser } = await this.maybeCreate();
+
     const src = audioCtx.createMediaStreamSource(stream);
-    const analyser = audioCtx.createAnalyser();
-    analyser.fftSize = this.fftSize;
+
     src.connect(analyser);
-
     src.connect(audioCtx.destination);
+  }
 
-    this.analyser = analyser;
+  async connectElement(audio: HTMLAudioElement) {
+    const { audioCtx, analyser } = await this.maybeCreate();
 
-    const bufferLength = analyser.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
+    const src = audioCtx.createMediaElementSource(audio);
 
-    this.dataArray = dataArray;
-    this.audioCtx = audioCtx;
+    src.connect(analyser);
+    src.connect(audioCtx.destination);
+  }
+
+  async maybeCreate() {
+    if (!this.audioCtx) {
+      this.audioCtx = new AudioContext();
+      await this.audioCtx.suspend();
+    }
+    if (!this.analyser) {
+      this.analyser = this.audioCtx.createAnalyser();
+      this.analyser.fftSize = this.fftSize;
+
+      const bufferLength = this.analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      this.dataArray = dataArray;
+    }
+
+    return {
+      audioCtx: this.audioCtx,
+      analyser: this.analyser,
+      dataArray: this.dataArray,
+    };
   }
 
   async start() {
@@ -48,6 +67,10 @@ export class AudioCapture {
   }
 
   update() {
+    if (!this.analyser) {
+      return;
+    }
+
     this.analyser.getByteFrequencyData(this.dataArray);
     return {
       data: this.dataArray,
