@@ -23,12 +23,13 @@
   import { TimelineClock } from '$lib/timeline_clock';
   import type { VideoPlayer } from '$lib/video/video_player';
   import RendererSurface from '$lib/renderer/renderer_surface.svelte';
-  import VideoInfo from './video_info.svelte';
+  import VideoClipDetails from './video_clip_details.svelte';
   import { Manifest } from '$lib/manifest/manifest.svelte';
   import ManifestSaveButton from '$lib/manifest/manifest_save_button.svelte';
   import { ProjectsController } from '$lib/projects/projects_controller';
   import { AudioCapture } from '$lib/audio/audio_capture';
   import { AudioAnalyser, type AudioInfo } from '$lib/audio/audio_analyser';
+  import AudioClipDetails from './audio_clip_details.svelte';
 
   const projectsController = getContext<ProjectsController>(
     ProjectsControllerKey,
@@ -65,6 +66,8 @@
   );
 
   let selectedVideoTimelineClip: VideoTimelineClip | undefined =
+    $state.raw(undefined);
+  let selectedAudioTimelineClip: AudioTimelineClip | undefined =
     $state.raw(undefined);
 
   let videoDuration = $derived(videoTimeline?.getTotalDuration() ?? 0);
@@ -149,6 +152,12 @@
 
   function handleVideoTimelineClipSelect(clip: VideoTimelineClip) {
     selectedVideoTimelineClip = clip;
+    selectedAudioTimelineClip = undefined;
+  }
+
+  function handleAudioTimelineClipSelect(clip: AudioTimelineClip) {
+    selectedAudioTimelineClip = clip;
+    selectedVideoTimelineClip = undefined;
   }
 </script>
 
@@ -175,7 +184,12 @@
       selectedTimelineClip={selectedVideoTimelineClip}
       onSelect={handleVideoTimelineClipSelect}
     />
-    <AudioTrack timelineClips={audioTimelineClips} {maxDuration} />
+    <AudioTrack
+      timelineClips={audioTimelineClips}
+      {maxDuration}
+      selectedTimelineClip={selectedAudioTimelineClip}
+      onSelect={handleAudioTimelineClipSelect}
+    />
   </div>
   <hr />
   <div class="split">
@@ -194,7 +208,10 @@
     </div>
     <div class="column">
       {#if selectedVideoTimelineClip}
-        <VideoInfo {manifest} timelineClip={selectedVideoTimelineClip} />
+        <VideoClipDetails {manifest} timelineClip={selectedVideoTimelineClip} />
+      {/if}
+      {#if selectedAudioTimelineClip}
+        <AudioClipDetails {manifest} timelineClip={selectedAudioTimelineClip} />
       {/if}
     </div>
   </div>

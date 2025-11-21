@@ -106,20 +106,27 @@
       "IMG_0624.MOV": "IMG_0624.MOV"
     },
     "effects": {
-      "order": ["edge", "tint"],
       "tint": "#ff1a1a",
       "grain": {},
       "edge": {
         "threshold": 0
-      }
+      },
+      "order": [
+        "edge",
+        "tint"
+      ]
     }
   },
   "audioTrack": {
-    "clips": [{
-      "audioId": "matt"
-    },{
-      "audioId": "mcdonalds"
-    }],
+    "clips": [
+      {
+        "audioId": "matt",
+        "trimEnd": 965
+      },
+      {
+        "audioId": "mcdonalds"
+      }
+    ],
     "audios": {
       "matt": "matthew-butterandgold.wav",
       "mcdonalds": "mcdonalds-break.wav"

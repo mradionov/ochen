@@ -4,11 +4,18 @@
 
   export let timelineClips: AudioTimelineClip[];
   export let maxDuration: number;
+  export let selectedTimelineClip: AudioTimelineClip | undefined;
+  export let onSelect: (clip: AudioTimelineClip) => void;
 </script>
 
 <div class="container">
   {#each timelineClips as timelineClip}
-    <AudioClip {timelineClip} {maxDuration} />
+    <AudioClip
+      {timelineClip}
+      {maxDuration}
+      isSelected={selectedTimelineClip?.audioId === timelineClip.audioId}
+      {onSelect}
+    />
   {/each}
 </div>
 

@@ -238,6 +238,14 @@ export class AudioTrack {
     return new AudioTrack({ clips: [], audios: {} });
   }
 
+  getClip(id: AudioId): AudioClip {
+    return Precondition.checkExists(this.findClip(id));
+  }
+
+  findClip(id: AudioId) {
+    return this.clips.find((clip) => clip.audioId === id);
+  }
+
   toRaw(): AudioTrackRaw {
     return {
       clips: this.clips.map((clip) => clip.toRaw()),
@@ -262,6 +270,7 @@ export class AudioClip {
   }
 
   toRaw(): AudioClipRaw {
+    console.log(this);
     return {
       audioId: this.audioId,
       trimEnd: this.trimEnd,

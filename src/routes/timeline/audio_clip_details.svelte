@@ -7,7 +7,7 @@
   export let timelineClip: AudioTimelineClip;
 
   function handleTrimEndChange(e: Event & { currentTarget: HTMLInputElement }) {
-    manifest.videoTrack.getClip(timelineClip.videoId).trimEnd = Number(
+    manifest.audioTrack.getClip(timelineClip.audioId).trimEnd = Number(
       e.currentTarget.value,
     );
   }

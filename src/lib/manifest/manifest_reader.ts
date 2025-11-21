@@ -111,7 +111,7 @@ export class ManifestReader {
 
     const audioIdSet = new Set<AudioId>();
     const clips = audioClipsRaw.map((clipRaw) => {
-      const { audioId } = clipRaw;
+      const { audioId, trimEnd } = clipRaw;
 
       if (audioIdSet.has(audioId)) {
         console.log(`Duplicate audio id: "${audioId}"`);
@@ -123,7 +123,7 @@ export class ManifestReader {
         throw new Error(`No audio found for "${audioId}"`);
       }
 
-      return new AudioClip({ audioId, audioPath });
+      return new AudioClip({ audioId, audioPath, trimEnd });
     });
 
     return new AudioTrack({ clips, audios: audioTrackRaw?.audios ?? {} });
