@@ -18,9 +18,9 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
       //   strength = 3.0;
       // }
       // strength += (1.0 - strength) * 0.1;
-      strength = 0 + audioInfo.treble * 10;
+      strength = 0 + audioInfo.norm.wideTreble * 10;
 
-      transparency = 0 + 300 * audioInfo.bass;
+      transparency = 0 + 300 * audioInfo.norm.wideBass;
       // threshold = 0 + 100 * (audioInfo.mid * 2);
     }
 
@@ -44,7 +44,8 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
       gray[i] = 0.3 * r + 0.59 * g + 0.11 * b;
     }
 
-    const wobbleAmount = 4 * audioInfo?.mid;
+    // const wobbleAmount = 4 * audioInfo?.mid;
+    const wobbleAmount = 0;
     // console.log(wobbleAmount);
 
     let gx, gy;

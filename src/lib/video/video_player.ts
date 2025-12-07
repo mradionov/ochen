@@ -1,6 +1,9 @@
 import { Subject } from '$lib/subject';
 import { defaults } from '$lib/defaults';
 import type { VideoTimelineClip } from './video_timeline.svelte';
+import type { RenderablePlayer } from './renderable_player';
+import { VideoRenderSource } from '$lib/renderer/render_source';
+import { Deferred } from '$lib/deferred';
 
 type VideoPlayerOptions = {
   rate?: number;
@@ -12,11 +15,12 @@ const defaultOptions: VideoPlayerOptions = {
   trimmedDuration: undefined,
 };
 
-export class VideoPlayer {
+export class VideoPlayer implements RenderablePlayer {
   readonly options: VideoPlayerOptions;
   readonly src: string | undefined;
   readonly srcObject: MediaProvider | null;
   readonly ended = new Subject<void>();
+  readonly loaded: Promise<void>;
   private _isPlaying = false;
   private _isDestroyed = false;
 
@@ -27,6 +31,15 @@ export class VideoPlayer {
     this.src = element.src;
     this.srcObject = element.srcObject;
     this.options = defaults(defaultOptions, argOptions);
+    const loadedDeferred = new Deferred<void>();
+    this.loaded = loadedDeferred.promise;
+    element.addEventListener(
+      'loadeddata',
+      () => {
+        loadedDeferred.resolve();
+      },
+      { once: true },
+    );
     this.load();
   }
 
@@ -50,12 +63,24 @@ export class VideoPlayer {
     });
   }
 
+  createRenderSource() {
+    return new VideoRenderSource(this.element);
+  }
+
   get isPlaying() {
     return this._isPlaying;
   }
 
   get isDestroyed() {
     return this._isDestroyed;
+  }
+
+  get width() {
+    return this.element.videoWidth;
+  }
+
+  get height() {
+    return this.element.videoHeight;
   }
 
   async play() {
@@ -110,10 +135,6 @@ export class VideoPlayer {
     this.ended.removeAllListeners();
     this._isPlaying = false;
   }
-
-  // private get rate() {
-  // 	return this.timelineClip.rate;
-  // }
 
   private load() {
     if (this.src != null) {

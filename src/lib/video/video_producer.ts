@@ -1,17 +1,21 @@
-import type { VideoTimeline } from '$lib/video/video_timeline.svelte';
-import type { VideoResolver } from '$lib/video/video_resolver';
-import { VideoPlayer } from '$lib/video/video_player';
+import {
+  VideoTimeline,
+  type VideoTimelineClip,
+} from '$lib/video/video_timeline.svelte';
 import { Subject } from '$lib/subject';
+import type { RenderablePlayer } from './renderable_player';
+import { RenderablePlayerFactory } from './renderable_player_factory';
 
 export class VideoProducer {
   private currentIndex: number | undefined;
-  private currentPlayer: VideoPlayer | undefined;
-  private nextPlayer: VideoPlayer | undefined;
+  private currentPlayer: RenderablePlayer | undefined;
+  private nextPlayer: RenderablePlayer | undefined;
   private _isPlaying = false;
 
+  readonly clipChanged = new Subject<VideoTimelineClip>();
   readonly playerChanged = new Subject<{
-    player: VideoPlayer;
-    nextPlayer: VideoPlayer | undefined;
+    player: RenderablePlayer;
+    nextPlayer: RenderablePlayer | undefined;
   }>();
 
   constructor(private readonly videoTimeline: VideoTimeline) {}
@@ -109,7 +113,7 @@ export class VideoProducer {
       }
     } else {
       this.maybeDestroyNextPlayer();
-      this.currentPlayer = VideoPlayer.createFromTimelineClip(
+      this.currentPlayer = RenderablePlayerFactory.createFromTimelineClip(
         newCurrentTimelineClip,
       );
     }
@@ -118,9 +122,11 @@ export class VideoProducer {
     this.currentIndex = newCurrentIndex;
 
     if (newNextTimelineClip) {
-      this.nextPlayer = VideoPlayer.createFromTimelineClip(newNextTimelineClip);
+      this.nextPlayer =
+        RenderablePlayerFactory.createFromTimelineClip(newNextTimelineClip);
     }
 
+    this.clipChanged.emit(newNextTimelineClip);
     this.playerChanged.emit({
       player: this.currentPlayer,
       nextPlayer: this.nextPlayer,

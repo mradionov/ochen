@@ -25,6 +25,14 @@
     manifest.videoTrack.getClip(timelineClip.videoId).offsetY = offsetY;
   }
 
+  function handleCustomDurationChange(
+    e: Event & { currentTarget: HTMLInputElement },
+  ) {
+    manifest.videoTrack.getClip(timelineClip.videoId).duration = Number(
+      e.currentTarget.value,
+    );
+  }
+
   function handleTrimEndChange(e: Event & { currentTarget: HTMLInputElement }) {
     manifest.videoTrack.getClip(timelineClip.videoId).trimEnd = Number(
       e.currentTarget.value,
@@ -67,6 +75,16 @@
         <td class="cell">{toMinutesString(timelineClip.end)}</td>
       </tr>
       <tr>
+        <th class="head">custom duration</th>
+        <td class="cell">
+          <input
+            type="number"
+            value={timelineClip.customDuration}
+            on:change={handleCustomDurationChange}
+          />
+        </td>
+      </tr>
+      <tr>
         <th class="head">duration</th>
         <td class="cell">{toMinutesString(timelineClip.duration)}</td>
       </tr>
@@ -88,8 +106,8 @@
         </td>
       </tr>
       <tr>
-        <th class="head">source duration</th>
-        <td class="cell">{toMinutesString(timelineClip.sourceDuration)}</td>
+        <th class="head">file duration</th>
+        <td class="cell">{toMinutesString(timelineClip.fileDuration)}</td>
       </tr>
       <tr>
         <th class="head">trimmed duration</th>

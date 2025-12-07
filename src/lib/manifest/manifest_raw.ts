@@ -22,6 +22,7 @@ type VideoTransitionOutRaw = {
 
 export type VideoClipRaw = {
   videoId: VideoId;
+  duration?: number;
   rate?: number;
   offsetX?: number | string;
   offsetY?: number | string;

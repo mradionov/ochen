@@ -2,7 +2,7 @@ import type { VideoPlayer } from '$lib/video/video_player';
 import { Precondition } from '$lib/precondition';
 import { TintEffect } from './effects/tint';
 import type { Effect } from './effect';
-import type { RendererImageSource } from './image_source';
+import type { RenderSource } from './render_source';
 import { EdgeEffect } from './effects/edge';
 import type { EffectsMap } from './effects_map.svelte';
 import { GrainEffect } from './effects/grain';
@@ -50,13 +50,13 @@ export class Renderer {
 
   updateFrame(
     {
-      imageSource,
+      renderSource,
       effects,
       audioInfo,
       offset,
       lastTime,
     }: {
-      imageSource: RendererImageSource;
+      renderSource: RenderSource;
       effects?: EffectsMap;
       audioInfo?: AudioInfo;
       lastTime: number;
@@ -69,7 +69,7 @@ export class Renderer {
   ) {
     this.ctx.clearRect(0, 0, this.width, this.height);
 
-    const box = this.getBox(imageSource, offset);
+    const box = this.getBox(renderSource, offset);
 
     // const { timelineClip } = player;
     // const { effects, transitionOut } = player.timelineClip.clip;
@@ -89,7 +89,7 @@ export class Renderer {
     // }
 
     this.ctx.drawImage(
-      imageSource.source(),
+      renderSource.source(),
       box.srcX,
       box.srcY,
       box.srcWidth,
@@ -185,7 +185,7 @@ export class Renderer {
   }
 
   private getBox(
-    imageSource: RendererImageSource,
+    renderSource: RenderSource,
     offset: {
       offsetX: number | string | undefined;
       offsetY: number | string | undefined;
@@ -207,8 +207,8 @@ export class Renderer {
 
     const srcX = 0;
     const srcY = 0;
-    const srcWidth = imageSource.width();
-    const srcHeight = imageSource.height();
+    const srcWidth = renderSource.width();
+    const srcHeight = renderSource.height();
 
     const surfaceWidth = this.width;
     const surfaceHeight = this.height;

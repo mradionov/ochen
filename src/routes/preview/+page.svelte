@@ -45,7 +45,7 @@
 
     sourceVideoFiles = await projectsController.fetchActiveProjectVideoFiles();
 
-    await videoResolver.loadMetadata(manifest.videoTrack.clips);
+    await videoResolver.loadMetadata(manifest.videoTrack.videoClips);
 
     timeline = new VideoTimeline(manifest, videoResolver);
 

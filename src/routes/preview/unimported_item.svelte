@@ -6,19 +6,26 @@
   import { VideoResolver } from '$lib/video/video_resolver';
   import type { VideoMetadata } from '$lib/video/video_resolver';
   import PreviewBaseItem from './preview_base_item.svelte';
+  import { isImage } from '$lib/image_utils';
 
   const videoResolver = getContext<VideoResolver>(VideoResolverKey);
 
   export let sourceVideoFile: SourceVideoFile;
   export let onImport: (sourceVideoFile: SourceVideoFile) => void;
 
-  let videoMetadata: VideoMetadata;
+  let duration: number;
 
   onMount(async () => {
-    videoMetadata = await videoResolver.loadMetadataOne({
-      videoId: sourceVideoFile.name,
-      videoPath: sourceVideoFile.path,
-    });
+    if (isImage(sourceVideoFile.name)) {
+      duration = 0;
+    } else {
+      duration = (
+        await videoResolver.loadMetadataOne({
+          videoId: sourceVideoFile.name,
+          videoPath: sourceVideoFile.path,
+        })
+      ).duration;
+    }
   });
 
   function handleImport() {
@@ -29,7 +36,7 @@
 <PreviewBaseItem
   videoPath={sourceVideoFile.path}
   headerLeft={sourceVideoFile.name}
-  headerRight={toMinutesString(videoMetadata?.duration)}
+  headerRight={toMinutesString(duration)}
 >
   {#snippet controls()}
     <button on:click={handleImport}>import</button>

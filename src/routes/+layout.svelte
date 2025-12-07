@@ -2,6 +2,7 @@
   import { setContext } from 'svelte';
   import {
     AudioResolverKey,
+    ImageResolverKey,
     ProjectsControllerKey,
     RenderLoopKey,
     VideoPreviewFactoryKey,
@@ -14,6 +15,7 @@
   import { ProjectsRepo } from '$lib/projects/projects_repo';
   import { Database } from '$lib/database';
   import { VideoPreviewFactory } from '$lib/video/video_preview_factory';
+  import { ImageResolver } from '$lib/image/image_resolver';
 
   const db = new Database();
   const dirHandlesRepo = new ProjectsRepo(db);
@@ -27,6 +29,7 @@
   setContext(ProjectsControllerKey, setsDir);
   setContext(VideoResolverKey, videoResolver);
   setContext(AudioResolverKey, new AudioResolver());
+  setContext(ImageResolverKey, new ImageResolver());
   setContext(VideoPreviewFactoryKey, videoPreviewFactory);
   setContext(RenderLoopKey, renderLoop);
 </script>

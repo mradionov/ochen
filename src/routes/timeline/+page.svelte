@@ -20,8 +20,7 @@
   import PlayheadTrack from './playhead_track.svelte';
   import { VideoProducer } from '$lib/video/video_producer';
   import { RenderLoop } from '$lib/render_loop';
-  import { TimelineClock } from '$lib/timeline_clock';
-  import type { VideoPlayer } from '$lib/video/video_player';
+  import { RunningClock } from '$lib/running_clock';
   import RendererSurface from '$lib/renderer/renderer_surface.svelte';
   import VideoClipDetails from './video_clip_details.svelte';
   import { Manifest } from '$lib/manifest/manifest.svelte';
@@ -30,6 +29,7 @@
   import { AudioCapture } from '$lib/audio/audio_capture';
   import { AudioAnalyser, type AudioInfo } from '$lib/audio/audio_analyser';
   import AudioClipDetails from './audio_clip_details.svelte';
+  import type { RenderablePlayer } from '$lib/video/renderable_player';
 
   const projectsController = getContext<ProjectsController>(
     ProjectsControllerKey,
@@ -50,13 +50,13 @@
 
   let videoProducer: VideoProducer;
   let audioProducer: AudioProducer;
-  let timelineClock: TimelineClock;
+  let timelineClock: RunningClock;
 
   let videoTimeline = $state.raw<VideoTimeline | undefined>(undefined);
   let audioTimeline = $state.raw<AudioTimeline | undefined>(undefined);
 
-  let videoPlayer: VideoPlayer | undefined = $state.raw(undefined);
-  let nextVideoPlayer: VideoPlayer | undefined = $state.raw(undefined);
+  let videoPlayer: RenderablePlayer | undefined = $state.raw(undefined);
+  let nextVideoPlayer: RenderablePlayer | undefined = $state.raw(undefined);
 
   let videoTimelineClips: VideoTimelineClip[] = $derived(
     videoTimeline?.getTimelineClips() ?? [],
@@ -76,6 +76,10 @@
 
   let playheadTime: number = $state.raw(0);
 
+  let currentVideoTimelineClip: VideoTimelineClip = $derived(
+    videoTimeline?.findClipByTime(playheadTime),
+  );
+
   $effect(() => {
     // Makes sure to reset the players when timeline changes
     videoTimelineClips;
@@ -90,14 +94,17 @@
     manifest = await new ManifestReader().read(projectName);
     console.log({ manifest });
 
-    await videoResolver.loadMetadata(manifest.videoTrack.clips);
+    await videoResolver.loadMetadata(manifest.videoTrack.videoClips);
     videoTimeline = new VideoTimeline(manifest, videoResolver);
 
     await audioResolver.loadMetadata(manifest.audioTrack.clips);
     audioTimeline = new AudioTimeline(manifest, audioResolver);
 
+    console.log(videoTimeline);
+
     videoProducer = new VideoProducer(videoTimeline);
     videoProducer.playerChanged.addListener(({ player, nextPlayer }) => {
+      console.log('videoProducer#playerchanged', { player, nextPlayer });
       videoPlayer = player;
       nextVideoPlayer = nextPlayer;
     });
@@ -105,7 +112,7 @@
 
     audioProducer = new AudioProducer(audioTimeline, audioResolver);
     audioProducer.playerChanged.addListener(({ player }) => {
-      console.log('playerchanged', player);
+      console.log('audioProducer#playerchanged', { player });
       audioCapture.connectElement(player.element);
     });
     audioProducer.load();
@@ -113,7 +120,7 @@
     // await audioCapture.connect();
     // audioCapture.start();
 
-    timelineClock = new TimelineClock();
+    timelineClock = new RunningClock();
 
     renderLoop.tick.addListener(({ deltaTime }) => {
       const { data, sampleRate, fftSize } = audioCapture.update();
@@ -204,6 +211,10 @@
           player={videoPlayer}
           nextPlayer={nextVideoPlayer}
           effects={manifest.videoTrack.effects}
+          offset={{
+            offsetX: currentVideoTimelineClip.clip.offsetX,
+            offsetY: currentVideoTimelineClip.clip.offsetY,
+          }}
           {audioInfo}
           width={500}
           height={500}

@@ -2,111 +2,90 @@
   "videoTrack": {
     "clips": [
       {
-        "videoId": "IMG_0644.MOV",
-        "rate": 1.5
+        "videoId": "IMG_1569.jpeg",
+        "duration": 100
       },
       {
-        "videoId": "IMG_0651.MOV"
+        "videoId": "IMG_1583.jpeg",
+        "duration": 33
       },
       {
-        "videoId": "IMG_0647.MOV"
+        "videoId": "IMG_1576.jpeg",
+        "duration": 33
       },
       {
-        "videoId": "IMG_0645.MOV"
+        "videoId": "IMG_1582.jpeg",
+        "duration": 33
       },
       {
-        "videoId": "IMG_0643.MOV"
+        "videoId": "IMG_1570.jpeg",
+        "duration": 33
       },
       {
-        "videoId": "IMG_0640.MOV"
+        "videoId": "IMG_1568.jpeg",
+        "duration": 33
       },
       {
-        "videoId": "IMG_0657.MOV"
+        "videoId": "IMG_1573.jpeg",
+        "duration": 33
       },
       {
-        "videoId": "IMG_0626.MOV"
+        "videoId": "IMG_1574.jpeg",
+        "duration": 33
       },
       {
-        "videoId": "IMG_0618.MOV"
+        "videoId": "IMG_1578.jpeg",
+        "duration": 33
       },
       {
-        "videoId": "IMG_0619.MOV"
+        "videoId": "IMG_1581.jpeg",
+        "duration": 33
       },
       {
-        "videoId": "IMG_0620.MOV"
+        "videoId": "IMG_1577.jpeg",
+        "duration": 33
       },
       {
-        "videoId": "IMG_0630.MOV"
+        "videoId": "IMG_1575.jpeg",
+        "duration": 33
       },
       {
-        "videoId": "IMG_0953.MOV"
+        "videoId": "IMG_1571.jpeg",
+        "duration": 33
       },
       {
-        "videoId": "IMG_0627.MOV"
+        "videoId": "IMG_1580.jpeg",
+        "duration": 33
       },
       {
-        "videoId": "IMG_0949.MOV"
+        "videoId": "IMG_1579.jpeg",
+        "duration": 33
       },
       {
-        "videoId": "IMG_0629.MOV"
-      },
-      {
-        "videoId": "IMG_0641.MOV"
-      },
-      {
-        "videoId": "IMG_0952.MOV"
-      },
-      {
-        "videoId": "IMG_0946.MOV"
-      },
-      {
-        "videoId": "IMG_0950.MOV"
-      },
-      {
-        "videoId": "IMG_0633.MOV"
-      },
-      {
-        "videoId": "IMG_0840.MOV"
-      },
-      {
-        "videoId": "IMG_0947.MOV"
-      },
-      {
-        "videoId": "IMG_0648.MOV"
-      },
-      {
-        "videoId": "IMG_0624.MOV"
+        "videoId": "IMG_1572.jpeg",
+        "duration": 33
       }
     ],
     "videos": {
-      "IMG_0644.MOV": "IMG_0644.MOV",
-      "IMG_0651.MOV": "IMG_0651.MOV",
-      "IMG_0647.MOV": "IMG_0647.MOV",
-      "IMG_0645.MOV": "IMG_0645.MOV",
-      "IMG_0643.MOV": "IMG_0643.MOV",
-      "IMG_0640.MOV": "IMG_0640.MOV",
-      "IMG_0657.MOV": "IMG_0657.MOV",
-      "IMG_0626.MOV": "IMG_0626.MOV",
-      "IMG_0618.MOV": "IMG_0618.MOV",
-      "IMG_0619.MOV": "IMG_0619.MOV",
-      "IMG_0620.MOV": "IMG_0620.MOV",
-      "IMG_0630.MOV": "IMG_0630.MOV",
-      "IMG_0953.MOV": "IMG_0953.MOV",
-      "IMG_0627.MOV": "IMG_0627.MOV",
-      "IMG_0949.MOV": "IMG_0949.MOV",
-      "IMG_0629.MOV": "IMG_0629.MOV",
-      "IMG_0641.MOV": "IMG_0641.MOV",
-      "IMG_0952.MOV": "IMG_0952.MOV",
-      "IMG_0946.MOV": "IMG_0946.MOV",
-      "IMG_0950.MOV": "IMG_0950.MOV",
-      "IMG_0633.MOV": "IMG_0633.MOV",
-      "IMG_0840.MOV": "IMG_0840.MOV",
-      "IMG_0947.MOV": "IMG_0947.MOV",
-      "IMG_0648.MOV": "IMG_0648.MOV",
-      "IMG_0624.MOV": "IMG_0624.MOV"
+      "IMG_1569.jpeg": "IMG_1569.jpeg",
+      "IMG_1583.jpeg": "IMG_1583.jpeg",
+      "IMG_1576.jpeg": "IMG_1576.jpeg",
+      "IMG_1582.jpeg": "IMG_1582.jpeg",
+      "IMG_1570.jpeg": "IMG_1570.jpeg",
+      "IMG_1568.jpeg": "IMG_1568.jpeg",
+      "IMG_1573.jpeg": "IMG_1573.jpeg",
+      "IMG_1574.jpeg": "IMG_1574.jpeg",
+      "IMG_1578.jpeg": "IMG_1578.jpeg",
+      "IMG_1581.jpeg": "IMG_1581.jpeg",
+      "IMG_1577.jpeg": "IMG_1577.jpeg",
+      "IMG_1575.jpeg": "IMG_1575.jpeg",
+      "IMG_1571.jpeg": "IMG_1571.jpeg",
+      "IMG_1580.jpeg": "IMG_1580.jpeg",
+      "IMG_1579.jpeg": "IMG_1579.jpeg",
+      "IMG_1572.jpeg": "IMG_1572.jpeg"
     },
     "effects": {
-      "tint": "#ff1a1a",
+      "tint": "#ff2600",
       "grain": {},
       "edge": {
         "threshold": 0

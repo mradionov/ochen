@@ -44,7 +44,7 @@ export class ManifestReader {
 
     const videoIdSet = new Set<VideoId>();
     const clips = videoClipsRaw.map((clipRaw) => {
-      const { videoId, offsetX, offsetY, rate, trimEnd } = clipRaw;
+      const { videoId, duration, offsetX, offsetY, rate, trimEnd } = clipRaw;
 
       if (videoIdSet.has(videoId)) {
         console.log(`Duplicate video id: "${videoId}"`);
@@ -59,6 +59,7 @@ export class ManifestReader {
       return new VideoClip({
         videoId,
         videoPath,
+        duration,
         offsetX,
         offsetY,
         rate,

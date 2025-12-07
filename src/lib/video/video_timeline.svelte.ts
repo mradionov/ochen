@@ -1,6 +1,7 @@
 import type { Manifest, VideoClip } from '$lib/manifest/manifest.svelte';
 import type { VideoResolver } from './video_resolver';
 import { Precondition } from '$lib/precondition';
+import type { ImageResolver } from '$lib/image/image_resolver';
 
 type VideoId = string;
 
@@ -12,7 +13,8 @@ export type VideoTimelineClip = {
   clip: VideoClip;
   start: number;
   end: number;
-  sourceDuration: number;
+  customDuration: number;
+  fileDuration: number;
   trimmedDuration: number;
   ratedDuration: number;
   duration: number;
@@ -27,10 +29,6 @@ export class VideoTimeline {
 
   getClips = $derived(() => this.manifest.videoTrack.clips);
 
-  // get clips() {
-  // 	return this.manifest.videoTrack.clips;
-  // }
-
   findClipByTime(time: number): VideoTimelineClip | undefined {
     return this.getTimelineClips().find((timelineClip) => {
       return time >= timelineClip.start && time < timelineClip.end;
@@ -41,10 +39,12 @@ export class VideoTimeline {
     return this.getClips().map((clip) => this.getTimelineClip(clip.videoId));
   }
 
+  findClip(id: VideoId): VideoClip | undefined {
+    return this.getClips().find((clip) => clip.videoId === id);
+  }
+
   getClip(id: VideoId): VideoClip {
-    return Precondition.checkExists(
-      this.getClips().find((clip) => clip.videoId === id),
-    );
+    return Precondition.checkExists(this.findClip(id));
   }
 
   getTimelineClip(id: VideoId): VideoTimelineClip {
@@ -56,7 +56,8 @@ export class VideoTimeline {
       isLast: this.isLast(id),
       start: this.getStart(id),
       end: this.getEnd(id),
-      sourceDuration: this.getSourceDuration(id),
+      customDuration: this.getCustomDuration(id),
+      fileDuration: this.getFileDuration(id),
       trimmedDuration: this.getTrimmedDuration(id),
       ratedDuration: this.getRatedDuration(id),
       duration: this.getDuration(id),
@@ -101,19 +102,26 @@ export class VideoTimeline {
     return start + duration;
   }
 
-  getSourceDuration(id: VideoId): number {
+  getCustomDuration(id: VideoId): number {
+    return this.getClip(id).duration ?? 0;
+  }
+
+  getFileDuration(id: VideoId): number {
+    const clip = this.getClip(id);
+    if (clip.isImage()) {
+      return clip.duration ?? 5;
+    }
     return this.videoResolver.getMetadata(id).duration;
   }
 
   getTrimmedDuration(id: VideoId): number {
     const clip = this.getClip(id);
-    const duration = this.getSourceDuration(id);
+    const duration = this.getCustomDuration(id) || this.getFileDuration(id);
     return duration - (clip.trimEnd ?? 0);
   }
 
   getRatedDuration(id: VideoId): number {
-    const videoMetadata = this.videoResolver.getMetadata(id);
-    const duration = videoMetadata.duration;
+    const duration = this.getFileDuration(id);
     const rate = this.getRate(id);
     return duration / rate;
   }

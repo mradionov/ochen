@@ -1,26 +1,24 @@
 import { TaskQueue } from '$lib/task_queue';
-import { VideoPlayer } from '$lib/video/video_player';
 import { Renderer } from '$lib/renderer/renderer';
-import {
-  VideoImageSource,
-  ImageBitmapSource,
-} from '$lib/renderer/image_source';
+import { ImageBitmapRenderSource } from '$lib/renderer/render_source';
 import type { EffectsMap } from '$lib/renderer/effects_map.svelte';
+import { RenderablePlayerFactory } from './renderable_player_factory';
+import type { RenderablePlayer } from './renderable_player';
 
 export class VideoPreview {
   constructor(
-    readonly player: VideoPlayer,
+    readonly player: RenderablePlayer,
     readonly renderer: Renderer,
-    readonly posterImageSource: ImageBitmapSource,
+    readonly posterRenderSource: ImageBitmapRenderSource,
   ) {}
 
   update({ effects }: { effects?: EffectsMap }) {
     if (this.player.isPlaying || !this.player.isDestroyed) {
-      const imageSource = new VideoImageSource(this.player.element);
-      this.renderer.updateFrame({ imageSource, effects }, undefined);
+      const renderSource = this.player.createRenderSource();
+      this.renderer.updateFrame({ renderSource, effects }, undefined);
     } else {
-      const imageSource = this.posterImageSource;
-      this.renderer.updateFrame({ imageSource, effects }, undefined);
+      const renderSource = this.posterRenderSource;
+      this.renderer.updateFrame({ renderSource, effects }, undefined);
     }
   }
 
@@ -38,7 +36,7 @@ export class VideoPreviewFactory {
     { trimmedDuration }: { trimmedDuration?: number } = {},
   ): Promise<VideoPreview> {
     return this.taskQueue.run(async () => {
-      const player = VideoPlayer.createFromPath(videoPath, {
+      const player = RenderablePlayerFactory.createFromPath(videoPath, {
         rate: 10,
         trimmedDuration,
       });
@@ -49,6 +47,7 @@ export class VideoPreviewFactory {
       });
 
       // TODO: can just wait for load metadata?
+      await player.loaded;
       await player.play();
       player.pause();
 
@@ -58,17 +57,17 @@ export class VideoPreviewFactory {
         player.element,
         0,
         0,
-        player.element.videoWidth,
-        player.element.videoHeight,
+        player.width,
+        player.height,
         {
           resizeQuality: 'high',
-          resizeWidth: player.element.videoWidth,
-          resizeHeight: player.element.videoHeight,
+          resizeWidth: player.width,
+          resizeHeight: player.height,
         },
       );
-      const posterSource = new ImageBitmapSource(posterFrame);
+      const posterSource = new ImageBitmapRenderSource(posterFrame);
 
-      renderer.updateFrame({ imageSource: posterSource }, undefined);
+      renderer.updateFrame({ renderSource: posterSource }, undefined);
 
       // Free up video resources for next players, as they only need canvases with posters
       player.destroy();

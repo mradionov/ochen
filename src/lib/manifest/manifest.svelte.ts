@@ -1,3 +1,4 @@
+import { isImage } from '$lib/image_utils';
 import { Precondition } from '$lib/precondition';
 import { EffectsMap } from '$lib/renderer/effects_map.svelte';
 import type {
@@ -84,6 +85,10 @@ export class VideoTrack {
     });
   }
 
+  get videoClips() {
+    return this.clips.filter((c) => !c.isImage());
+  }
+
   addVideo(filename: string) {
     if (this.videos[filename] != null) {
       return;
@@ -158,6 +163,7 @@ export class VideoTrack {
 export class VideoClip {
   readonly videoId: VideoId;
   readonly videoPath: VideoFilepath;
+  duration: number | undefined;
   offsetX: number | string | undefined;
   offsetY: number | string | undefined;
   rate: number | undefined;
@@ -168,6 +174,7 @@ export class VideoClip {
   constructor(args: {
     videoId: VideoId;
     videoPath: VideoFilepath;
+    duration: number | undefined;
     offsetX: number | string | undefined;
     offsetY: number | string | undefined;
     rate: number | undefined;
@@ -177,6 +184,7 @@ export class VideoClip {
   }) {
     this.videoId = args.videoId;
     this.videoPath = args.videoPath;
+    this.duration = $state(args.duration);
     this.offsetX = $state(args.offsetX);
     this.offsetY = $state(args.offsetY);
     this.rate = $state(args.rate);
@@ -195,6 +203,7 @@ export class VideoClip {
     return new VideoClip({
       videoId,
       videoPath,
+      duration: undefined,
       offsetX: undefined,
       offsetY: undefined,
       rate: undefined,
@@ -204,9 +213,14 @@ export class VideoClip {
     });
   }
 
+  isImage() {
+    return isImage(this.videoPath);
+  }
+
   toRaw(): VideoClipRaw {
     return {
       videoId: this.videoId,
+      duration: this.duration,
       rate: this.rate,
       offsetX: this.offsetX,
       offsetY: this.offsetY,

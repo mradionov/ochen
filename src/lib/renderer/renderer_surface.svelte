@@ -1,20 +1,25 @@
 <script lang="ts">
-  import type { VideoPlayer } from '$lib/video/video_player';
   import { getContext, onMount } from 'svelte';
   import { Renderer } from '$lib/renderer/renderer';
   import { RenderLoop } from '$lib/render_loop';
   import { RenderLoopKey } from '$lib/di';
-  import { VideoImageSource } from '$lib/renderer/image_source';
   import type { EffectsMap } from './effects_map.svelte';
   import type { AudioInfo } from '$lib/audio/audio_analyser';
+  import type { RenderablePlayer } from '$lib/video/renderable_player';
 
   const renderLoop = getContext<RenderLoop>(RenderLoopKey);
   // renderLoop.start();
 
-  export let player: VideoPlayer;
+  export let player: RenderablePlayer;
   export let effects: EffectsMap | undefined = undefined;
   export let audioInfo: AudioInfo | undefined = undefined;
-  export let nextPlayer: VideoPlayer | undefined = undefined;
+  export let offset:
+    | {
+        offsetX: number | string | undefined;
+        offsetY: number | string | undefined;
+      }
+    | undefined = undefined;
+  export let nextPlayer: RenderablePlayer | undefined = undefined;
   export let width: number = 800;
   export let height: number = 800;
   export let onClick: (() => void) | undefined = undefined;
@@ -29,11 +34,11 @@
       player.updateFrame();
       // nextPlayer?.updateFrame();
 
-      const videoImageSource = new VideoImageSource(player.element);
+      const renderSource = player.createRenderSource();
 
       // TODO: compositor
       renderer.updateFrame(
-        { imageSource: videoImageSource, effects, lastTime, audioInfo },
+        { renderSource, effects, offset, lastTime, audioInfo },
         undefined,
       );
     });
