@@ -2,6 +2,26 @@ import type { AudioInfo } from '$lib/audio/audio_analyser';
 import type { Effect, EffectContext } from '../effect';
 import type { EdgeEffectConfig } from '../effects_map.svelte';
 
+const clamp01 = (v) => Math.min(1, Math.max(0, v));
+
+const smoothstep = (e0, e1, x) => {
+  const t = clamp01((x - e0) / (e1 - e0));
+  return t * t * (3 - 2 * t);
+};
+
+function accentuateBand(x, gain = 2.5, lo = 0.5, hi = 0.6) {
+  // window = 0 outside, 1 inside (with soft edges)
+  const wIn = smoothstep(lo, lo + 0.05, x);
+  const wOut = 1 - smoothstep(hi - 0.05, hi, x);
+  const w = wIn * wOut;
+
+  const mid = (lo + hi) * 0.5; // 0.55
+  const boosted = mid + (x - mid) * gain; // increase slope around mid
+
+  // blend: inside band use boosted, outside use linear
+  return clamp01(x * (1 - w) + boosted * w);
+}
+
 export class EdgeEffect implements Effect<EdgeEffectConfig> {
   async apply(
     { ctx, width, height, lastTime }: EffectContext,
@@ -14,15 +34,35 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
 
     let strength = config.strength ?? 1;
     if (audioInfo) {
+      const wideTreble = accentuateBand(audioInfo.norm.wideTreble, 2, 0.5, 0.6);
       // if (audioInfo?.isBeat) {
       //   strength = 3.0;
       // }
       // strength += (1.0 - strength) * 0.1;
-      strength = 0 + audioInfo.norm.wideTreble * 10;
+      strength = 0 + wideTreble * 8;
+      // strength = 0 + audioInfo.diff.treble * 10;
 
-      transparency = 0 + 300 * audioInfo.norm.wideBass;
-      // threshold = 0 + 100 * (audioInfo.mid * 2);
+      // const wideBass = accentuateBand(audioInfo.diff.wideBass, 2);
+      const wideBass = audioInfo.norm.wideBass;
+
+      // transparency = 255 - 255 * wideBass;
+      transparency = 255 * wideBass;
+      // transparency = 0 + 300 * audioInfo.diff.bass;
+      threshold = 0;
+
+      const mid = accentuateBand(audioInfo.norm.lowMid, 4, 0.5, 0.8);
+      threshold = 10 * mid;
     }
+
+    // console.log(transparency);
+
+    // transparency = Math.max(50, transparency);
+
+    // console.log(audioInfo.diff.wideTreble);
+
+    // strength = 10;
+
+    // console.log(strength);
 
     // console.log(audioInfo);
 
@@ -44,8 +84,10 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
       gray[i] = 0.3 * r + 0.59 * g + 0.11 * b;
     }
 
-    // const wobbleAmount = 4 * audioInfo?.mid;
     const wobbleAmount = 0;
+    // const wobbleAmount = accentuateBand(audioInfo?.norm.noise, 2, 0.2, 0.4) * 2;
+
+    console.log(wobbleAmount);
     // console.log(wobbleAmount);
 
     let gx, gy;
@@ -67,6 +109,13 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
     for (let y = 1; y < height - 1; y++) {
       for (let x = 1; x < width - 1; x++) {
         let i = (y * width + x) * 4;
+
+        const pattern = (x + y) % 4; // 0–3
+        // let v = mag;
+
+        // only keep edges on some pixels
+
+        // dst[i] = dst[i + 1] = dst[i + 2] = v;
 
         let px = 0,
           py = 0;
@@ -116,7 +165,7 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
           )
             continue;
 
-          if (wobbleAmount > 1.9) {
+          if (wobbleAmount > 0) {
             // if (audioInfo?.isBeat) {
             i = (offsetY * width + offsetX) * 4;
           }
@@ -124,7 +173,13 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
           // }
           // const val = Math.min(255, mag);
 
-          const intensity = Math.min(255, mag);
+          let intensity = Math.min(255, mag);
+
+          // if (pattern === 0 || pattern === 1) {
+          //   // keep
+          // } else {
+          //   intensity = 0; // drop
+          // }
 
           // const angle = Math.atan2(gy, gx); // between -π and π
           // const angleBand = Math.floor((angle + Math.PI) / (Math.PI / 6)); // 12 steps
@@ -138,6 +193,12 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
         }
       }
     }
+
+    const jej = accentuateBand(audioInfo.diff.treble, 3, 0.3, 0.7);
+    const iterations = Math.round(jej);
+    // console.log(iterations);
+
+    dilate(dst, width, height, 0);
 
     // const count = 200;
     // for (let i = 0; i < count; i++) {
@@ -164,6 +225,48 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
     // ctx.filter = `blur(3px)`;
     ctx.drawImage(im, 0, 0);
     // ctx.filter = '';
+  }
+}
+
+function dilate(dst, width, height, iterations = 1) {
+  for (let it = 0; it < iterations; it++) {
+    const copy = dst.slice();
+    for (let y = 1; y < height - 1; y++) {
+      for (let x = 1; x < width - 1; x++) {
+        const i = (y * width + x) * 4;
+        let maxV = 0;
+
+        for (let ky = -1; ky <= 1; ky++) {
+          for (let kx = -1; kx <= 1; kx++) {
+            const j = ((y + ky) * width + (x + kx)) * 4;
+            maxV = Math.max(maxV, copy[j]);
+          }
+        }
+
+        dst[i] = dst[i + 1] = dst[i + 2] = maxV;
+      }
+    }
+  }
+}
+
+function erode(dst, width, height, iterations = 1) {
+  for (let it = 0; it < iterations; it++) {
+    const copy = dst.slice();
+    for (let y = 1; y < height - 1; y++) {
+      for (let x = 1; x < width - 1; x++) {
+        const i = (y * width + x) * 4;
+        let minV = 255;
+
+        for (let ky = -1; ky <= 1; ky++) {
+          for (let kx = -1; kx <= 1; kx++) {
+            const j = ((y + ky) * width + (x + kx)) * 4;
+            minV = Math.min(minV, copy[j]);
+          }
+        }
+
+        dst[i] = dst[i + 1] = dst[i + 2] = minV;
+      }
+    }
   }
 }
 

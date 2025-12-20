@@ -26,10 +26,14 @@
   import { Manifest } from '$lib/manifest/manifest.svelte';
   import ManifestSaveButton from '$lib/manifest/manifest_save_button.svelte';
   import { ProjectsController } from '$lib/projects/projects_controller';
-  import { AudioCapture } from '$lib/audio/audio_capture';
+  import {
+    AudioCapture,
+    type AudioCaptureData,
+  } from '$lib/audio/audio_capture';
   import { AudioAnalyser, type AudioInfo } from '$lib/audio/audio_analyser';
   import AudioClipDetails from './audio_clip_details.svelte';
   import type { RenderablePlayer } from '$lib/video/renderable_player';
+  import AudioFrequencyChart from '$lib/audio/audio_frequency_chart.svelte';
 
   const projectsController = getContext<ProjectsController>(
     ProjectsControllerKey,
@@ -45,6 +49,7 @@
   const audioAnalyser = new AudioAnalyser();
 
   let audioInfo = $state<AudioInfo | undefined>(undefined);
+  let audioCaptureData = $state<AudioCaptureData | undefined>(undefined);
 
   let manifest: Manifest = $state(Manifest.createEmpty());
 
@@ -123,8 +128,10 @@
     timelineClock = new RunningClock();
 
     renderLoop.tick.addListener(({ deltaTime }) => {
-      const { data, sampleRate, fftSize } = audioCapture.update();
-      audioInfo = audioAnalyser.process(data, sampleRate);
+      audioCaptureData = audioCapture.update();
+      if (audioCaptureData) {
+        audioInfo = audioAnalyser.process(audioCaptureData);
+      }
 
       timelineClock.update({ deltaTime });
     });
@@ -236,6 +243,7 @@
           timelineClip={selectedAudioTimelineClip}
         />
       {/if}
+      <AudioFrequencyChart {audioCaptureData} />
     </div>
   </div>
 </div>

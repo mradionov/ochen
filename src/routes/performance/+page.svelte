@@ -9,7 +9,7 @@
     VideoResolverKey,
   } from '$lib/di';
   import { VideoPlayer } from '$lib/video/video_player';
-  import { RenderProducer } from '$lib/video/render_producer';
+  import { VideoProducer } from '$lib/video/video_producer';
   import { VideoResolver } from '$lib/video/video_resolver';
   import { AudioResolver } from '$lib/audio/audio_resolver';
   import {
@@ -47,7 +47,7 @@
 
   let manifest: Manifest = $state(Manifest.createEmpty());
 
-  let videoProducer: RenderProducer;
+  let videoProducer: VideoProducer;
   let audioProducer: AudioProducer;
 
   onMount(async () => {
@@ -55,13 +55,13 @@
     manifest = await new ManifestReader().read(projectName);
     console.log({ manifest });
 
-    await videoResolver.loadMetadata(manifest.videoTrack.clips);
+    await videoResolver.loadMetadata(manifest.videoTrack.videoClips);
     const videoTimeline = new VideoTimeline(manifest, videoResolver);
 
     await audioResolver.loadMetadata(manifest.audioTrack.clips);
     const audioTimeline = new AudioTimeline(manifest, audioResolver);
 
-    videoProducer = new RenderProducer(videoTimeline);
+    videoProducer = new VideoProducer(videoTimeline);
     videoProducer.clipChanged.addListener((clip) => {
       currentVideoTimelineClip = clip;
     });
@@ -81,8 +81,10 @@
     // await audioCapture.connectStream();
 
     renderLoop.tick.addListener(({ deltaTime }) => {
-      const { data, sampleRate, fftSize } = audioCapture.update();
-      audioInfo = audioAnalyser.process(data, sampleRate);
+      const audioCaptureData = audioCapture.update();
+      if (audioCaptureData) {
+        audioInfo = audioAnalyser.process(audioCaptureData);
+      }
     });
 
     window.addEventListener('keypress', (e) => {

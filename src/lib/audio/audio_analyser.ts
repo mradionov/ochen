@@ -1,3 +1,5 @@
+import type { AudioCaptureData } from './audio_capture';
+
 interface AudioInfoData {
   sub: number;
   bass: number;
@@ -27,13 +29,27 @@ const emptyData: AudioInfoData = Object.freeze<AudioInfoData>({
 export interface AudioInfo {
   raw: AudioInfoData;
   norm: AudioInfoData;
+  diff: AudioInfoData;
   isBeat: boolean;
 }
+
+export const audioAnalyserBandsConfig: Record<string, [number, number]> = {
+  wideBass: [20, 250],
+  wideMid: [250, 2000],
+  wideTreble: [2000, 8000],
+  sub: [20, 60],
+  bass: [60, 140],
+  lowMid: [140, 400],
+  mid: [400, 1200],
+  highMid: [1200, 5000],
+  treble: [5000, 10000],
+  noise: [10000, 20000],
+};
 
 export class AudioAnalyser {
   private lastInfo: AudioInfo;
 
-  process(data: Uint8Array<ArrayBuffer>, sampleRate: number): AudioInfo {
+  process({ data, sampleRate }: AudioCaptureData): AudioInfo {
     // const bass = this.bandEnergy(data, 20, 250, sampleRate);
     // const mid = this.bandEnergy(data, 250, 2000, sampleRate);
     // const treble = this.bandEnergy(data, 2000, 8000, sampleRate);
@@ -48,31 +64,23 @@ export class AudioAnalyser {
     // const treble = this.bandEnergy(data, 5000, 10000, sampleRate);
     // const noise = this.bandEnergy(data, 10000, 20000, sampleRate);
 
-    const config: Record<string, [number, number]> = {
-      wideBass: [20, 250],
-      wideMid: [250, 2000],
-      wideTreble: [2000, 8000],
-      sub: [20, 60],
-      bass: [60, 140],
-      lowMid: [140, 400],
-      mid: [400, 1200],
-      hightMid: [1200, 5000],
-      treble: [5000, 10000],
-      noise: [10000, 20000],
-    };
+    const rawData = { ...emptyData };
+    const normData = { ...emptyData };
+    const diffData = { ...emptyData };
 
-    const rawData = Object.assign({}, emptyData);
-    const normData = Object.assign({}, emptyData);
+    const config = audioAnalyserBandsConfig;
 
     Object.keys(config).forEach((key) => {
       const bandLow = config[key][0];
       const bandHigh = config[key][1];
 
       const raw = this.bandEnergy(data, bandLow, bandHigh, sampleRate);
+      const lastRaw = this.lastInfo?.[key] ?? 0;
       const norm = raw / 255;
 
       rawData[key] = raw;
       normData[key] = norm;
+      diffData[key] = (raw - lastRaw) / 255;
     });
 
     const isBeat = this.isBeat(rawData.bass / 255);
@@ -80,6 +88,7 @@ export class AudioAnalyser {
     const info = {
       raw: rawData,
       norm: normData,
+      diff: diffData,
       isBeat,
     };
 

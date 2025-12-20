@@ -1,3 +1,10 @@
+export type AudioCaptureData = {
+  data: Uint8Array<ArrayBuffer>;
+  sampleRate: number;
+  fftSize: number;
+  bufferLength: number;
+};
+
 export class AudioCapture {
   private audioCtx: AudioContext;
   private analyser: AnalyserNode;
@@ -66,12 +73,13 @@ export class AudioCapture {
     return this.audioCtx.suspend();
   }
 
-  update() {
+  update(): AudioCaptureData | undefined {
     if (!this.analyser) {
       return;
     }
 
     this.analyser.getByteFrequencyData(this.dataArray);
+
     return {
       data: this.dataArray,
       sampleRate: this.audioCtx.sampleRate,
