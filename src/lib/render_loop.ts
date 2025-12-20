@@ -1,5 +1,5 @@
 import { defaults } from './defaults';
-import { Subject } from './subject';
+import { Subject } from '../../src2/lib/subject';
 
 type RenderLoopOptions = {
   deltaTimeLimit?: number;

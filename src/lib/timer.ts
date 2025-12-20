@@ -1,4 +1,4 @@
-import { Subject } from './subject';
+import { Subject } from '../../src2/lib/subject';
 
 export class Timer {
   done = new Subject();

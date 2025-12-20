@@ -1,4 +1,4 @@
-import { Deferred } from '../deferred';
+import { Deferred } from '../../../src2/lib/deferred';
 import { TaskQueue } from '$lib/task_queue';
 import { isImage } from '$lib/image_utils';
 

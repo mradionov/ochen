@@ -1,4 +1,4 @@
-import type { ProjectsRepo } from '$lib/projects/projects_repo';
+import type { ProjectsRepo } from './projects_repo.ts';
 
 const excludeNames = ['.DS_Store'];
 
@@ -13,7 +13,11 @@ export type SourceVideoFile = {
 };
 
 export class ProjectsController {
-  constructor(private readonly projectsRepo: ProjectsRepo) {}
+  private readonly projectsRepo: ProjectsRepo;
+
+  constructor(projectsRepo: ProjectsRepo) {
+    this.projectsRepo = projectsRepo;
+  }
 
   async chooseDir() {
     const handle = await window.showDirectoryPicker();
