@@ -8,6 +8,7 @@ import { PreviewPage } from './pages/preview/preview_page.tsx';
 import { TimelinePage } from './pages/timeline/timeline_page.tsx';
 
 import '@mantine/core/styles.css';
+import { theme } from './theme/theme.ts';
 
 const router = createBrowserRouter([
   {
@@ -23,7 +24,7 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <MantineProvider>
+    <MantineProvider theme={theme}>
       <RouterProvider router={router} />
     </MantineProvider>
   </React.StrictMode>,

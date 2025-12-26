@@ -32,10 +32,10 @@ export class ProjectsController {
     return this.projectsRepo.loadActiveProject();
   }
 
-  async fetchProjects(): Promise<Project[] | undefined> {
+  async fetchProjects(): Promise<Project[]> {
     const handle = await this.projectsRepo.loadDirHandle();
     if (!handle) {
-      return undefined;
+      throw new Error('No projects dir handle');
     }
 
     const activeProjectName = await this.projectsRepo.loadActiveProject();

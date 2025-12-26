@@ -1,49 +1,30 @@
-import React from 'react';
-import { type Project, ProjectsController } from './projects_controller';
-import { ProjectsRepo } from './projects_repo';
-import { Database } from '../../lib/database';
-import { Button, Stack, Table, Text } from '@mantine/core';
-
-const db = new Database();
-const projectsRepo = new ProjectsRepo(db);
-const projectsController = new ProjectsController(projectsRepo);
+import { Button, Stack, Table, Text, ThemeIcon } from '@mantine/core';
+import { useProjects } from './use_projects';
+import * as Lucide from 'lucide-react';
 
 export const ProjectsList = () => {
-  const [projects, setProjects] = React.useState<Project[]>([]);
-
-  React.useEffect(() => {
-    projectsController.fetchProjects().then((projects) => {
-      if (!projects) return;
-      setProjects(projects);
-    });
-  }, []);
-
-  const onActivateProject = async (project: Project) => {
-    await projectsController.activate(project);
-    const updatedProjects = await projectsController.fetchProjects();
-    if (updatedProjects) {
-      setProjects(updatedProjects);
-    }
-  };
-
-  const onChooseDirectory = () => {
-    projectsController.chooseDir();
-  };
+  const { projects, activateProject, chooseProjectsDirectory } = useProjects();
 
   return (
     <Stack align="start">
-      <Button onClick={onChooseDirectory}>Choose projects directory</Button>
+      <Button onClick={chooseProjectsDirectory}>
+        Choose projects directory
+      </Button>
       <Table withTableBorder withColumnBorders>
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th></Table.Th>
+            <Table.Th>Project Name</Table.Th>
+            <Table.Th>Actions</Table.Th>
+          </Table.Tr>
+        </Table.Thead>
         <Table.Tbody>
           {projects.map((project) => (
             <Table.Tr key={project.name}>
+              <Table.Td w={20}>{project.isActive && <Lucide.Check />}</Table.Td>
+              <Table.Td w={200}>{project.name}</Table.Td>
               <Table.Td>
-                <Text fw={project.isActive ? 'bold' : 'normal'}>
-                  {project.name}
-                </Text>
-              </Table.Td>
-              <Table.Td>
-                <Button onClick={() => onActivateProject(project)}>
+                <Button onClick={() => activateProject(project)}>
                   Activate
                 </Button>
               </Table.Td>
