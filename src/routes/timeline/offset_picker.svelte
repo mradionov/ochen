@@ -1,4 +1,4 @@
-<script lang='ts'>
+<script lang="ts">
   export let extraOptions: string[] = [];
   export let value: string | number | undefined = undefined;
   export let onChange: (value: string | number | undefined) => void;
@@ -9,12 +9,16 @@
   function handleSelectChange(e: Event & { currentTarget: HTMLSelectElement }) {
     const newSelectedValue = e.currentTarget?.value;
     if (newSelectedValue === 'none') {
+      value = undefined;
       onChange?.(undefined);
       return;
     }
     if (newSelectedValue === 'number') {
+      value = newSelectedValue;
       return;
     }
+
+    value = newSelectedValue;
     onChange?.(newSelectedValue);
   }
 
@@ -41,6 +45,6 @@
     {/each}
   </select>
   {#if selectedValue === 'number'}
-    <input type='number' value={value} on:change={handleNumberChange} />
+    <input type="number" {value} on:change={handleNumberChange} />
   {/if}
 </div>

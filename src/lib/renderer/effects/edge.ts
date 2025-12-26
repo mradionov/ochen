@@ -87,7 +87,7 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
     const wobbleAmount = 0;
     // const wobbleAmount = accentuateBand(audioInfo?.norm.noise, 2, 0.2, 0.4) * 2;
 
-    console.log(wobbleAmount);
+    // console.log(wobbleAmount);
     // console.log(wobbleAmount);
 
     let gx, gy;

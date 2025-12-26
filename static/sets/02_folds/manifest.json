@@ -124,6 +124,90 @@
       {
         "videoId": "IMG_1670.jpeg",
         "duration": 22
+      },
+      {
+        "videoId": "IMG_1720.jpeg",
+        "duration": 22
+      },
+      {
+        "videoId": "IMG_1726.jpeg",
+        "duration": 22
+      },
+      {
+        "videoId": "IMG_1731.jpeg",
+        "duration": 22
+      },
+      {
+        "videoId": "IMG_1732.jpeg",
+        "duration": 22
+      },
+      {
+        "videoId": "IMG_1728.jpeg",
+        "duration": 22
+      },
+      {
+        "videoId": "IMG_1710.jpeg",
+        "duration": 22
+      },
+      {
+        "videoId": "IMG_1729.jpeg",
+        "duration": 22
+      },
+      {
+        "videoId": "IMG_1722.jpeg",
+        "duration": 22
+      },
+      {
+        "videoId": "IMG_1733.jpeg",
+        "duration": 22
+      },
+      {
+        "videoId": "IMG_1724.jpeg",
+        "duration": 22
+      },
+      {
+        "videoId": "IMG_1705.jpeg",
+        "duration": 22
+      },
+      {
+        "videoId": "IMG_1719.jpeg",
+        "duration": 22
+      },
+      {
+        "videoId": "IMG_1686.jpeg",
+        "duration": 22
+      },
+      {
+        "videoId": "IMG_1700.jpeg",
+        "duration": 22
+      },
+      {
+        "videoId": "IMG_1701.jpeg",
+        "duration": 22
+      },
+      {
+        "videoId": "IMG_1694.jpeg",
+        "duration": 22
+      },
+      {
+        "videoId": "IMG_1699.jpeg",
+        "duration": 22
+      },
+      {
+        "videoId": "IMG_1683.jpeg",
+        "duration": 22
+      },
+      {
+        "videoId": "IMG_1692.jpeg",
+        "duration": 22
+      },
+      {
+        "videoId": "IMG_1689.jpeg",
+        "duration": 22
+      },
+      {
+        "videoId": "IMG_1687.jpeg",
+        "duration": 22
       }
     ],
     "videos": {
@@ -157,7 +241,28 @@
       "IMG_1651.jpeg": "IMG_1651.jpeg",
       "IMG_1658.jpeg": "IMG_1658.jpeg",
       "IMG_1675.jpeg": "IMG_1675.jpeg",
-      "IMG_1670.jpeg": "IMG_1670.jpeg"
+      "IMG_1670.jpeg": "IMG_1670.jpeg",
+      "IMG_1720.jpeg": "IMG_1720.jpeg",
+      "IMG_1726.jpeg": "IMG_1726.jpeg",
+      "IMG_1731.jpeg": "IMG_1731.jpeg",
+      "IMG_1732.jpeg": "IMG_1732.jpeg",
+      "IMG_1728.jpeg": "IMG_1728.jpeg",
+      "IMG_1710.jpeg": "IMG_1710.jpeg",
+      "IMG_1729.jpeg": "IMG_1729.jpeg",
+      "IMG_1722.jpeg": "IMG_1722.jpeg",
+      "IMG_1733.jpeg": "IMG_1733.jpeg",
+      "IMG_1724.jpeg": "IMG_1724.jpeg",
+      "IMG_1705.jpeg": "IMG_1705.jpeg",
+      "IMG_1719.jpeg": "IMG_1719.jpeg",
+      "IMG_1686.jpeg": "IMG_1686.jpeg",
+      "IMG_1700.jpeg": "IMG_1700.jpeg",
+      "IMG_1701.jpeg": "IMG_1701.jpeg",
+      "IMG_1694.jpeg": "IMG_1694.jpeg",
+      "IMG_1699.jpeg": "IMG_1699.jpeg",
+      "IMG_1683.jpeg": "IMG_1683.jpeg",
+      "IMG_1692.jpeg": "IMG_1692.jpeg",
+      "IMG_1689.jpeg": "IMG_1689.jpeg",
+      "IMG_1687.jpeg": "IMG_1687.jpeg"
     },
     "effects": {
       "tint": "#ff2600",
@@ -174,17 +279,13 @@
   "audioTrack": {
     "clips": [
       {
-        "audioId": "matt",
-        "trimEnd": 965
-      },
-      {
-        "audioId": "mcdonalds",
-        "trimEnd": 438
+        "audioId": "full-new"
       }
     ],
     "audios": {
       "matt": "matthew-butterandgold.wav",
-      "mcdonalds": "mcdonalds-break.wav"
+      "mcdonalds": "mcdonalds-break.wav",
+      "full-new": "01 folds - 6 full.wav"
     }
   }
 }
