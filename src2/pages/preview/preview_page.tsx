@@ -8,6 +8,7 @@ import { toMinutesString } from '../../lib/time_utils';
 import { ClipItem } from './clip_item';
 import type { VideoTimelineClip } from '../../features/video_timeline/video_timeline';
 import { VideoTrackStore } from '../../features/manifest/stores/video_track_store';
+import { ManifestSaveButton } from '../../features/manifest/manifest_save_button';
 
 export const PreviewPage = () => {
   const { sourceVideoFiles } = useProjects();
@@ -28,6 +29,8 @@ export const PreviewPage = () => {
   const timelineClips = videoTimeline.getTimelineClips(manifestState);
   const totalDuration = videoTimeline.getTotalDuration(manifestState);
 
+  const tint = manifestState.videoTrack.effects?.tint;
+
   const onMoveLeft = (timelineClip: VideoTimelineClip) => {
     manifestStore.videoTrackStore.moveLeft(timelineClip.videoId);
   };
@@ -47,9 +50,17 @@ export const PreviewPage = () => {
     );
   };
 
+  const onTintChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const color = event.target.value;
+    manifestStore.videoTrackStore.effectsStore.setTint(color);
+  };
+
   return (
     <Stack>
+      <ManifestSaveButton />
+
       <div>total duration: {toMinutesString(totalDuration)}</div>
+      <input type="color" value={tint} onChange={onTintChange} />
 
       <hr />
 

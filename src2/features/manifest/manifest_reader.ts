@@ -3,54 +3,48 @@ import {
   ManifestSchema,
   type AudioFilepath,
   type AudioId,
-  type ManifestParsed,
+  type ManifestRaw,
   type VideoFilepath,
   type VideoId,
 } from './manifest_schema';
 import { ManifestStore } from './stores/manifest_store';
 import { VideoClipStore } from './stores/video_clip_store';
 import { VideoTrackStore } from './stores/video_track_store';
-import { EffectsStore } from '../renderer/stores/effects_store';
+import { EffectsStore } from '../renderer/effects_store';
 import { AudioClipStore } from './stores/audio_clip_store';
 
 export class ManifestReader {
   async read(projectName: string): Promise<ManifestStore> {
     const res = await fetch(`/sets/${projectName}/manifest.json`);
     const manifestJson = await res.json();
-    const manifestParsed = ManifestSchema.parse(manifestJson);
-    return this.parse(projectName, manifestParsed);
+    const manifestRaw = ManifestSchema.parse(manifestJson);
+    return this.parse(projectName, manifestRaw);
   }
 
-  private parse(
-    projectName: string,
-    manifestParsed: ManifestParsed,
-  ): ManifestStore {
-    const videoTrackStore = this.transformVideoTrack(
-      projectName,
-      manifestParsed,
-    );
-    const audioTrackStore = this.transformAudioTrack(
-      projectName,
-      manifestParsed,
-    );
+  private parse(projectName: string, manifestRaw: ManifestRaw): ManifestStore {
+    const videoTrackStore = this.transformVideoTrack(projectName, manifestRaw);
+    const audioTrackStore = this.transformAudioTrack(projectName, manifestRaw);
     return new ManifestStore({ projectName }, videoTrackStore, audioTrackStore);
   }
 
   private transformVideoTrack(
     projectName: string,
-    manifestParsed: ManifestParsed,
+    manifestRaw: ManifestRaw,
   ): VideoTrackStore {
-    const { videoTrack: videoTrackParsed } = manifestParsed;
-    const { clips: videoClipsParsed, transitionOut } = videoTrackParsed;
+    const { videoTrack: videoTrackRaw } = manifestRaw;
+    const {
+      clips: videoClipsRaw,
+      effects: effectsRaw,
+      transitionOut,
+    } = videoTrackRaw;
 
-    // const effectsRaw = videoTrackRaw.effects;
-    const effectsStore = new EffectsStore();
+    const effectsStore = new EffectsStore(effectsRaw);
 
-    const videoMap = this.parseVideoMap(projectName, manifestParsed);
+    const videoMap = this.parseVideoMap(projectName, manifestRaw);
 
     const videoIdSet = new Set<VideoId>();
-    const clips = videoClipsParsed.map((clipParsed) => {
-      const { videoId, duration, offsetX, offsetY, rate, trimEnd } = clipParsed;
+    const clips = videoClipsRaw.map((clipRaw) => {
+      const { videoId, duration, offsetX, offsetY, rate, trimEnd } = clipRaw;
 
       if (videoIdSet.has(videoId)) {
         console.log(`Duplicate video id: "${videoId}"`);
@@ -79,7 +73,7 @@ export class ManifestReader {
 
     return new VideoTrackStore(
       {
-        videos: videoTrackParsed.videos,
+        videos: videoTrackRaw.videos,
         transitionOut,
       },
       clips,
@@ -89,9 +83,9 @@ export class ManifestReader {
 
   private parseVideoMap(
     projectName: string,
-    manifestParsed: ManifestParsed,
+    manifestRaw: ManifestRaw,
   ): ReadonlyMap<VideoId, VideoFilepath> {
-    const { videos } = manifestParsed.videoTrack;
+    const { videos } = manifestRaw.videoTrack;
 
     const videoMap = new Map<VideoId, VideoFilepath>();
     const basePath = `/sets/${projectName}/videos`;
@@ -107,16 +101,16 @@ export class ManifestReader {
 
   private transformAudioTrack(
     projectName: string,
-    manifestParsed: ManifestParsed,
+    manifestRaw: ManifestRaw,
   ): AudioTrackStore {
-    const { audioTrack: audioTrackParsed } = manifestParsed;
-    const { clips: audioClipsParsed } = audioTrackParsed;
+    const { audioTrack: audioTrackRaw } = manifestRaw;
+    const { clips: audioClipsRaw } = audioTrackRaw;
 
-    const audioMap = this.parseAudioMap(projectName, manifestParsed);
+    const audioMap = this.parseAudioMap(projectName, manifestRaw);
 
     const audioIdSet = new Set<AudioId>();
-    const clips = audioClipsParsed.map((clipParsed) => {
-      const { audioId, trimEnd } = clipParsed;
+    const clips = audioClipsRaw.map((clipRaw) => {
+      const { audioId, trimEnd } = clipRaw;
 
       if (audioIdSet.has(audioId)) {
         console.log(`Duplicate audio id: "${audioId}"`);
@@ -131,14 +125,14 @@ export class ManifestReader {
       return new AudioClipStore({ audioId, audioPath, trimEnd });
     });
 
-    return new AudioTrackStore({ audios: audioTrackParsed.audios }, clips);
+    return new AudioTrackStore({ audios: audioTrackRaw.audios }, clips);
   }
 
   private parseAudioMap(
     projectName: string,
-    manifestParsed: ManifestParsed,
+    manifestRaw: ManifestRaw,
   ): ReadonlyMap<AudioId, AudioFilepath> {
-    const { audios } = manifestParsed.audioTrack;
+    const { audios } = manifestRaw.audioTrack;
 
     const audioMap = new Map<AudioId, AudioFilepath>();
     const basePath = `/sets/${projectName}/audios`;

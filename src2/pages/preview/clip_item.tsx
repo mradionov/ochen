@@ -44,6 +44,7 @@ export const ClipItem = ({
       headerRight={`${toMinutesString(timelineClip.duration)} (${timelineClip.rate}x)`}
       footerLeft={toMinutesString(timelineClip.start)}
       footerRight={toMinutesString(timelineClip.end)}
+      effectsState={timelineClip.clip.effects}
       controls={controls}
     />
   );

@@ -1,33 +1,31 @@
 import { isImage } from '../../../lib/image_utils';
 import { SyncStore } from '../../../lib/store';
-import {
-  EffectsStore,
-  type EffectsState,
-} from '../../renderer/stores/effects_store';
+import { EffectsStore, type EffectsState } from '../../renderer/effects_store';
 import {
   VideoClipSchema,
   VideoTransitionOutSchema,
+  type VideoClipRaw,
   type VideoFilepath,
   type VideoId,
-  type VideoTransitionOut,
+  type VideoTransitionOutRaw,
 } from '../manifest_schema';
 
 export type VideoClipState = {
   videoId: string;
   videoPath: string;
   duration: number;
-  offsetX: number | string;
-  offsetY: number | string;
-  rate: number;
-  trimEnd: number;
-  transitionOut: VideoTransitionOut;
-  effects: EffectsState;
+  offsetX: number | string | undefined;
+  offsetY: number | string | undefined;
+  rate: number | undefined;
+  trimEnd: number | undefined;
+  transitionOut: VideoTransitionOutRaw | undefined;
+  effects: EffectsState | undefined;
 };
 
 type InternalVideoClipState = Omit<VideoClipState, 'effects'>;
 
 export class VideoClipStore extends SyncStore<VideoClipState> {
-  state: InternalVideoClipState;
+  state: VideoClipState;
   readonly effectsStore: EffectsStore;
 
   constructor(
@@ -36,11 +34,25 @@ export class VideoClipStore extends SyncStore<VideoClipState> {
   ) {
     super();
 
-    this.state = initialState;
-
     this.effectsStore = effectsStore;
-    this.effectsStore.subscribe(this.emit);
+    this.effectsStore.subscribe(this.recomputeState);
+
+    this.state = this.recomputeState(initialState, false);
   }
+
+  private readonly recomputeState = (
+    fromState: InternalVideoClipState = this.state,
+    shouldEmit = true,
+  ): VideoClipState => {
+    this.state = {
+      ...fromState,
+      effects: this.effectsStore.getSnapshot(),
+    };
+    if (shouldEmit) {
+      this.emit();
+    }
+    return this.state;
+  };
 
   static createFromPath({
     videoId,
@@ -68,16 +80,17 @@ export class VideoClipStore extends SyncStore<VideoClipState> {
   }
 
   getSnapshot() {
-    return {
+    return this.state;
+  }
+
+  toRaw(): VideoClipRaw {
+    return VideoClipSchema.parse({
       videoId: this.state.videoId,
-      videoPath: this.state.videoPath,
       duration: this.state.duration,
       offsetX: this.state.offsetX,
       offsetY: this.state.offsetY,
       rate: this.state.rate,
       trimEnd: this.state.trimEnd,
-      transitionOut: this.state.transitionOut,
-      effects: this.effectsStore.getSnapshot(),
-    };
+    });
   }
 }

@@ -1,4 +1,5 @@
 import { SyncStore } from '../../../lib/store';
+import { AudioClipSchema, type AudioClipRaw } from '../manifest_schema';
 
 export type AudioClipState = {
   audioId: string;
@@ -20,5 +21,12 @@ export class AudioClipStore extends SyncStore<AudioClipState> {
       audioPath: this.state.audioPath,
       trimEnd: this.state.trimEnd,
     };
+  }
+
+  toRaw(): AudioClipRaw {
+    return AudioClipSchema.parse({
+      audioId: this.state.audioId,
+      trimEnd: this.state.trimEnd,
+    });
   }
 }

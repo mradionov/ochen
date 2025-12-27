@@ -15,8 +15,7 @@ export const VideoTransitionOutSchema = z.object({
   duration: z.number().prefault(0),
   kind: z.enum(['cut', 'fade']).prefault('cut'),
 });
-
-export type VideoTransitionOut = z.infer<typeof VideoTransitionOutSchema>;
+export type VideoTransitionOutRaw = z.infer<typeof VideoTransitionOutSchema>;
 
 export const VideoClipSchema = z.object({
   videoId: z.string(),
@@ -26,6 +25,7 @@ export const VideoClipSchema = z.object({
   offsetY: z.union([z.number(), z.string()]).prefault('top'),
   trimEnd: z.number().prefault(0),
 });
+export type VideoClipRaw = z.infer<typeof VideoClipSchema>;
 
 export const VideoTrackSchema = z.object({
   transitionOut: VideoTransitionOutSchema.prefault({}),
@@ -33,20 +33,23 @@ export const VideoTrackSchema = z.object({
   clips: z.array(VideoClipSchema).prefault([]),
   videos: z.record(z.string(), z.string()).prefault({}),
 });
+export type VideoTrackRaw = z.infer<typeof VideoTrackSchema>;
 
-const AudioClipSchema = z.object({
+export const AudioClipSchema = z.object({
   audioId: z.string(),
   trimEnd: z.number().prefault(0),
 });
+export type AudioClipRaw = z.infer<typeof AudioClipSchema>;
 
 export const AudioTrackSchema = z.object({
   clips: z.array(AudioClipSchema).prefault([]),
   audios: z.record(z.string(), z.string()).prefault({}),
 });
+export type AudioTrackRaw = z.infer<typeof AudioTrackSchema>;
 
 export const ManifestSchema = z.object({
   videoTrack: VideoTrackSchema.prefault({}),
   audioTrack: AudioTrackSchema.prefault({}),
 });
 
-export type ManifestParsed = z.infer<typeof ManifestSchema>;
+export type ManifestRaw = z.infer<typeof ManifestSchema>;

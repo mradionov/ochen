@@ -1,4 +1,4 @@
-import { hexToRgb } from '$lib/color';
+import { hexToRgb } from '../../../lib/color';
 import type { Effect, EffectContext } from '../effect';
 
 export class TintEffect implements Effect<string> {

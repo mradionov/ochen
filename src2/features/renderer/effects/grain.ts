@@ -1,6 +1,6 @@
-import type { AudioInfo } from '$lib/audio/audio_analyser';
+import type { AudioInfo } from '../../audio/audio_analyser';
 import type { Effect, EffectContext } from '../effect';
-import type { GrainEffectConfig } from '../effects_map.svelte';
+import type { GrainEffectConfig } from '../effects_store';
 
 export class GrainEffect implements Effect<GrainEffectConfig> {
   apply(

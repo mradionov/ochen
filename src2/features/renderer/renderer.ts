@@ -1,22 +1,17 @@
-// import type { VideoPlayer } from '$lib/video/video_player';
-// import { TintEffect } from '../../../src/lib/renderer/effects/tint';
-// import type { Effect } from '../../../src/lib/renderer/effect';
-// // import type { RenderSource } from '../../../src/lib/renderer/render_source';
-// import { EdgeEffect } from '../../../src/lib/renderer/effects/edge';
-// import type { EffectsMap } from '../../../src/lib/renderer/effects_map.svelte';
-// import { GrainEffect } from '../../../src/lib/renderer/effects/grain';
-// // import type { AudioInfo } from '$lib/audio/audio_analyser';
-// import { GlitchEffect } from '../../../src/lib/renderer/effects/glitch';
-
 import { Precondition } from '../../lib/precondition';
-import type { VideoPlayer } from '../video/video_player';
 import type { RenderSource } from './render_source';
-import type { EffectsStore } from './stores/effects_store';
+import type { EffectsState } from './effects_store';
+import { EdgeEffect } from './effects/edge';
+import type { AudioInfo } from '../audio/audio_analyser';
+import type { Effect } from './effect';
+import { GrainEffect } from './effects/grain';
+import { TintEffect } from './effects/tint';
+import { GlitchEffect } from './effects/glitch';
 
 export class Renderer {
   readonly canvas: HTMLCanvasElement;
   private readonly ctx: CanvasRenderingContext2D;
-  // private readonly effectMap: Record<string, Effect<unknown>>;
+  private readonly effectMap: Record<string, Effect<unknown>>;
 
   private constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -26,12 +21,12 @@ export class Renderer {
       }),
     );
 
-    // this.effectMap = {
-    // grain: new GrainEffect(),
-    // edge: new EdgeEffect(),
-    // tint: new TintEffect(),
-    // glitch: new GlitchEffect(),
-    // };
+    this.effectMap = {
+      grain: new GrainEffect(),
+      edge: new EdgeEffect(),
+      tint: new TintEffect(),
+      glitch: new GlitchEffect(),
+    };
   }
 
   // TODO: async
@@ -57,15 +52,15 @@ export class Renderer {
   updateFrame(
     {
       renderSource,
-      effectsStore,
-      // audioInfo,
+      effectsState,
+      audioInfo,
       offset,
       lastTime,
     }: {
       renderSource: RenderSource;
-      effectsStore?: EffectsStore;
-      // audioInfo?: AudioInfo;
-      lastTime?: number;
+      effectsState?: EffectsState;
+      audioInfo?: AudioInfo;
+      lastTime: number;
       offset?: {
         offsetX: number | string | undefined;
         offsetY: number | string | undefined;
@@ -126,36 +121,41 @@ export class Renderer {
     // 	this.ctx.globalAlpha = 1;
     // }
 
-    // if (effects) {
-    //   this.applyEffects(effects, lastTime, audioInfo);
-    // }
+    if (effectsState) {
+      this.applyEffects(effectsState, lastTime, audioInfo);
+    }
   }
 
-  // private async applyEffects(
-  //   effectsStore: EffectsStore,
-  //   lastTime: number,
-  //   // audioInfo: AudioInfo | undefined,
-  // ) {
-  //   const defaultOrder = effects.order ?? ['tint', 'edge', 'glitch', 'grain'];
+  private async applyEffects(
+    effectsState: EffectsState,
+    lastTime: number,
+    audioInfo: AudioInfo | undefined,
+  ) {
+    const defaultOrder = effectsState.order ?? [
+      'tint',
+      'edge',
+      'glitch',
+      'grain',
+    ];
 
-  //   for (const effectKey of defaultOrder) {
-  //     const effectConfig = effects[effectKey];
-  //     if (effectConfig == null) {
-  //       continue;
-  //     }
-  //     // const effect = this.effectMap[effectKey];
-  //     // if (!effect) {
-  //     //   continue;
-  //     // }
-  //     // const effectContext = {
-  //     //   ctx: this.ctx,
-  //     //   width: this.width,
-  //     //   height: this.height,
-  //     //   lastTime,
-  //     // };
-  //     // await effect.apply(effectContext, effectConfig, audioInfo);
-  //   }
-  // }
+    for (const effectKey of defaultOrder) {
+      const effectConfig = effectsState[effectKey];
+      if (effectConfig == null) {
+        continue;
+      }
+      const effect = this.effectMap[effectKey];
+      if (!effect) {
+        continue;
+      }
+      const effectContext = {
+        ctx: this.ctx,
+        width: this.width,
+        height: this.height,
+        lastTime,
+      };
+      await effect.apply(effectContext, effectConfig, audioInfo);
+    }
+  }
 
   // private applyVignette() {
   //   const { width, height } = this.canvas;

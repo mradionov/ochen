@@ -1,129 +1,265 @@
 {
   "videoTrack": {
+    "transitionOut": {
+      "duration": 0,
+      "kind": "cut"
+    },
+    "effects": {
+      "tint": "#ff2600",
+      "grain": {},
+      "edge": {
+        "threshold": 0
+      },
+      "order": ["edge", "tint"]
+    },
     "clips": [
       {
         "videoId": "IMG_1638.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1637.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1640.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1575.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1639.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1673.jpeg",
-        "duration": 20
+        "duration": 20,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1665.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1649.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1653.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1652.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1669.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1644.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1668.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1643.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1659.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1642.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1676.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1667.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1674.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1648.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1645.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1656.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1646.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1650.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1647.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1671.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1666.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1651.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1658.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1675.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       },
       {
         "videoId": "IMG_1670.jpeg",
-        "duration": 22
+        "duration": 22,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
       }
     ],
     "videos": {
@@ -158,17 +294,6 @@
       "IMG_1658.jpeg": "IMG_1658.jpeg",
       "IMG_1675.jpeg": "IMG_1675.jpeg",
       "IMG_1670.jpeg": "IMG_1670.jpeg"
-    },
-    "effects": {
-      "tint": "#ff2600",
-      "grain": {},
-      "edge": {
-        "threshold": 0
-      },
-      "order": [
-        "edge",
-        "tint"
-      ]
     }
   },
   "audioTrack": {

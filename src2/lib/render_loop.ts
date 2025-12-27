@@ -8,8 +8,13 @@ type RenderLoopOptions = {
 
 type State = 'idle' | 'working' | 'stopRequested';
 
+export type RenderLoopTickEvent = {
+  deltaTime: number;
+  lastTime: number;
+};
+
 export class RenderLoop {
-  readonly tick = new Subject<{ deltaTime: number; lastTime: number }>();
+  readonly tick = new Subject<RenderLoopTickEvent>();
   readonly options: RenderLoopOptions;
   private lastTimestamp: number | undefined;
   private state: State = 'idle';

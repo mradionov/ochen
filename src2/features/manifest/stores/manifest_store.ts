@@ -1,4 +1,5 @@
 import { SyncStore } from '../../../lib/store';
+import { ManifestSchema, type ManifestRaw } from '../manifest_schema';
 import { AudioTrackStore, type AudioTrackState } from './audio_track_store';
 import { VideoTrackStore, type VideoTrackState } from './video_track_store';
 
@@ -65,4 +66,11 @@ export class ManifestStore extends SyncStore<ManifestState> {
   readonly getSnapshot = () => {
     return this.state;
   };
+
+  toRaw(): ManifestRaw {
+    return ManifestSchema.parse({
+      videoTrack: this.videoTrackStore.toRaw(),
+      audioTrack: this.audioTrackStore.toRaw(),
+    });
+  }
 }

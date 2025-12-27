@@ -1,8 +1,8 @@
 import { isImage } from '../../lib/image_utils';
 import { Precondition } from '../../lib/precondition';
 import type { VideoId } from '../manifest/manifest_schema';
-import type { ManifestState } from '../manifest/manifest_store';
-import type { VideoClipState } from '../manifest/video_clip_store';
+import type { ManifestState } from '../manifest/stores/manifest_store';
+import type { VideoClipState } from '../manifest/stores/video_clip_store';
 import type { VideoResolver } from '../video_resolver/video_resolver';
 
 export type VideoTimelineClip = {

@@ -1,22 +1,21 @@
 import { SyncStore } from '../../../lib/store';
+import { EffectsStore, type EffectsState } from '../../renderer/effects_store';
 import {
-  EffectsStore,
-  type EffectsState,
-} from '../../renderer/stores/effects_store';
-import {
+  VideoTrackSchema,
   VideoTransitionOutSchema,
   type VideoFilename,
   type VideoFilepath,
   type VideoId,
   type VideoMap,
-  type VideoTransitionOut,
+  type VideoTrackRaw,
+  type VideoTransitionOutRaw,
 } from '../manifest_schema';
 import { VideoClipStore, type VideoClipState } from './video_clip_store';
 
 export type VideoTrackState = {
   clips: VideoClipState[];
   videos: VideoMap;
-  transitionOut: VideoTransitionOut;
+  transitionOut: VideoTransitionOutRaw;
   effects: EffectsState;
 };
 
@@ -24,9 +23,8 @@ type InternalVideoTrackState = Omit<VideoTrackState, 'clips' | 'effects'>;
 
 export class VideoTrackStore extends SyncStore<VideoTrackState> {
   private state: VideoTrackState;
-
   private videoClipStores: VideoClipStore[];
-  private effectsStore: EffectsStore;
+  readonly effectsStore: EffectsStore;
 
   constructor(
     initialState: InternalVideoTrackState,
@@ -36,15 +34,17 @@ export class VideoTrackStore extends SyncStore<VideoTrackState> {
     super();
 
     this.videoClipStores = videoClipStores;
+
     this.effectsStore = effectsStore;
+    this.effectsStore.subscribe(this.recomputeState);
 
     this.state = this.recomputeState(initialState, false);
   }
 
-  private recomputeState(
-    fromState: InternalVideoTrackState,
+  private readonly recomputeState = (
+    fromState: InternalVideoTrackState = this.state,
     shouldEmit = true,
-  ): VideoTrackState {
+  ): VideoTrackState => {
     this.state = {
       videos: fromState.videos,
       transitionOut: fromState.transitionOut,
@@ -55,7 +55,7 @@ export class VideoTrackStore extends SyncStore<VideoTrackState> {
       this.emit();
     }
     return this.state;
-  }
+  };
 
   static createEmpty() {
     return new VideoTrackStore(
@@ -145,4 +145,16 @@ export class VideoTrackStore extends SyncStore<VideoTrackState> {
   readonly getSnapshot = () => {
     return this.state;
   };
+
+  toRaw(): VideoTrackRaw {
+    return VideoTrackSchema.parse({
+      clips: this.videoClipStores.map((clipStore) => clipStore.toRaw()),
+      videos: this.state.videos,
+      effects: this.effectsStore.toRaw(),
+      transitionOut:
+        (this.state.transitionOut?.duration ?? 0) > 0
+          ? this.state.transitionOut
+          : undefined,
+    });
+  }
 }

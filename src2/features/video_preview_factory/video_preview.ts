@@ -1,6 +1,6 @@
 import type { ImageBitmapRenderSource } from '../renderer/render_source';
 import type { Renderer } from '../renderer/renderer';
-import type { EffectsStore } from '../renderer/stores/effects_store';
+import type { EffectsState } from '../renderer/effects_store';
 import type { RenderablePlayer } from '../video/renderable_player';
 
 export class VideoPreview {
@@ -18,13 +18,19 @@ export class VideoPreview {
     this.posterRenderSource = posterRenderSource;
   }
 
-  update({ effectsStore }: { effectsStore?: EffectsStore }) {
+  update({
+    lastTime,
+    effectsState,
+  }: {
+    lastTime: number;
+    effectsState?: EffectsState;
+  }) {
     if (this.player.isPlaying || !this.player.isDestroyed) {
       const renderSource = this.player.createRenderSource();
-      this.renderer.updateFrame({ renderSource, effectsStore });
+      this.renderer.updateFrame({ renderSource, lastTime, effectsState });
     } else {
       const renderSource = this.posterRenderSource;
-      this.renderer.updateFrame({ renderSource, effectsStore });
+      this.renderer.updateFrame({ renderSource, lastTime, effectsState });
     }
   }
 

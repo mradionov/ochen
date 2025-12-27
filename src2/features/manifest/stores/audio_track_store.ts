@@ -1,5 +1,5 @@
 import { SyncStore } from '../../../lib/store';
-import type { AudioMap } from '../manifest_schema';
+import { AudioTrackSchema, type AudioMap } from '../manifest_schema';
 import { AudioClipStore, type AudioClipState } from './audio_clip_store';
 
 export type AudioTrackState = {
@@ -46,4 +46,11 @@ export class AudioTrackStore extends SyncStore<AudioTrackState> {
   readonly getSnapshot = () => {
     return this.state;
   };
+
+  toRaw() {
+    return AudioTrackSchema.parse({
+      clips: this.audioClipStores.map((clipStore) => clipStore.toRaw()),
+      audios: this.state.audios,
+    });
+  }
 }

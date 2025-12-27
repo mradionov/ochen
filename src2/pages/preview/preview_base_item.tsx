@@ -1,13 +1,15 @@
 import React from 'react';
-import type { EffectsStore } from '../../features/renderer/stores/effects_store';
+import type { EffectsState } from '../../features/renderer/effects_store';
 import classes from './preview_base_item.module.css';
 import { useVideoPreviewFactory } from '../../features/video_preview_factory/use_video_preview_factory';
 import type { VideoPreview } from '../../features/video_preview_factory/video_preview';
 import { useRenderLoop } from '../../features/use_render_loop';
+import type { RenderLoopTickEvent } from '../../lib/render_loop';
 
 export const PreviewBaseItem = ({
   videoPath,
   videoTrimmedDuration,
+  effectsState,
   headerLeft,
   headerRight,
   footerLeft,
@@ -16,7 +18,7 @@ export const PreviewBaseItem = ({
 }: {
   videoPath: string;
   videoTrimmedDuration?: number;
-  effects?: EffectsStore;
+  effectsState?: EffectsState;
   headerLeft?: React.ReactNode;
   headerRight?: React.ReactNode;
   footerLeft?: React.ReactNode;
@@ -44,6 +46,7 @@ export const PreviewBaseItem = ({
         const canvas = videoPreview.renderer.canvas;
         canvasContainerRef.current?.appendChild(canvas);
         videoPreviewRef.current = videoPreview;
+        videoPreviewRef.current.update({ lastTime: 0, effectsState });
       });
 
     return () => {
@@ -53,9 +56,9 @@ export const PreviewBaseItem = ({
 
   React.useEffect(() => load(), []);
 
-  const onTick = () => {
+  const onTick = ({ lastTime }: RenderLoopTickEvent) => {
     if (videoPreviewRef.current?.player.isPlaying) {
-      videoPreviewRef.current.update({ effectsStore: undefined });
+      videoPreviewRef.current.update({ lastTime, effectsState });
     }
   };
 

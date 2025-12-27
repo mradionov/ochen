@@ -1,6 +1,6 @@
-import type { AudioInfo } from '$lib/audio/audio_analyser';
+import type { AudioInfo } from '../../audio/audio_analyser';
 import type { Effect, EffectContext } from '../effect';
-import type { EdgeEffectConfig } from '../effects_map.svelte';
+import type { EdgeEffectConfig } from '../effects_store';
 
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
 
@@ -87,7 +87,7 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
     const wobbleAmount = 0;
     // const wobbleAmount = accentuateBand(audioInfo?.norm.noise, 2, 0.2, 0.4) * 2;
 
-    console.log(wobbleAmount);
+    // console.log(wobbleAmount);
     // console.log(wobbleAmount);
 
     let gx, gy;
@@ -194,8 +194,8 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
       }
     }
 
-    const jej = accentuateBand(audioInfo.diff.treble, 3, 0.3, 0.7);
-    const iterations = Math.round(jej);
+    // const jej = accentuateBand(audioInfo.diff.treble, 3, 0.3, 0.7);
+    // const iterations = Math.round(jej);
     // console.log(iterations);
 
     dilate(dst, width, height, 0);
