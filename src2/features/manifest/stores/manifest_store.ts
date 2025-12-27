@@ -44,7 +44,6 @@ export class ManifestStore extends SyncStore<ManifestState> {
     fromState: InternalManifestState = this.state,
     shouldEmit = true,
   ): ManifestState => {
-    console.log('ManifestStore#recomputeState');
     this.state = {
       projectName: fromState.projectName,
       videoTrack: this.videoTrackStore.getSnapshot(),

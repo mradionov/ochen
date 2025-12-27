@@ -22,7 +22,7 @@ export class RenderLoop {
   }
 
   start() {
-    if (this.state !== 'idle') {
+    if (this.state !== 'idle' && this.state !== 'stopRequested') {
       return;
     }
 
