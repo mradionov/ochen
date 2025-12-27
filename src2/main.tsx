@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { App } from './app.tsx';
 import { MantineProvider } from '@mantine/core';
-import { HomePage } from './pages/home/home_page.tsx';
+import { ProjectsPage } from './pages/projects/projects_page.tsx';
 import { PreviewPage } from './pages/preview/preview_page.tsx';
 import { TimelinePage } from './pages/timeline/timeline_page.tsx';
 
@@ -15,7 +15,7 @@ const router = createBrowserRouter([
     path: '/',
     element: <App />,
     children: [
-      { index: true, element: <HomePage /> },
+      { index: true, element: <ProjectsPage /> },
       { path: 'preview', element: <PreviewPage /> },
       { path: 'timeline', element: <TimelinePage /> },
     ],

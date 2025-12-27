@@ -1,8 +1,6 @@
-import { Deferred } from '../../../src2/lib/deferred';
-import { TaskQueue } from '$lib/task_queue';
-import { isImage } from '$lib/image_utils';
-
-type VideoId = string;
+import { Deferred } from '../../lib/deferred';
+import { TaskQueue } from '../../lib/task_queue';
+import type { VideoId } from '../manifest/manifest_schema';
 
 export type VideoMetadata = {
   videoId: string;

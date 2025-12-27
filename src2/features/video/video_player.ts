@@ -1,9 +1,8 @@
-import { Subject } from '$lib/subject';
-import { defaults } from '$lib/defaults';
-import type { VideoTimelineClip } from './video_timeline.svelte';
+import { defaults } from '../../lib/defaults';
+import { Deferred } from '../../lib/deferred';
+import { Subject } from '../../lib/subject';
+import { VideoRenderSource } from '../renderer/render_source';
 import type { RenderablePlayer } from './renderable_player';
-import { VideoRenderSource } from '$lib/renderer/render_source';
-import { Deferred } from '$lib/deferred';
 
 type VideoPlayerOptions = {
   rate?: number;
@@ -16,6 +15,7 @@ const defaultOptions: VideoPlayerOptions = {
 };
 
 export class VideoPlayer implements RenderablePlayer {
+  readonly element: HTMLVideoElement;
   readonly options: VideoPlayerOptions;
   readonly src: string | undefined;
   readonly srcObject: MediaProvider | null;
@@ -25,9 +25,10 @@ export class VideoPlayer implements RenderablePlayer {
   private _isDestroyed = false;
 
   private constructor(
-    readonly element: HTMLVideoElement,
+    element: HTMLVideoElement,
     argOptions: VideoPlayerOptions = {},
   ) {
+    this.element = element;
     this.src = element.src;
     this.srcObject = element.srcObject;
     this.options = defaults(defaultOptions, argOptions);
@@ -56,12 +57,12 @@ export class VideoPlayer implements RenderablePlayer {
     return this.createFromElement(element, options);
   }
 
-  static createFromTimelineClip(timelineClip: VideoTimelineClip) {
-    return this.createFromPath(timelineClip.clip.videoPath, {
-      trimmedDuration: timelineClip.trimmedDuration,
-      rate: timelineClip.rate,
-    });
-  }
+  // static createFromTimelineClip(timelineClip: VideoTimelineClip) {
+  //   return this.createFromPath(timelineClip.clip.videoPath, {
+  //     trimmedDuration: timelineClip.trimmedDuration,
+  //     rate: timelineClip.rate,
+  //   });
+  // }
 
   createRenderSource() {
     return new VideoRenderSource(this.element);

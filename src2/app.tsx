@@ -9,7 +9,7 @@ export const App = () => (
     }}
   >
     <AppShell.Navbar>
-      <NavLink component={Link} to="/" label="Home" />
+      <NavLink component={Link} to="/" label="Projects" />
       <NavLink component={Link} to="/preview" label="Preview" />
       <NavLink component={Link} to="/timeline" label="Timeline" />
     </AppShell.Navbar>

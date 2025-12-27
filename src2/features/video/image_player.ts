@@ -1,15 +1,12 @@
-import { Deferred } from '$lib/deferred';
-import {
-  ImageRenderSource,
-  PlaceholderRenderSource,
-  VideoRenderSource,
-  type RenderSource,
-} from '$lib/renderer/render_source';
-import { RunningClock } from '$lib/running_clock';
-import { Subject } from '$lib/subject';
+import { Deferred } from '../../lib/deferred';
+import { RunningClock } from '../../lib/running_clock';
+import { Subject } from '../../lib/subject';
+import { ImageRenderSource } from '../renderer/render_source';
 import type { RenderablePlayer } from './renderable_player';
 
 export class ImagePlayer implements RenderablePlayer {
+  readonly element: HTMLImageElement;
+  readonly duration: number;
   readonly ended = new Subject<void>();
   readonly loaded: Promise<void>;
   private clock = new RunningClock();
@@ -17,10 +14,9 @@ export class ImagePlayer implements RenderablePlayer {
   private _isPlaying = false;
   private _isDestroyed = false;
 
-  private constructor(
-    readonly element: HTMLImageElement,
-    readonly duration: number,
-  ) {
+  private constructor(element: HTMLImageElement, duration: number) {
+    this.element = element;
+    this.duration = duration;
     const loadedDeferred = new Deferred<void>();
     this.loaded = loadedDeferred.promise;
     element.addEventListener(

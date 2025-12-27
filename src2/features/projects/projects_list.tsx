@@ -1,4 +1,4 @@
-import { Button, Stack, Table, Text, ThemeIcon } from '@mantine/core';
+import { Button, Stack, Table } from '@mantine/core';
 import { useProjects } from './use_projects';
 import * as Lucide from 'lucide-react';
 

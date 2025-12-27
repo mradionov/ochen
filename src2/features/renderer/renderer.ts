@@ -1,31 +1,37 @@
-import type { VideoPlayer } from '$lib/video/video_player';
-import { Precondition } from '$lib/precondition';
-import { TintEffect } from './effects/tint';
-import type { Effect } from './effect';
+// import type { VideoPlayer } from '$lib/video/video_player';
+// import { TintEffect } from '../../../src/lib/renderer/effects/tint';
+// import type { Effect } from '../../../src/lib/renderer/effect';
+// // import type { RenderSource } from '../../../src/lib/renderer/render_source';
+// import { EdgeEffect } from '../../../src/lib/renderer/effects/edge';
+// import type { EffectsMap } from '../../../src/lib/renderer/effects_map.svelte';
+// import { GrainEffect } from '../../../src/lib/renderer/effects/grain';
+// // import type { AudioInfo } from '$lib/audio/audio_analyser';
+// import { GlitchEffect } from '../../../src/lib/renderer/effects/glitch';
+
+import { Precondition } from '../../lib/precondition';
+import type { VideoPlayer } from '../video/video_player';
 import type { RenderSource } from './render_source';
-import { EdgeEffect } from './effects/edge';
-import type { EffectsMap } from './effects_map.svelte';
-import { GrainEffect } from './effects/grain';
-import type { AudioInfo } from '$lib/audio/audio_analyser';
-import { GlitchEffect } from './effects/glitch';
+import type { EffectsStore } from './stores/effects_store';
 
 export class Renderer {
+  readonly canvas: HTMLCanvasElement;
   private readonly ctx: CanvasRenderingContext2D;
-  private readonly effectMap: Record<string, Effect<unknown>>;
+  // private readonly effectMap: Record<string, Effect<unknown>>;
 
-  private constructor(readonly canvas: HTMLCanvasElement) {
+  private constructor(canvas: HTMLCanvasElement) {
+    this.canvas = canvas;
     this.ctx = Precondition.checkExists(
       canvas.getContext('2d', {
         willReadFrequently: true,
       }),
     );
 
-    this.effectMap = {
-      grain: new GrainEffect(),
-      edge: new EdgeEffect(),
-      tint: new TintEffect(),
-      glitch: new GlitchEffect(),
-    };
+    // this.effectMap = {
+    // grain: new GrainEffect(),
+    // edge: new EdgeEffect(),
+    // tint: new TintEffect(),
+    // glitch: new GlitchEffect(),
+    // };
   }
 
   // TODO: async
@@ -51,21 +57,21 @@ export class Renderer {
   updateFrame(
     {
       renderSource,
-      effects,
-      audioInfo,
+      effectsStore,
+      // audioInfo,
       offset,
       lastTime,
     }: {
       renderSource: RenderSource;
-      effects?: EffectsMap;
-      audioInfo?: AudioInfo;
-      lastTime: number;
+      effectsStore?: EffectsStore;
+      // audioInfo?: AudioInfo;
+      lastTime?: number;
       offset?: {
         offsetX: number | string | undefined;
         offsetY: number | string | undefined;
       };
     },
-    next: { player: VideoPlayer } | undefined,
+    // next: { player: VideoPlayer } | undefined,
   ) {
     this.ctx.clearRect(0, 0, this.width, this.height);
 
@@ -120,69 +126,69 @@ export class Renderer {
     // 	this.ctx.globalAlpha = 1;
     // }
 
-    if (effects) {
-      this.applyEffects(effects, lastTime, audioInfo);
-    }
+    // if (effects) {
+    //   this.applyEffects(effects, lastTime, audioInfo);
+    // }
   }
 
-  private async applyEffects(
-    effects: EffectsMap,
-    lastTime: number,
-    audioInfo: AudioInfo | undefined,
-  ) {
-    const defaultOrder = effects.order ?? ['tint', 'edge', 'glitch', 'grain'];
+  // private async applyEffects(
+  //   effectsStore: EffectsStore,
+  //   lastTime: number,
+  //   // audioInfo: AudioInfo | undefined,
+  // ) {
+  //   const defaultOrder = effects.order ?? ['tint', 'edge', 'glitch', 'grain'];
 
-    for (const effectKey of defaultOrder) {
-      const effectConfig = effects[effectKey];
-      if (effectConfig == null) {
-        continue;
-      }
-      const effect = this.effectMap[effectKey];
-      if (!effect) {
-        continue;
-      }
-      const effectContext = {
-        ctx: this.ctx,
-        width: this.width,
-        height: this.height,
-        lastTime,
-      };
-      await effect.apply(effectContext, effectConfig, audioInfo);
-    }
-  }
+  //   for (const effectKey of defaultOrder) {
+  //     const effectConfig = effects[effectKey];
+  //     if (effectConfig == null) {
+  //       continue;
+  //     }
+  //     // const effect = this.effectMap[effectKey];
+  //     // if (!effect) {
+  //     //   continue;
+  //     // }
+  //     // const effectContext = {
+  //     //   ctx: this.ctx,
+  //     //   width: this.width,
+  //     //   height: this.height,
+  //     //   lastTime,
+  //     // };
+  //     // await effect.apply(effectContext, effectConfig, audioInfo);
+  //   }
+  // }
 
-  private applyVignette() {
-    const { width, height } = this.canvas;
-    const gradient = this.ctx.createRadialGradient(
-      width / 2,
-      height / 2,
-      width / 4,
-      width / 2,
-      height / 2,
-      width / 1.2,
-    );
-    gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
-    gradient.addColorStop(1, 'rgba(0, 0, 0, 1)');
-    this.ctx.fillStyle = gradient;
-    this.ctx.fillRect(0, 0, width, height);
-  }
+  // private applyVignette() {
+  //   const { width, height } = this.canvas;
+  //   const gradient = this.ctx.createRadialGradient(
+  //     width / 2,
+  //     height / 2,
+  //     width / 4,
+  //     width / 2,
+  //     height / 2,
+  //     width / 1.2,
+  //   );
+  //   gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+  //   gradient.addColorStop(1, 'rgba(0, 0, 0, 1)');
+  //   this.ctx.fillStyle = gradient;
+  //   this.ctx.fillRect(0, 0, width, height);
+  // }
 
-  private applyGrain(intensity: number = 0) {
-    const imageData = this.ctx.getImageData(0, 0, this.width, this.height);
-    const data = imageData.data;
-    for (let i = 0; i < data.length; i += 4) {
-      const rand = (Math.random() - 0.5) * intensity;
-      data[i] += rand; // R
-      data[i + 1] += rand; // G
-      data[i + 2] += rand; // B
-    }
-    this.ctx.putImageData(imageData, 0, 0);
-  }
+  // private applyGrain(intensity: number = 0) {
+  //   const imageData = this.ctx.getImageData(0, 0, this.width, this.height);
+  //   const data = imageData.data;
+  //   for (let i = 0; i < data.length; i += 4) {
+  //     const rand = (Math.random() - 0.5) * intensity;
+  //     data[i] += rand; // R
+  //     data[i + 1] += rand; // G
+  //     data[i + 2] += rand; // B
+  //   }
+  //   this.ctx.putImageData(imageData, 0, 0);
+  // }
 
-  private applyHaze() {
-    this.ctx.fillStyle = 'rgba(200, 200, 200, 0.1)';
-    this.ctx.fillRect(0, 0, this.width, this.height);
-  }
+  // private applyHaze() {
+  //   this.ctx.fillStyle = 'rgba(200, 200, 200, 0.1)';
+  //   this.ctx.fillRect(0, 0, this.width, this.height);
+  // }
 
   private getBox(
     renderSource: RenderSource,

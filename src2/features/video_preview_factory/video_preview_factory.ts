@@ -1,37 +1,33 @@
-import { TaskQueue } from '$lib/task_queue';
-import { Renderer } from '$lib/renderer/renderer';
-import { ImageBitmapRenderSource } from '$lib/renderer/render_source';
-import type { EffectsMap } from '$lib/renderer/effects_map.svelte';
-import { RenderablePlayerFactory } from './renderable_player_factory';
-import type { RenderablePlayer } from './renderable_player';
-
-export class VideoPreview {
-  constructor(
-    readonly player: RenderablePlayer,
-    readonly renderer: Renderer,
-    readonly posterRenderSource: ImageBitmapRenderSource,
-  ) {}
-
-  update({ effects }: { effects?: EffectsMap }) {
-    if (this.player.isPlaying || !this.player.isDestroyed) {
-      const renderSource = this.player.createRenderSource();
-      this.renderer.updateFrame({ renderSource, effects }, undefined);
-    } else {
-      const renderSource = this.posterRenderSource;
-      this.renderer.updateFrame({ renderSource, effects }, undefined);
-    }
-  }
-
-  togglePlay() {
-    this.player.togglePlay();
-  }
-}
+import { TaskQueue } from '../../lib/task_queue';
+import { ImageBitmapRenderSource } from '../renderer/render_source';
+import { Renderer } from '../renderer/renderer';
+import { RenderablePlayerFactory } from '../video/renderable_player_factory';
+import { VideoPreview } from './video_preview';
 
 export class VideoPreviewFactory {
   // Create one by one to speed up the process, video elements are struggling if it's done at the same time
   private taskQueue = new TaskQueue();
 
-  create(
+  private cache = new Map<string, Promise<VideoPreview>>();
+
+  async create(
+    videoPath: string,
+    { trimmedDuration }: { trimmedDuration?: number } = {},
+  ): Promise<VideoPreview> {
+    const cacheKey = videoPath;
+
+    let videoPreviewPromise = this.cache.get(cacheKey);
+    if (videoPreviewPromise != null) {
+      return videoPreviewPromise;
+    }
+
+    videoPreviewPromise = this.doCreate(videoPath, { trimmedDuration });
+    this.cache.set(cacheKey, videoPreviewPromise);
+
+    return videoPreviewPromise;
+  }
+
+  private doCreate(
     videoPath: string,
     { trimmedDuration }: { trimmedDuration?: number } = {},
   ): Promise<VideoPreview> {
@@ -67,7 +63,7 @@ export class VideoPreviewFactory {
       );
       const posterSource = new ImageBitmapRenderSource(posterFrame);
 
-      renderer.updateFrame({ renderSource: posterSource }, undefined);
+      renderer.updateFrame({ renderSource: posterSource });
 
       // Free up video resources for next players, as they only need canvases with posters
       player.destroy();

@@ -1,4 +1,4 @@
-import { Deferred } from '../../src2/lib/deferred.ts';
+import { Deferred } from './deferred.ts';
 
 type RunFn<T> = () => Promise<T>;
 

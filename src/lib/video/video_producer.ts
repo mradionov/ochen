@@ -3,7 +3,7 @@ import {
   type VideoTimelineClip,
 } from '$lib/video/video_timeline.svelte';
 import { Subject } from '$lib/subject';
-import type { RenderablePlayer } from './renderable_player';
+import type { RenderablePlayer } from '../../../src2/features/video/renderable_player';
 import { RenderablePlayerFactory } from './renderable_player_factory';
 
 export class VideoProducer {

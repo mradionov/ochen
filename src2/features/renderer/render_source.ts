@@ -14,7 +14,11 @@ export type RenderSource = (
 };
 
 export class ImageBitmapRenderSource {
-  constructor(private readonly imageBitmap: ImageBitmap) {}
+  private readonly imageBitmap: ImageBitmap;
+
+  constructor(imageBitmap: ImageBitmap) {
+    this.imageBitmap = imageBitmap;
+  }
 
   source() {
     return this.imageBitmap;
@@ -73,7 +77,11 @@ export class PlaceholderRenderSource {
 }
 
 export class ImageRenderSource {
-  constructor(private readonly image: HTMLImageElement) {}
+  private readonly image: HTMLImageElement;
+
+  constructor(image: HTMLImageElement) {
+    this.image = image;
+  }
 
   source() {
     return this.image;
@@ -89,7 +97,11 @@ export class ImageRenderSource {
 }
 
 export class VideoRenderSource {
-  constructor(private readonly video: HTMLVideoElement) {}
+  private readonly video: HTMLVideoElement;
+
+  constructor(video: HTMLVideoElement) {
+    this.video = video;
+  }
 
   source() {
     return this.video;

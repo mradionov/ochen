@@ -1,6 +1,10 @@
 import React from 'react';
 import { Database } from '../../lib/database';
-import { ProjectsController, type Project } from './projects_controller';
+import {
+  ProjectsController,
+  type Project,
+  type SourceVideoFile,
+} from './projects_controller';
 import { ProjectsRepo } from './projects_repo';
 
 const db = new Database();
@@ -9,14 +13,24 @@ const projectsController = new ProjectsController(projectsRepo);
 
 export const useProjects = () => {
   const [projects, setProjects] = React.useState<Project[]>([]);
+  const [activeProjectName, setActiveProjectName] = React.useState<
+    string | undefined
+  >();
+  const [sourceVideoFiles, setSourceVideoFiles] = React.useState<
+    SourceVideoFile[]
+  >([]);
 
-  const loadProjects = async () => {
+  const load = async () => {
     setProjects(await projectsController.fetchProjects());
+    setActiveProjectName(await projectsController.fetchActiveProjectName());
+    setSourceVideoFiles(
+      await projectsController.fetchActiveProjectVideoFiles(),
+    );
   };
 
   const activateProject = async (project: Project) => {
     await projectsController.activate(project);
-    await loadProjects();
+    await load();
   };
 
   const chooseProjectsDirectory = () => {
@@ -24,10 +38,14 @@ export const useProjects = () => {
   };
 
   React.useEffect(() => {
-    void loadProjects();
+    void load();
   }, []);
 
-  return { projects, activateProject, chooseProjectsDirectory };
+  return {
+    projects,
+    activateProject,
+    activeProjectName,
+    chooseProjectsDirectory,
+    sourceVideoFiles,
+  };
 };
-// const projectsController = React.useContext(ProjectsControllerContext);
-//

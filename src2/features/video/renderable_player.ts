@@ -1,5 +1,5 @@
-import type { RenderSource } from '$lib/renderer/render_source';
-import type { Subject } from '$lib/subject';
+import type { Subject } from '../../lib/subject';
+import type { RenderSource } from '../renderer/render_source';
 
 export interface RenderablePlayer {
   ended: Subject<void>;

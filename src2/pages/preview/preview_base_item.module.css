@@ -1,0 +1,33 @@
+.container {
+  width: 200px;
+  height: 200px;
+  background: #a1a1a1;
+  display: inline-block;
+  margin: 5px;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.canvas {
+  width: 200px;
+  height: 200px;
+}
+
+.header,
+.footer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  padding: 4px;
+  display: flex;
+  justify-content: space-between;
+  font: 10px sans-serif;
+  color: #eee;
+}
+
+.footer {
+  bottom: 0;
+  top: auto;
+}
