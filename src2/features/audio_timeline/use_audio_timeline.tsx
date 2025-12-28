@@ -5,11 +5,15 @@ import { AudioTimelineSelectors } from './audio_timeline_selectors';
 
 export const useAudioTimeline = () => {
   const { manifestState } = useManifest();
-  const { audioResolverSnap } = useAudioResolver();
+  const { audioResolver, audioResolverSnap } = useAudioResolver();
 
   const audioTimeline = React.useMemo(() => {
     return new AudioTimelineSelectors(manifestState, audioResolverSnap);
   }, [manifestState, audioResolverSnap]);
+
+  React.useEffect(() => {
+    void audioResolver.loadMetadata(manifestState.audioTrack.clips);
+  }, [manifestState, audioResolver]);
 
   return { audioTimeline };
 };

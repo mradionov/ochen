@@ -5,11 +5,15 @@ import { VideoTimelineSelectors } from './video_timeline_selectors';
 
 export const useVideoTimeline = () => {
   const { manifestState } = useManifest();
-  const { videoResolverSnap } = useVideoResolver();
+  const { videoResolver, videoResolverSnap } = useVideoResolver();
 
   const videoTimeline = React.useMemo(() => {
     return new VideoTimelineSelectors(manifestState, videoResolverSnap);
   }, [manifestState, videoResolverSnap]);
+
+  React.useEffect(() => {
+    void videoResolver.loadMetadata(manifestState.videoTrack.clips);
+  }, [manifestState, videoResolver]);
 
   return { videoTimeline };
 };
