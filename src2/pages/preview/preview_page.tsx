@@ -3,12 +3,12 @@ import { useManifest } from '../../features/manifest/use_manifest';
 import { useProjects } from '../../features/projects/use_projects';
 import { UnimportedItem } from './unimported_item';
 import type { SourceVideoFile } from '../../features/projects/projects_controller';
-import { useVideoTimeline } from '../../features/video_timeline/use_video_timeline';
 import { toMinutesString } from '../../lib/time_utils';
 import { ClipItem } from './clip_item';
-import type { VideoTimelineClip } from '../../features/video_timeline/video_timeline';
+import { type VideoTimelineClip } from '../../features/video_timeline/video_timeline_selectors';
 import { VideoTrackStore } from '../../features/manifest/stores/video_track_store';
 import { ManifestSaveButton } from '../../features/manifest/manifest_save_button';
+import { useVideoTimeline } from '../../features/video_timeline/use_video_timeline';
 
 export const PreviewPage = () => {
   const { sourceVideoFiles } = useProjects();
@@ -26,8 +26,8 @@ export const PreviewPage = () => {
     (file) => !importedNames.includes(file.name),
   );
 
-  const timelineClips = videoTimeline.getTimelineClips(manifestState);
-  const totalDuration = videoTimeline.getTotalDuration(manifestState);
+  const timelineClips = videoTimeline.getTimelineClips();
+  const totalDuration = videoTimeline.getTotalDuration();
 
   const tint = manifestState.videoTrack.effects?.tint;
 
@@ -60,7 +60,7 @@ export const PreviewPage = () => {
       <ManifestSaveButton />
 
       <div>total duration: {toMinutesString(totalDuration)}</div>
-      <input type="color" value={tint} onChange={onTintChange} />
+      <input type="color" value={tint ?? '#000000'} onChange={onTintChange} />
 
       <hr />
 

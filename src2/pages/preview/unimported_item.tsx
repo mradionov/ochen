@@ -13,20 +13,16 @@ export const UnimportedItem = ({
   sourceVideoFile: SourceVideoFile;
   onImport: () => void;
 }) => {
-  const { videoResolver } = useVideoResolver();
+  const { videoResolver, videoResolverSnap } = useVideoResolver();
 
-  const [duration, setDuration] = React.useState(0);
+  const duration = videoResolverSnap.getDuration(sourceVideoFile.name);
 
   React.useEffect(() => {
     if (!isImage(sourceVideoFile.name)) {
-      videoResolver
-        .loadMetadataOne({
-          videoId: sourceVideoFile.name,
-          videoPath: sourceVideoFile.path,
-        })
-        .then((metadata) => {
-          setDuration(metadata.duration);
-        });
+      videoResolver.loadMetadataOne({
+        videoId: sourceVideoFile.name,
+        videoPath: sourceVideoFile.path,
+      });
     }
   }, [sourceVideoFile, videoResolver]);
 

@@ -1,12 +1,7 @@
 import { Deferred } from '../../lib/deferred';
 import { TaskQueue } from '../../lib/task_queue';
 import type { VideoId } from '../manifest/manifest_schema';
-
-export type VideoMetadata = {
-  videoId: string;
-  videoPath: string;
-  duration: number;
-};
+import type { VideoMetadata, VideoResolverStore } from './video_resolver_store';
 
 export type VideoRef = {
   videoId: VideoId;
@@ -14,8 +9,12 @@ export type VideoRef = {
 };
 
 export class VideoResolver {
-  private taskQueue = new TaskQueue();
-  private videos = new Map<VideoId, VideoMetadata>();
+  private readonly videoResolverStore: VideoResolverStore;
+  private readonly taskQueue = new TaskQueue();
+
+  constructor(videoResolverStore: VideoResolverStore) {
+    this.videoResolverStore = videoResolverStore;
+  }
 
   async loadMetadata(refs: VideoRef[]) {
     for (const ref of refs) {
@@ -23,15 +22,7 @@ export class VideoResolver {
     }
   }
 
-  getMetadata(id: VideoId): VideoMetadata {
-    const video = this.videos.get(id);
-    if (!video) {
-      throw new Error(`Must preload metadata for video "${id}"`);
-    }
-    return video;
-  }
-
-  async loadMetadataOne(ref: VideoRef): Promise<VideoMetadata> {
+  async loadMetadataOne(ref: VideoRef): Promise<void> {
     // Create one by one to speed up the process, video elements are struggling if it's done at the
     // same time
     return this.taskQueue.run(() => {
@@ -39,10 +30,9 @@ export class VideoResolver {
     });
   }
 
-  private async doLoadMetadataOne(ref: VideoRef): Promise<VideoMetadata> {
-    const existingMetadata = this.videos.get(ref.videoId);
-    if (existingMetadata) {
-      return existingMetadata;
+  private async doLoadMetadataOne(ref: VideoRef): Promise<void> {
+    if (this.videoResolverStore.hasMetadata(ref.videoId)) {
+      return;
     }
 
     const loadedMetadata = new Deferred<void>();
@@ -66,11 +56,9 @@ export class VideoResolver {
       duration: video.duration,
     };
 
-    this.videos.set(ref.videoId, metadata);
+    this.videoResolverStore.addMetadata(ref.videoId, metadata);
 
     video.removeAttribute('src');
     video.load();
-
-    return metadata;
   }
 }

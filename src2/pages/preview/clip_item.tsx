@@ -1,5 +1,5 @@
 import { Button, Group } from '@mantine/core';
-import type { VideoTimelineClip } from '../../features/video_timeline/video_timeline';
+import type { VideoTimelineClip } from '../../features/video_timeline/video_timeline_selectors';
 import { PreviewBaseItem } from './preview_base_item';
 import { toMinutesString } from '../../lib/time_utils';
 

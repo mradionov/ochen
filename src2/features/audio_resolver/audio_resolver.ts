@@ -1,12 +1,6 @@
-import { Deferred } from '../../../src2/lib/deferred';
-
-type AudioId = string;
-
-type AudioMetadata = {
-  audioId: string;
-  audioPath: string;
-  duration: number;
-};
+import { Deferred } from '../../lib/deferred';
+import type { AudioId } from '../manifest/manifest_schema';
+import type { AudioMetadata, AudioResolverStore } from './audio_resolver_store';
 
 type AudioRef = {
   audioId: AudioId;
@@ -14,19 +8,16 @@ type AudioRef = {
 };
 
 export class AudioResolver {
-  private audios = new Map<AudioId, AudioMetadata>();
+  private readonly audioResolverStore: AudioResolverStore;
+
+  constructor(audioResolverStore: AudioResolverStore) {
+    this.audioResolverStore = audioResolverStore;
+  }
 
   async loadMetadata(refs: AudioRef[]) {
     for (const ref of refs) {
       await this.loadMetadataOne(ref);
     }
-  }
-
-  getMetadata(id: AudioId): AudioMetadata {
-    if (!this.audios.has(id)) {
-      throw new Error(`Must preload metadata for audio "${id}"`);
-    }
-    return this.audios.get(id);
   }
 
   createAudioElement(ref: AudioRef): HTMLAudioElement {
@@ -35,10 +26,9 @@ export class AudioResolver {
     return element;
   }
 
-  private async loadMetadataOne(ref: AudioRef): Promise<AudioMetadata> {
-    const existingMetadata = this.audios.get(ref.audioId);
-    if (existingMetadata) {
-      return existingMetadata;
+  private async loadMetadataOne(ref: AudioRef): Promise<void> {
+    if (this.audioResolverStore.hasMetadata(ref.audioId)) {
+      return;
     }
 
     const loadedMetadata = new Deferred<void>();
@@ -62,11 +52,9 @@ export class AudioResolver {
       duration: audio.duration,
     };
 
-    this.audios.set(ref.audioId, metadata);
+    this.audioResolverStore.addMetadata(ref.audioId, metadata);
 
     audio.removeAttribute('src');
     audio.load();
-
-    return metadata;
   }
 }
