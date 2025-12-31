@@ -62,26 +62,30 @@
     const audioTimeline = new AudioTimeline(manifest, audioResolver);
 
     videoProducer = new VideoProducer(videoTimeline);
-    videoProducer.clipChanged.addListener((clip) => {
-      currentVideoTimelineClip = clip;
-    });
-    videoProducer.playerChanged.addListener(({ player, nextPlayer }) => {
-      videoPlayer = player;
-      nextVideoPlayer = nextPlayer;
-    });
+    // videoProducer.clipChanged.addListener((clip) => {
+    //   currentVideoTimelineClip = clip;
+    // });
+    videoProducer.playerChanged.addListener(
+      ({ player, nextPlayer, timelineClip }) => {
+        videoPlayer = player;
+        nextVideoPlayer = nextPlayer;
+        currentVideoTimelineClip = timelineClip;
+      },
+    );
     videoProducer.load();
 
     audioProducer = new AudioProducer(audioTimeline, audioResolver);
     audioProducer.playerChanged.addListener(({ player }) => {
       console.log('playerchanged', player);
-      audioCapture.connectElement(player.element);
+      // audioCapture.connectElement(player.element);
     });
     audioProducer.load();
 
-    // await audioCapture.connectStream();
+    await audioCapture.connectStream();
 
     renderLoop.tick.addListener(({ deltaTime }) => {
       const audioCaptureData = audioCapture.update();
+      console.log(audioCaptureData);
       if (audioCaptureData) {
         audioInfo = audioAnalyser.process(audioCaptureData);
       }
@@ -98,10 +102,12 @@
 
   function handleFullscreen() {
     contentElement.requestFullscreen();
+    audioCapture.start();
   }
 
   function handleFullscreenPlay() {
     videoProducer.play();
+    audioCapture.start();
     contentElement.requestFullscreen();
   }
 

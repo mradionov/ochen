@@ -10,7 +10,7 @@
   let canvasElementContainer: HTMLDivElement;
 
   onMount(async () => {
-    await audioCapture.connect();
+    await audioCapture.connectStream();
 
     const canvas = document.createElement('canvas');
     canvas.width = 500;
@@ -18,8 +18,10 @@
     const ctx = canvas.getContext('2d');
 
     renderLoop.tick.addListener(() => {
-      const { data, bufferLength } = audioCapture.update();
-      console.log(data);
+      const audioCaptureData = audioCapture.update();
+      console.log(audioCaptureData);
+
+      const { data, bufferLength } = audioCaptureData;
 
       ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);

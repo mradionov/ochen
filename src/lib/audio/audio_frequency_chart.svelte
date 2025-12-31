@@ -13,21 +13,14 @@
   let canvasElementContainer: HTMLDivElement;
 
   const colors = [
-    '#FF0000',
-    // '#FF5E00',
-    // '#FFBB00',
-    // '#D4FF00',
-    '#76FF00',
-    '#19FF00',
-    '#00FF38',
-    '#00FF95',
-    '#00F9FF',
-    '#009CFF',
-    '#003FFF',
-    '#1A00FF',
-    '#7700FF',
-    '#D400FF',
-    '#FF00C2',
+    '#FF4D6D', // warm pink-red
+    '#FF9F1C', // amber
+    '#F7E733', // soft yellow
+    '#4ADE80', // mint green
+    '#22D3EE', // cyan
+    '#3B82F6', // blue
+    '#6366F1', // indigo
+    '#C084FC', // violet
   ];
 
   const config = audioAnalyserBandsConfig;

@@ -16,6 +16,8 @@ export class VideoProducer {
   readonly playerChanged = new Subject<{
     player: RenderablePlayer;
     nextPlayer: RenderablePlayer | undefined;
+    timelineClip: VideoTimelineClip;
+    nextTimelineClip: VideoTimelineClip | undefined;
   }>();
 
   constructor(private readonly videoTimeline: VideoTimeline) {}
@@ -130,6 +132,8 @@ export class VideoProducer {
     this.playerChanged.emit({
       player: this.currentPlayer,
       nextPlayer: this.nextPlayer,
+      timelineClip: newCurrentTimelineClip,
+      nextTimelineClip: newNextTimelineClip,
     });
   }
 

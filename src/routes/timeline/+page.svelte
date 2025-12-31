@@ -49,7 +49,7 @@
   const audioAnalyser = new AudioAnalyser();
 
   let audioInfo = $state<AudioInfo | undefined>(undefined);
-  let audioCaptureData = $state<AudioCaptureData | undefined>(undefined);
+  // let audioCaptureData = $state<AudioCaptureData | undefined>(undefined);
 
   let manifest: Manifest = $state(Manifest.createEmpty());
 
@@ -81,9 +81,8 @@
 
   let playheadTime: number = $state.raw(0);
 
-  let currentVideoTimelineClip: VideoTimelineClip = $derived(
-    videoTimeline?.findClipByTime(playheadTime),
-  );
+  let currentVideoTimelineClip: VideoTimelineClip | undefined =
+    $state(undefined);
 
   $effect(() => {
     // Makes sure to reset the players when timeline changes
@@ -108,11 +107,14 @@
     console.log(videoTimeline);
 
     videoProducer = new VideoProducer(videoTimeline);
-    videoProducer.playerChanged.addListener(({ player, nextPlayer }) => {
-      console.log('videoProducer#playerchanged', { player, nextPlayer });
-      videoPlayer = player;
-      nextVideoPlayer = nextPlayer;
-    });
+    videoProducer.playerChanged.addListener(
+      ({ player, nextPlayer, timelineClip }) => {
+        console.log('videoProducer#playerchanged', { player, nextPlayer });
+        videoPlayer = player;
+        nextVideoPlayer = nextPlayer;
+        currentVideoTimelineClip = timelineClip;
+      },
+    );
     videoProducer.load();
 
     audioProducer = new AudioProducer(audioTimeline, audioResolver);
@@ -122,13 +124,13 @@
     });
     audioProducer.load();
 
-    // await audioCapture.connect();
+    // await audioCapture.connectStream();
     // audioCapture.start();
 
     timelineClock = new RunningClock();
 
     renderLoop.tick.addListener(({ deltaTime }) => {
-      audioCaptureData = audioCapture.update();
+      const audioCaptureData = audioCapture.update();
       if (audioCaptureData) {
         audioInfo = audioAnalyser.process(audioCaptureData);
       }
@@ -150,6 +152,7 @@
 
   function handlePause() {
     audioProducer.pause();
+    audioCapture.stop();
     videoProducer.pause();
     timelineClock.pause();
   }
@@ -243,7 +246,7 @@
           timelineClip={selectedAudioTimelineClip}
         />
       {/if}
-      <AudioFrequencyChart {audioCaptureData} />
+      <!-- <AudioFrequencyChart {audioCaptureData} /> -->
     </div>
   </div>
 </div>
