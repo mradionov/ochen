@@ -125,7 +125,7 @@
       },
       {
         "videoId": "IMG_1788.jpeg",
-        "duration": 17,
+        "duration": 18.5,
         "offsetY": "center"
       },
       {
@@ -284,13 +284,32 @@
         "duration": 20
       },
       {
-        "videoId": "IMG_1666.jpeg",
-        "duration": 20,
-        "offsetY": "bottom"
+        "videoId": "IMG_1837.jpeg",
+        "duration": 20
       },
       {
-        "videoId": "IMG_1647.jpeg",
-        "duration": 26
+        "videoId": "IMG_1822.jpeg",
+        "duration": 20
+      },
+      {
+        "videoId": "IMG_1841.jpeg",
+        "duration": 20
+      },
+      {
+        "videoId": "IMG_1858.jpeg",
+        "duration": 20
+      },
+      {
+        "videoId": "IMG_1840.jpeg",
+        "duration": 20
+      },
+      {
+        "videoId": "IMG_1834.jpeg",
+        "duration": 20
+      },
+      {
+        "videoId": "IMG_1853.jpeg",
+        "duration": 20
       }
     ],
     "videos": {
@@ -362,7 +381,44 @@
       "IMG_1778.jpeg": "IMG_1778.jpeg",
       "IMG_1779.jpeg": "IMG_1779.jpeg",
       "IMG_1784.jpeg": "IMG_1784.jpeg",
-      "IMG_1774.jpeg": "IMG_1774.jpeg"
+      "IMG_1774.jpeg": "IMG_1774.jpeg",
+      "IMG_1834.jpeg": "IMG_1834.jpeg",
+      "IMG_1837.jpeg": "IMG_1837.jpeg",
+      "IMG_1820.jpeg": "IMG_1820.jpeg",
+      "IMG_1816.jpeg": "IMG_1816.jpeg",
+      "IMG_1827.jpeg": "IMG_1827.jpeg",
+      "IMG_1817.jpeg": "IMG_1817.jpeg",
+      "IMG_1819.jpeg": "IMG_1819.jpeg",
+      "IMG_1823.jpeg": "IMG_1823.jpeg",
+      "IMG_1822.jpeg": "IMG_1822.jpeg",
+      "IMG_1818.jpeg": "IMG_1818.jpeg",
+      "IMG_1833.jpeg": "IMG_1833.jpeg",
+      "IMG_1826.jpeg": "IMG_1826.jpeg",
+      "IMG_1830.jpeg": "IMG_1830.jpeg",
+      "IMG_1829.jpeg": "IMG_1829.jpeg",
+      "IMG_1825.jpeg": "IMG_1825.jpeg",
+      "IMG_1824.jpeg": "IMG_1824.jpeg",
+      "IMG_1832.jpeg": "IMG_1832.jpeg",
+      "IMG_1836.jpeg": "IMG_1836.jpeg",
+      "IMG_1821.jpeg": "IMG_1821.jpeg",
+      "IMG_1848.jpeg": "IMG_1848.jpeg",
+      "IMG_1845.jpeg": "IMG_1845.jpeg",
+      "IMG_1849.jpeg": "IMG_1849.jpeg",
+      "IMG_1843.jpeg": "IMG_1843.jpeg",
+      "IMG_1841.jpeg": "IMG_1841.jpeg",
+      "IMG_1847.jpeg": "IMG_1847.jpeg",
+      "IMG_1846.jpeg": "IMG_1846.jpeg",
+      "IMG_1851.jpeg": "IMG_1851.jpeg",
+      "IMG_1840.jpeg": "IMG_1840.jpeg",
+      "IMG_1853.jpeg": "IMG_1853.jpeg",
+      "IMG_1859.jpeg": "IMG_1859.jpeg",
+      "IMG_1855.jpeg": "IMG_1855.jpeg",
+      "IMG_1860.jpeg": "IMG_1860.jpeg",
+      "IMG_1858.jpeg": "IMG_1858.jpeg",
+      "IMG_1861.jpeg": "IMG_1861.jpeg",
+      "IMG_1863.jpeg": "IMG_1863.jpeg",
+      "IMG_1854.jpeg": "IMG_1854.jpeg",
+      "IMG_1857.jpeg": "IMG_1857.jpeg"
     },
     "effects": {
       "tint": "#ff2600",

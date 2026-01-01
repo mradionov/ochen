@@ -23,11 +23,13 @@
   export let width: number = 800;
   export let height: number = 800;
   export let onClick: (() => void) | undefined = undefined;
+  export let onCanvasReady: (canvas: HTMLCanvasElement) => void;
 
   let canvasElement: HTMLCanvasElement;
   let renderer: Renderer;
 
   onMount(() => {
+    onCanvasReady(canvasElement);
     renderer = Renderer.createFromCanvas(canvasElement);
 
     renderLoop.tick.addListener(({ lastTime }) => {

@@ -34,6 +34,8 @@
   import AudioClipDetails from './audio_clip_details.svelte';
   import type { RenderablePlayer } from '$lib/video/renderable_player';
   import AudioFrequencyChart from '$lib/audio/audio_frequency_chart.svelte';
+  import { VideoRecorder } from '$lib/video/video_recorder';
+  import { render } from 'svelte/server';
 
   const projectsController = getContext<ProjectsController>(
     ProjectsControllerKey,
@@ -48,10 +50,14 @@
   const audioCapture = new AudioCapture();
   const audioAnalyser = new AudioAnalyser();
 
+  const videoRecorder = new VideoRecorder();
+
   let audioInfo = $state<AudioInfo | undefined>(undefined);
   // let audioCaptureData = $state<AudioCaptureData | undefined>(undefined);
 
   let manifest: Manifest = $state(Manifest.createEmpty());
+
+  let rendererCanvas;
 
   let videoProducer: VideoProducer;
   let audioProducer: AudioProducer;
@@ -136,6 +142,8 @@
       }
 
       timelineClock.update({ deltaTime });
+
+      videoRecorder.update();
     });
 
     timelineClock.timeUpdate.addListener(({ time }) => {
@@ -180,6 +188,14 @@
     selectedAudioTimelineClip = clip;
     selectedVideoTimelineClip = undefined;
   }
+
+  function handleRecordStart() {
+    videoRecorder.start(rendererCanvas);
+  }
+
+  function handleRecordStop() {
+    videoRecorder.stop();
+  }
 </script>
 
 <div>
@@ -191,6 +207,9 @@
   <hr />
   <button onclick={handlePlay}>play</button>
   <button onclick={handlePause}>pause</button>
+  <hr />
+  <button onclick={handleRecordStart}>Start recording</button>
+  <button onclick={handleRecordStop}>Stop recording</button>
   <hr />
   Time: {toClockString(playheadTime)} / {toClockString(maxDuration)}
   <div class="tracks">
@@ -226,6 +245,9 @@
             offsetY: currentVideoTimelineClip.clip.offsetY,
           }}
           {audioInfo}
+          onCanvasReady={(canvas) => {
+            rendererCanvas = canvas;
+          }}
           width={500}
           height={500}
         />
