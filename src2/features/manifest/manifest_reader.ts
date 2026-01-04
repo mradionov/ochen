@@ -16,7 +16,14 @@ import { AudioClipStore } from './stores/audio_clip_store';
 export class ManifestReader {
   async read(projectName: string): Promise<ManifestStore> {
     const res = await fetch(`/sets/${projectName}/manifest.json`);
-    const manifestJson = await res.json();
+    const manifestText = await res.text();
+    let manifestJson;
+    try {
+      manifestJson = JSON.parse(manifestText);
+    } catch (error) {
+      console.warn('Failed to parse manifest JSON: ', error);
+      manifestJson = {};
+    }
     const manifestRaw = ManifestSchema.parse(manifestJson);
     return this.parse(projectName, manifestRaw);
   }

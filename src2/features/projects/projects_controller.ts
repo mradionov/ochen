@@ -28,6 +28,23 @@ export class ProjectsController {
     await this.projectsRepo.saveActiveProject(project.name);
   }
 
+  async createNewProject(name: string) {
+    const projectsHandle = await this.projectsRepo.loadDirHandle();
+    if (!projectsHandle) {
+      throw new Error('No projects dir handle');
+    }
+
+    const newProjectHandle = await projectsHandle.getDirectoryHandle(name, {
+      create: true,
+    });
+
+    await newProjectHandle.getDirectoryHandle('audios', { create: true });
+    await newProjectHandle.getDirectoryHandle('videos', { create: true });
+    await newProjectHandle.getFileHandle('manifest.json', { create: true });
+
+    await this.projectsRepo.saveActiveProject(name);
+  }
+
   async fetchActiveProjectName(): Promise<string> {
     return this.projectsRepo.loadActiveProject();
   }

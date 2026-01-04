@@ -33,8 +33,14 @@ export const useProjects = () => {
     await load();
   };
 
-  const chooseProjectsDirectory = () => {
-    projectsController.chooseDir();
+  const chooseProjectsDirectory = async () => {
+    await projectsController.chooseDir();
+    await load();
+  };
+
+  const createNewProject = async (name: string) => {
+    await projectsController.createNewProject(name);
+    await load();
   };
 
   React.useEffect(() => {
@@ -46,6 +52,7 @@ export const useProjects = () => {
     activateProject,
     activeProjectName,
     chooseProjectsDirectory,
+    createNewProject,
     sourceVideoFiles,
   };
 };
