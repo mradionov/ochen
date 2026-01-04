@@ -1,5 +1,8 @@
-import { AppShell, Box, NavLink } from '@mantine/core';
+import { AppShell, NavLink } from '@mantine/core';
 import { Link, Outlet } from 'react-router-dom';
+import { Page } from './ui/page/page';
+
+import classes from './app.module.css';
 
 export const App = () => (
   <AppShell
@@ -7,6 +10,7 @@ export const App = () => (
       width: 80,
       breakpoint: 'sm',
     }}
+    classNames={classes}
   >
     <AppShell.Navbar>
       <NavLink component={Link} to="/" label="Projects" />
@@ -14,9 +18,9 @@ export const App = () => (
       <NavLink component={Link} to="/timeline" label="Timeline" />
     </AppShell.Navbar>
     <AppShell.Main>
-      <Box p="md">
+      <Page>
         <Outlet />
-      </Box>
+      </Page>
     </AppShell.Main>
   </AppShell>
 );

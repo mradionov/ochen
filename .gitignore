@@ -15,6 +15,7 @@ node_modules
 *.WAV
 *.MP3
 *.jpeg
+*.png
 
 # Env
 .env

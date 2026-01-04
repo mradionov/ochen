@@ -9,6 +9,7 @@ import { TimelinePage } from './pages/timeline/timeline_page.tsx';
 
 import '@mantine/core/styles.css';
 import { theme } from './theme/theme.ts';
+import './theme/styles.css';
 
 const router = createBrowserRouter([
   {

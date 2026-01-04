@@ -10,14 +10,17 @@
       "edge": {
         "threshold": 0
       },
-      "order": ["edge", "tint"]
+      "order": [
+        "edge",
+        "tint"
+      ]
     },
     "clips": [
       {
         "videoId": "IMG_1638.jpeg",
-        "duration": 22,
+        "duration": 20,
         "rate": 1,
-        "offsetX": "left",
+        "offsetX": "center",
         "offsetY": "top",
         "trimEnd": 0
       },

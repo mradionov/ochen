@@ -21,8 +21,12 @@ export const VideoClipSchema = z.object({
   videoId: z.string(),
   duration: z.number().prefault(0),
   rate: z.number().prefault(1),
-  offsetX: z.union([z.number(), z.string()]).prefault('left'),
-  offsetY: z.union([z.number(), z.string()]).prefault('top'),
+  offsetX: z
+    .union([z.number(), z.enum(['left', 'center', 'right'])])
+    .prefault('left'),
+  offsetY: z
+    .union([z.number(), z.enum(['top', 'center', 'bottom'])])
+    .prefault('top'),
   trimEnd: z.number().prefault(0),
 });
 export type VideoClipRaw = z.infer<typeof VideoClipSchema>;

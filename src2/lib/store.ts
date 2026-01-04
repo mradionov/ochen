@@ -21,4 +21,8 @@ export abstract class SyncStore<TState> implements Store {
   protected readonly emit = () => {
     this.changed.emit();
   };
+
+  dispose = () => {
+    this.changed.removeAllListeners();
+  };
 }

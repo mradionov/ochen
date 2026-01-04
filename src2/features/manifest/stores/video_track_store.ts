@@ -1,3 +1,4 @@
+import { Precondition } from '../../../lib/precondition';
 import { SyncStore } from '../../../lib/store';
 import { EffectsStore, type EffectsState } from '../../renderer/effects_store';
 import {
@@ -34,6 +35,9 @@ export class VideoTrackStore extends SyncStore<VideoTrackState> {
     super();
 
     this.videoClipStores = videoClipStores;
+    this.videoClipStores.forEach((clipStore) =>
+      clipStore.subscribe(this.recomputeState),
+    );
 
     this.effectsStore = effectsStore;
     this.effectsStore.subscribe(this.recomputeState);
@@ -72,15 +76,22 @@ export class VideoTrackStore extends SyncStore<VideoTrackState> {
   hydrate(other: VideoTrackState) {
     this.effectsStore.hydrate(other.effects);
 
-    // TODO: re-sub stores?
-    this.videoClipStores = other.clips.map(
-      (clipState) => new VideoClipStore(clipState, this.effectsStore),
-    );
+    this.videoClipStores.forEach((clipStore) => clipStore.dispose);
+
+    this.videoClipStores = other.clips.map((clipState) => {
+      const clipStore = new VideoClipStore(clipState, this.effectsStore);
+      clipStore.subscribe(this.recomputeState);
+      return clipStore;
+    });
 
     this.recomputeState(other);
   }
 
-  private findClipStore(id: VideoId) {
+  getClipStore(id: VideoId): VideoClipStore {
+    return Precondition.checkExists(this.findClipStore(id));
+  }
+
+  findClipStore(id: VideoId): VideoClipStore | undefined {
     return this.videoClipStores.find((clipStore) => clipStore.videoId === id);
   }
 
@@ -88,6 +99,7 @@ export class VideoTrackStore extends SyncStore<VideoTrackState> {
     if (this.findClipStore(filename)) {
       return;
     }
+    // TODO: sub new store
     this.videoClipStores.push(
       VideoClipStore.createFromPath({ videoId: filename, videoPath: path }),
     );
@@ -102,6 +114,7 @@ export class VideoTrackStore extends SyncStore<VideoTrackState> {
   }
 
   removeClipAndVideo(id: VideoId) {
+    // TODO: unsub removed stores
     this.videoClipStores = this.videoClipStores.filter(
       (clipStore) => clipStore.videoId !== id,
     );

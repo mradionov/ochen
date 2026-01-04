@@ -71,6 +71,34 @@ export class VideoClipStore extends SyncStore<VideoClipState> {
     );
   }
 
+  setRate(value: number | undefined) {
+    this.recomputeState({
+      ...this.state,
+      rate: value,
+    });
+  }
+
+  setCustomDuration(value: number | undefined) {
+    this.recomputeState({
+      ...this.state,
+      duration: value ?? 0,
+    });
+  }
+
+  setOffsetX(value: number | string | undefined) {
+    this.recomputeState({
+      ...this.state,
+      offsetX: value,
+    });
+  }
+
+  setOffsetY(value: number | string | undefined) {
+    this.recomputeState({
+      ...this.state,
+      offsetY: value,
+    });
+  }
+
   get videoId() {
     return this.state.videoId;
   }

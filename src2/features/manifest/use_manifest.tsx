@@ -6,11 +6,10 @@ import { ManifestWriter } from './manifest_writer';
 
 const manifestReader = new ManifestReader();
 const manifestWriter = new ManifestWriter();
+const manifestStore = ManifestStore.createEmpty();
 
 export const useManifest = () => {
   const { activeProjectName } = useProjects();
-
-  const manifestStore = React.useMemo(() => ManifestStore.createEmpty(), []);
 
   const manifestState = React.useSyncExternalStore(
     manifestStore.subscribe,

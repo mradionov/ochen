@@ -30,11 +30,7 @@ export const Timeline = ({
         maxDuration={maxDuration}
         onSeek={onSeek}
       />
-      <VideoTrack
-        maxDuration={maxDuration}
-        selectedClip={undefined}
-        onSelect={() => {}}
-      />
+      <VideoTrack maxDuration={maxDuration} />
       <AudioTrack
         maxDuration={maxDuration}
         selectedClip={undefined}
