@@ -10,3 +10,8 @@ body {
 #root {
   height: 100%;
 }
+
+.lucide {
+  width: 1rem;
+  height: 1rem;
+}

@@ -11,7 +11,7 @@ import { ManifestSaveButton } from '../../features/manifest/manifest_save_button
 import { useVideoTimeline } from '../../features/video_timeline/use_video_timeline';
 import { Page } from '../../ui/page/page';
 
-export const PreviewPage = () => {
+export const AssetsPage = () => {
   const { sourceVideoFiles } = useProjects();
   const { manifestState, manifestStore } = useManifest();
   const { videoTimeline } = useVideoTimeline();
