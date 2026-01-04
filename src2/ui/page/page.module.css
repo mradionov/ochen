@@ -1,4 +1,10 @@
 .root {
+  height: 100%;
+  overflow: auto;
+  padding: var(--mantine-spacing-md);
+}
+
+.fixed {
   display: flex;
   flex-direction: column;
   height: 100%;

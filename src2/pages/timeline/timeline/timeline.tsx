@@ -31,11 +31,7 @@ export const Timeline = ({
         onSeek={onSeek}
       />
       <VideoTrack maxDuration={maxDuration} />
-      <AudioTrack
-        maxDuration={maxDuration}
-        selectedClip={undefined}
-        onSelect={() => {}}
-      />
+      <AudioTrack maxDuration={maxDuration} />
     </div>
   );
 };

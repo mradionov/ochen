@@ -9,6 +9,7 @@ import { EditorStateProvider } from './editor_state_provider';
 import { DetailsView } from './details_view/details_view';
 
 import classes from './timeline_page.module.css';
+import { Page } from '../../ui/page/page';
 
 export const TimelinePage = () => {
   const { playheadTime, timelineClock } = useTimelineClock();
@@ -31,28 +32,30 @@ export const TimelinePage = () => {
 
   return (
     <EditorStateProvider>
-      <Stack gap="xs" style={{ flex: 1, minHeight: 0 }}>
-        <ManifestSaveButton />
-        <Group>
-          Video: {toMinutesString(videoDuration)}
-          <Divider orientation="vertical" />
-          Audio: {toMinutesString(audioDuration)}
-          <Divider orientation="vertical" />
-          Max: {toMinutesString(maxDuration)}
-        </Group>
-        <Group>
-          <Button onClick={onPlay}>play</Button>
-          <Button onClick={onPause}>pause</Button>
-        </Group>
-        Time: {toClockString(playheadTime)} / {toClockString(maxDuration)}
-        <Timeline onPlayheadSeek={onPlayheadSeek} />
-        <div className={classes.content}>
-          <div className={classes.column}></div>
-          <div className={classes.column}>
-            <DetailsView />
+      <Page.Fixed>
+        <Stack gap="xs" style={{ flex: 1, minHeight: 0 }}>
+          <ManifestSaveButton />
+          <Group>
+            Video: {toMinutesString(videoDuration)}
+            <Divider orientation="vertical" />
+            Audio: {toMinutesString(audioDuration)}
+            <Divider orientation="vertical" />
+            Max: {toMinutesString(maxDuration)}
+          </Group>
+          <Group>
+            <Button onClick={onPlay}>play</Button>
+            <Button onClick={onPause}>pause</Button>
+          </Group>
+          Time: {toClockString(playheadTime)} / {toClockString(maxDuration)}
+          <Timeline onPlayheadSeek={onPlayheadSeek} />
+          <div className={classes.content}>
+            <div className={classes.column}></div>
+            <div className={classes.column}>
+              <DetailsView playheadTime={playheadTime} />
+            </div>
           </div>
-        </div>
-      </Stack>
+        </Stack>
+      </Page.Fixed>
     </EditorStateProvider>
   );
 };

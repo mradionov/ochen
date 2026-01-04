@@ -76,8 +76,7 @@ export class VideoTrackStore extends SyncStore<VideoTrackState> {
   hydrate(other: VideoTrackState) {
     this.effectsStore.hydrate(other.effects);
 
-    this.videoClipStores.forEach((clipStore) => clipStore.dispose);
-
+    this.videoClipStores.forEach((clipStore) => clipStore.dispose());
     this.videoClipStores = other.clips.map((clipState) => {
       const clipStore = new VideoClipStore(clipState, this.effectsStore);
       clipStore.subscribe(this.recomputeState);

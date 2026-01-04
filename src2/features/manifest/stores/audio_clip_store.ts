@@ -4,7 +4,7 @@ import { AudioClipSchema, type AudioClipRaw } from '../manifest_schema';
 export type AudioClipState = {
   audioId: string;
   audioPath: string;
-  trimEnd: number;
+  trimEnd: number | undefined;
 };
 
 export class AudioClipStore extends SyncStore<AudioClipState> {
@@ -12,7 +12,29 @@ export class AudioClipStore extends SyncStore<AudioClipState> {
 
   constructor(initialState: AudioClipState) {
     super();
-    this.state = initialState;
+
+    this.state = this.recomputeState(initialState, false);
+  }
+
+  private readonly recomputeState = (
+    fromState: AudioClipState = this.state,
+    shouldEmit = true,
+  ): AudioClipState => {
+    this.state = {
+      ...fromState,
+    };
+    if (shouldEmit) {
+      this.emit();
+    }
+    return this.state;
+  };
+
+  get audioId() {
+    return this.state.audioId;
+  }
+
+  setTrimEnd(trimEnd: number | undefined) {
+    this.recomputeState({ ...this.state, trimEnd });
   }
 
   getSnapshot() {

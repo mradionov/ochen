@@ -1,3 +1,4 @@
+import { Precondition } from '../../../lib/precondition';
 import { SyncStore } from '../../../lib/store';
 import { ManifestSchema, type ManifestRaw } from '../manifest_schema';
 import { AudioTrackStore, type AudioTrackState } from './audio_track_store';

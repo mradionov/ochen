@@ -9,6 +9,7 @@ import { type VideoTimelineClip } from '../../features/video_timeline/video_time
 import { VideoTrackStore } from '../../features/manifest/stores/video_track_store';
 import { ManifestSaveButton } from '../../features/manifest/manifest_save_button';
 import { useVideoTimeline } from '../../features/video_timeline/use_video_timeline';
+import { Page } from '../../ui/page/page';
 
 export const PreviewPage = () => {
   const { sourceVideoFiles } = useProjects();
@@ -56,7 +57,7 @@ export const PreviewPage = () => {
   };
 
   return (
-    <Stack>
+    <Page>
       <ManifestSaveButton />
 
       <div>total duration: {toMinutesString(totalDuration)}</div>
@@ -95,6 +96,6 @@ export const PreviewPage = () => {
           </Group>
         </Stack>
       )}
-    </Stack>
+    </Page>
   );
 };
