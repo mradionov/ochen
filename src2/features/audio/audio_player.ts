@@ -1,6 +1,6 @@
-import { defaults } from '$lib/defaults';
-import { Subject } from '$lib/subject';
-import type { AudioTimelineClip } from './audio_timeline.svelte';
+import { defaults } from '../../lib/defaults';
+import { Subject } from '../../lib/subject';
+import type { AudioTimelineClip } from '../audio_timeline/audio_timeline_selectors';
 
 type AudioPlayerOptions = {
   trimmedDuration?: number;
@@ -11,14 +11,16 @@ const defaultOptions: AudioPlayerOptions = {
 };
 
 export class AudioPlayer {
+  readonly element: HTMLAudioElement;
   readonly options: AudioPlayerOptions;
   readonly ended = new Subject<void>();
   private _isPlaying = false;
 
   private constructor(
-    readonly element: HTMLAudioElement,
+    element: HTMLAudioElement,
     argOptions: AudioPlayerOptions = {},
   ) {
+    this.element = element;
     this.options = defaults(defaultOptions, argOptions);
     this.load();
   }

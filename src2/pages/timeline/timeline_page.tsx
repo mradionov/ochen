@@ -16,9 +16,12 @@ import React from 'react';
 import type { RenderablePlayer } from '../../features/video/renderable_player';
 import { type VideoTimelineClip } from '../../features/video_timeline/video_timeline_selectors';
 import { useManifest } from '../../features/manifest/use_manifest';
+import { AudioProducer } from '../../features/audio_producer/audio_producer';
 
 export const TimelinePage = () => {
   const videoProducerRef = React.useRef<VideoProducer | null>(null);
+  const audioProducerRef = React.useRef<AudioProducer | null>(null);
+
   const [player, setPlayer] = React.useState<RenderablePlayer | null>(null);
   const [currentVideoTimelineClip, setCurrentVideoTimelineClip] =
     React.useState<VideoTimelineClip | null>(null);
@@ -35,11 +38,13 @@ export const TimelinePage = () => {
   const onPlay = () => {
     timelineClock.play();
     videoProducerRef.current?.play();
+    audioProducerRef.current?.play();
   };
 
   const onPause = () => {
     timelineClock.pause();
     videoProducerRef.current?.pause();
+    audioProducerRef.current?.pause();
   };
 
   const onTogglePlay = () => {
@@ -52,6 +57,7 @@ export const TimelinePage = () => {
 
   const onPlayheadSeek = (newTime: number) => {
     videoProducerRef.current?.seek(newTime);
+    audioProducerRef.current?.seek(newTime);
     timelineClock.seek(newTime);
   };
 
@@ -68,8 +74,20 @@ export const TimelinePage = () => {
   }, [videoTimeline]);
 
   React.useEffect(() => {
-    videoProducerRef.current?.reset(playheadTime);
-  }, [videoTimeline]);
+    audioProducerRef.current = new AudioProducer(audioTimeline);
+    audioProducerRef.current.playerChanged.addListener(({ player }) => {
+      console.log('audioProducer#playerchanged', { player });
+    });
+    audioProducerRef.current.load();
+  }, [audioTimeline]);
+
+  // React.useEffect(() => {
+  //   videoProducerRef.current?.reset(playheadTime);
+  // }, [videoTimeline]);
+
+  // React.useEffect(() => {
+  //   audioProducerRef.current?.reset(playheadTime);
+  // }, [audioTimeline]);
 
   return (
     <EditorStateProvider>

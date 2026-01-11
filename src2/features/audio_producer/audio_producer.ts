@@ -1,9 +1,9 @@
-import type { AudioResolver } from '$lib/audio/audio_resolver';
-import type { AudioTimeline } from '$lib/audio/audio_timeline.svelte';
-import { AudioPlayer } from '$lib/audio/audio_player';
-import { Subject } from '$lib/subject';
+import { AudioPlayer } from '../audio/audio_player';
+import { Subject } from '../../lib/subject';
+import type { AudioTimelineSelectors } from '../audio_timeline/audio_timeline_selectors';
 
 export class AudioProducer {
+  private readonly audioTimeline: AudioTimelineSelectors;
   private currentIndex: number | undefined;
   private currentPlayer: AudioPlayer | undefined;
   private nextPlayer: AudioPlayer | undefined;
@@ -14,10 +14,9 @@ export class AudioProducer {
     nextPlayer: AudioPlayer | undefined;
   }>();
 
-  constructor(
-    private readonly audioTimeline: AudioTimeline,
-    private readonly audioResolver: AudioResolver,
-  ) {}
+  constructor(audioTimeline: AudioTimelineSelectors) {
+    this.audioTimeline = audioTimeline;
+  }
 
   reset(time: number) {
     this.currentIndex = undefined;
@@ -97,7 +96,8 @@ export class AudioProducer {
     const newCurrentTimelineClip =
       this.audioTimeline.getTimelineClips()[newCurrentIndex];
     if (!newCurrentTimelineClip) {
-      throw new Error('No new current clip');
+      console.warn('No new current clip for index', newCurrentIndex);
+      return;
     }
 
     const newNextTimelineClip =
