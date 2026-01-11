@@ -1,7 +1,7 @@
 import type { ImageBitmapRenderSource } from '../renderer/render_source';
 import type { Renderer } from '../renderer/renderer';
 import type { EffectsState } from '../renderer/effects_store';
-import type { RenderablePlayer } from '../video/renderable_player';
+import type { RenderablePlayer } from '../video_player/renderable_player';
 
 export class VideoPreview {
   readonly player: RenderablePlayer;

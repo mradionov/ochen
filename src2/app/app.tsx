@@ -17,6 +17,7 @@ export const App = () => (
       <NavItem to="/" label="Projects" leftSection={<Lucide.Folder />} />
       <NavItem to="/assets" label="Assets" leftSection={<Lucide.Image />} />
       <NavItem to="/timeline" label="Timeline" leftSection={<Lucide.Clock />} />
+      <NavItem to="/audio" label="Audio" leftSection={<Lucide.Music />} />
     </AppShell.Navbar>
     <AppShell.Main>
       <Outlet />

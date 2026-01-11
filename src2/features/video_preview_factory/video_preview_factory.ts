@@ -1,7 +1,7 @@
 import { TaskQueue } from '../../lib/task_queue';
 import { ImageBitmapRenderSource } from '../renderer/render_source';
 import { Renderer } from '../renderer/renderer';
-import { RenderablePlayerFactory } from '../video/renderable_player_factory';
+import { RenderablePlayerFactory } from '../video_player/renderable_player_factory';
 import { VideoPreview } from './video_preview';
 
 export class VideoPreviewFactory {

@@ -13,7 +13,7 @@ import { Page } from '../../ui/page/page';
 import { RendererSurface } from '../../features/renderer/renderer_surface';
 import { VideoProducer } from '../../features/video_producer/video_producer';
 import React from 'react';
-import type { RenderablePlayer } from '../../features/video/renderable_player';
+import type { RenderablePlayer } from '../../features/video_player/renderable_player';
 import { type VideoTimelineClip } from '../../features/video_timeline/video_timeline_selectors';
 import { useManifest } from '../../features/manifest/use_manifest';
 import { AudioProducer } from '../../features/audio_producer/audio_producer';

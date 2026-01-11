@@ -1,7 +1,7 @@
 import React from 'react';
 import { Renderer } from './renderer';
 import { useRenderLoop } from '../use_render_loop';
-import type { RenderablePlayer } from '../video/renderable_player';
+import type { RenderablePlayer } from '../video_player/renderable_player';
 import type { EffectsState } from './effects_store';
 
 export const RendererSurface = ({

@@ -1,6 +1,6 @@
 import { Subject } from '../../lib/subject';
-import type { RenderablePlayer } from '../video/renderable_player';
-import { RenderablePlayerFactory } from '../video/renderable_player_factory';
+import type { RenderablePlayer } from '../video_player/renderable_player';
+import { RenderablePlayerFactory } from '../video_player/renderable_player_factory';
 import type {
   VideoTimelineClip,
   VideoTimelineSelectors,

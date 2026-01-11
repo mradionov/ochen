@@ -32,7 +32,7 @@ export class AudioCapture {
     const src = audioCtx.createMediaStreamSource(stream);
 
     src.connect(analyser);
-    src.connect(audioCtx.destination);
+    // src.connect(audioCtx.destination);
   }
 
   async connectElement(audio: HTMLAudioElement) {
@@ -47,7 +47,7 @@ export class AudioCapture {
   async maybeCreate() {
     if (!this.audioCtx) {
       this.audioCtx = new AudioContext();
-      await this.audioCtx.suspend();
+      // await this.audioCtx.suspend();
     }
     if (!this.analyser) {
       this.analyser = this.audioCtx.createAnalyser();

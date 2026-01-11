@@ -10,6 +10,7 @@ import { TimelinePage } from './pages/timeline/timeline_page.tsx';
 import '@mantine/core/styles.css';
 import { theme } from './theme/theme.ts';
 import './theme/styles.css';
+import { AudioPage } from './pages/audio/audio_page.tsx';
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,7 @@ const router = createBrowserRouter([
       { index: true, element: <ProjectsPage /> },
       { path: 'assets', element: <AssetsPage /> },
       { path: 'timeline', element: <TimelinePage /> },
+      { path: 'audio', element: <AudioPage /> },
     ],
   },
 ]);

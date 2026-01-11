@@ -1,4 +1,4 @@
-import { AudioPlayer } from '../audio/audio_player';
+import { AudioPlayer } from '../audio_player/audio_player';
 import { Subject } from '../../lib/subject';
 import type { AudioTimelineSelectors } from '../audio_timeline/audio_timeline_selectors';
 
@@ -104,6 +104,8 @@ export class AudioProducer {
       this.audioTimeline.getTimelineClips()[newNextIndex];
 
     this.maybeDestroyCurrentPlayer();
+
+    const oldPlayer = this.currentPlayer;
 
     if (isNewCurrentNext && this.nextPlayer) {
       this.currentPlayer = this.nextPlayer;

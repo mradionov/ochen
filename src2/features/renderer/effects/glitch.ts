@@ -1,4 +1,4 @@
-import type { AudioInfo } from '../../audio/audio_analyser';
+import type { AudioInfo } from '../../audio_processing/audio_analyser';
 import type { Effect, EffectContext } from '../effect';
 import type { GlitchEffectConfig } from '../effects_store';
 
