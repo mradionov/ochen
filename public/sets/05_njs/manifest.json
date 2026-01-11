@@ -1,0 +1,19 @@
+{
+  "videoTrack": {
+    "transitionOut": {
+      "duration": 0,
+      "kind": "cut"
+    },
+    "effects": {
+      "tint": "#000000",
+      "grain": {},
+      "edge": {}
+    },
+    "clips": [],
+    "videos": {}
+  },
+  "audioTrack": {
+    "clips": [],
+    "audios": {}
+  }
+}

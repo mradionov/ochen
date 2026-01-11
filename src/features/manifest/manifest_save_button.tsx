@@ -1,12 +1,21 @@
-import { Button } from '@mantine/core';
 import { useManifest } from './use_manifest';
+import { Button, Indicator } from '@mantine/core';
 
 export const ManifestSaveButton = () => {
-  const { manifestStore, manifestWriter } = useManifest();
+  const { saveManifest, hasManifestChanged } = useManifest();
 
-  const onClick = () => {
-    void manifestWriter.writeWithFilePicker(manifestStore);
-  };
-
-  return <Button onClick={onClick}>save manifest</Button>;
+  return (
+    <Indicator
+      inline
+      disabled={!hasManifestChanged}
+      processing={hasManifestChanged}
+      color="red"
+      size={12}
+      withBorder
+    >
+      <Button onClick={saveManifest} disabled={!hasManifestChanged}>
+        save manifest
+      </Button>
+    </Indicator>
+  );
 };
