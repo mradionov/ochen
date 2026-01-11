@@ -1,12 +1,13 @@
-import {
-  VideoTimeline,
-  type VideoTimelineClip,
-} from '$lib/video/video_timeline.svelte';
-import { Subject } from '$lib/subject';
-import type { RenderablePlayer } from '../../../src2/features/video/renderable_player';
-import { RenderablePlayerFactory } from './renderable_player_factory';
+import { Subject } from '../../lib/subject';
+import type { RenderablePlayer } from '../video/renderable_player';
+import { RenderablePlayerFactory } from '../video/renderable_player_factory';
+import type {
+  VideoTimelineClip,
+  VideoTimelineSelectors,
+} from '../video_timeline/video_timeline_selectors';
 
 export class VideoProducer {
+  private readonly videoTimeline: VideoTimelineSelectors;
   private currentIndex: number | undefined;
   private currentPlayer: RenderablePlayer | undefined;
   private nextPlayer: RenderablePlayer | undefined;
@@ -16,9 +17,12 @@ export class VideoProducer {
   readonly playerChanged = new Subject<{
     player: RenderablePlayer;
     nextPlayer: RenderablePlayer | undefined;
+    timelineClip: VideoTimelineClip;
   }>();
 
-  constructor(private readonly videoTimeline: VideoTimeline) {}
+  constructor(videoTimeline: VideoTimelineSelectors) {
+    this.videoTimeline = videoTimeline;
+  }
 
   reset(time: number) {
     this.currentIndex = undefined;
@@ -99,7 +103,8 @@ export class VideoProducer {
     const newCurrentTimelineClip =
       this.videoTimeline.getTimelineClips()[newCurrentIndex];
     if (!newCurrentTimelineClip) {
-      throw new Error('No new current clip');
+      console.warn('No new current clip for index', newCurrentIndex);
+      return;
     }
     const newNextTimelineClip =
       this.videoTimeline.getTimelineClips()[newNextIndex];
@@ -130,6 +135,7 @@ export class VideoProducer {
     this.playerChanged.emit({
       player: this.currentPlayer,
       nextPlayer: this.nextPlayer,
+      timelineClip: newCurrentTimelineClip,
     });
   }
 

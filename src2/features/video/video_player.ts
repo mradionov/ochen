@@ -2,6 +2,7 @@ import { defaults } from '../../lib/defaults';
 import { Deferred } from '../../lib/deferred';
 import { Subject } from '../../lib/subject';
 import { VideoRenderSource } from '../renderer/render_source';
+import type { VideoTimelineClip } from '../video_timeline/video_timeline_selectors';
 import type { RenderablePlayer } from './renderable_player';
 
 type VideoPlayerOptions = {
@@ -57,12 +58,12 @@ export class VideoPlayer implements RenderablePlayer {
     return this.createFromElement(element, options);
   }
 
-  // static createFromTimelineClip(timelineClip: VideoTimelineClip) {
-  //   return this.createFromPath(timelineClip.clip.videoPath, {
-  //     trimmedDuration: timelineClip.trimmedDuration,
-  //     rate: timelineClip.rate,
-  //   });
-  // }
+  static createFromTimelineClip(timelineClip: VideoTimelineClip) {
+    return this.createFromPath(timelineClip.clip.videoPath, {
+      trimmedDuration: timelineClip.trimmedDuration,
+      rate: timelineClip.rate,
+    });
+  }
 
   createRenderSource() {
     return new VideoRenderSource(this.element);
