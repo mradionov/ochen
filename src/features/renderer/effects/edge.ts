@@ -95,8 +95,6 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
 
     // posterizeGray(gray, 8);
 
-<<<<<<< HEAD:src/features/renderer/effects/edge.ts
-=======
     // gray = median3x3Gray(gray, width, height);
     // gray = edgePreserve3x3(gray, width, height);
     gray = box3x3Gray(gray, width, height);
@@ -104,7 +102,6 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
     // const wobbleAmount = 0;
     const wobbleAmount = accentuateBand(audioInfo?.norm.hat, 2, 0.5, 0.6);
 
->>>>>>> main:src/lib/renderer/effects/edge.ts
     // console.log(wobbleAmount);
     // console.log(wobbleAmount);
 
@@ -222,10 +219,6 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
       }
     }
 
-<<<<<<< HEAD:src/features/renderer/effects/edge.ts
-    const jej = accentuateBand(audioInfo?.diff.treble, 3, 0.3, 0.7);
-    const iterations = Math.round(jej);
-=======
     // temporalGate(dst, width, height, 0.1, Math.floor(lastTime * 10));
 
     // applyStipple(dst, width, height, 0.3, Math.floor(lastTime * 10));
@@ -243,7 +236,6 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
 
     // const jej = accentuateBand(audioInfo.diff.treble, 3, 0.3, 0.7);
     // const iterations = Math.round(jej);
->>>>>>> main:src/lib/renderer/effects/edge.ts
     // console.log(iterations);
 
     // dilate(dst, width, height, 0);

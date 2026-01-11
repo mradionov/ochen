@@ -18,10 +18,6 @@ export class VideoProducer {
     player: RenderablePlayer;
     nextPlayer: RenderablePlayer | undefined;
     timelineClip: VideoTimelineClip;
-<<<<<<< HEAD:src/features/video_producer/video_producer.ts
-=======
-    nextTimelineClip: VideoTimelineClip | undefined;
->>>>>>> main:src/lib/video/video_producer.ts
   }>();
 
   constructor(videoTimeline: VideoTimelineSelectors) {
@@ -140,10 +136,6 @@ export class VideoProducer {
       player: this.currentPlayer,
       nextPlayer: this.nextPlayer,
       timelineClip: newCurrentTimelineClip,
-<<<<<<< HEAD:src/features/video_producer/video_producer.ts
-=======
-      nextTimelineClip: newNextTimelineClip,
->>>>>>> main:src/lib/video/video_producer.ts
     });
   }
 
