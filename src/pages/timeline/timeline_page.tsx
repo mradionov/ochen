@@ -1,18 +1,17 @@
-import { Button, Divider, Group, Stack } from '@mantine/core';
-import { ManifestSaveButton } from '../../features/manifest/manifest_save_button';
-import { toClockString, toMinutesString } from '../../lib/time_utils';
-import { useVideoTimeline } from '../../features/video_timeline/use_video_timeline';
 import { useAudioTimeline } from '../../features/audio_timeline/use_audio_timeline';
-import { Timeline } from './timeline/timeline';
-import { useTimelineClock } from './use_timeline_clock';
-import { EditorStateProvider } from './editor_state_provider';
-import { DetailsView } from './details_view/details_view';
-
-import classes from './timeline_page.module.css';
-import { Page } from '../../ui/page/page';
-import React from 'react';
 import { CompositePlayer } from '../../features/composite_player/composite_player';
 import { CompositePlayerController } from '../../features/composite_player/composite_player_controller';
+import { ManifestSaveButton } from '../../features/manifest/manifest_save_button';
+import { useVideoTimeline } from '../../features/video_timeline/use_video_timeline';
+import { toClockString, toMinutesString } from '../../lib/time_utils';
+import { Page } from '../../ui/page/page';
+import { DetailsView } from './details_view/details_view';
+import { EditorStateProvider } from './editor_state_provider';
+import { Timeline } from './timeline/timeline';
+import classes from './timeline_page.module.css';
+import { useTimelineClock } from './use_timeline_clock';
+import { Button, Divider, Group, Stack } from '@mantine/core';
+import React from 'react';
 
 export const TimelinePage = () => {
   const compositeControllerRef = React.useRef<CompositePlayerController>(

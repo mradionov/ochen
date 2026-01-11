@@ -35,6 +35,13 @@ export interface AudioInfo {
   isBeat: boolean;
 }
 
+const emptyAudioInfo: AudioInfo = Object.freeze<AudioInfo>({
+  raw: emptyData,
+  norm: emptyData,
+  diff: emptyData,
+  isBeat: false,
+});
+
 export const audioAnalyserBandsConfig: Record<string, [number, number]> = {
   wideBass: [20, 250],
   wideMid: [250, 2000],
@@ -52,7 +59,12 @@ export const audioAnalyserBandsConfig: Record<string, [number, number]> = {
 export class AudioAnalyser {
   private lastInfo: AudioInfo;
 
-  process({ data, sampleRate }: AudioCaptureData): AudioInfo {
+  process(audioCaptureData: AudioCaptureData | undefined): AudioInfo {
+    if (audioCaptureData == null) {
+      return emptyAudioInfo;
+    }
+
+    const { data, sampleRate } = audioCaptureData;
     // const bass = this.bandEnergy(data, 20, 250, sampleRate);
     // const mid = this.bandEnergy(data, 250, 2000, sampleRate);
     // const treble = this.bandEnergy(data, 2000, 8000, sampleRate);

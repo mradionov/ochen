@@ -27,8 +27,6 @@ export class AudioCapture {
       },
     });
 
-    console.log(stream);
-
     const { audioCtx, analyser } = await this.maybeCreate();
 
     const src = audioCtx.createMediaStreamSource(stream);

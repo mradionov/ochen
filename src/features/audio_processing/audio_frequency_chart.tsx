@@ -1,7 +1,7 @@
-import React from 'react';
 import { useRenderLoop } from '../use_render_loop';
-import type { AudioCaptureData } from './audio_capture';
 import { audioAnalyserBandsConfig } from './audio_analyser';
+import type { AudioCaptureData } from './audio_capture';
+import React from 'react';
 
 const config = audioAnalyserBandsConfig;
 

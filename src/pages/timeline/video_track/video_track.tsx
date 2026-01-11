@@ -1,4 +1,4 @@
-import { useVideoTimeline } from '../../../features/video_timeline/use_video_timeline';
+import { useVideoTimeline } from '../../../features/video_timeline/use_video_timeline.tsx';
 import { VideoClip } from '../video_clip/video_clip.tsx';
 import classes from './video_track.module.css';
 

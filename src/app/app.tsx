@@ -1,9 +1,8 @@
-import { AppShell } from '@mantine/core';
-import { Outlet } from 'react-router-dom';
-import * as Lucide from 'lucide-react';
-
 import classes from './app.module.css';
 import { NavItem } from './nav_item';
+import { AppShell } from '@mantine/core';
+import * as Lucide from 'lucide-react';
+import { Outlet } from 'react-router-dom';
 
 export const App = () => (
   <AppShell
@@ -23,6 +22,7 @@ export const App = () => (
         label="Perform"
         leftSection={<Lucide.Projector />}
       />
+      <NavItem to="/game" label="Game" leftSection={<Lucide.Gamepad />} />
     </AppShell.Navbar>
     <AppShell.Main>
       <Outlet />
