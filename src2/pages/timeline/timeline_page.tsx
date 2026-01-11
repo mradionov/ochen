@@ -10,23 +10,15 @@ import { DetailsView } from './details_view/details_view';
 
 import classes from './timeline_page.module.css';
 import { Page } from '../../ui/page/page';
-import { RendererSurface } from '../../features/renderer/renderer_surface';
-import { VideoProducer } from '../../features/video_producer/video_producer';
 import React from 'react';
-import type { RenderablePlayer } from '../../features/video_player/renderable_player';
-import { type VideoTimelineClip } from '../../features/video_timeline/video_timeline_selectors';
-import { useManifest } from '../../features/manifest/use_manifest';
-import { AudioProducer } from '../../features/audio_producer/audio_producer';
+import { CompositePlayer } from '../../features/composite_player/composite_player';
+import { CompositePlayerController } from '../../features/composite_player/composite_player_controller';
 
 export const TimelinePage = () => {
-  const videoProducerRef = React.useRef<VideoProducer | null>(null);
-  const audioProducerRef = React.useRef<AudioProducer | null>(null);
+  const compositeControllerRef = React.useRef<CompositePlayerController>(
+    new CompositePlayerController(),
+  );
 
-  const [player, setPlayer] = React.useState<RenderablePlayer | null>(null);
-  const [currentVideoTimelineClip, setCurrentVideoTimelineClip] =
-    React.useState<VideoTimelineClip | null>(null);
-
-  const { manifestState } = useManifest();
   const { playheadTime, timelineClock } = useTimelineClock();
   const { videoTimeline } = useVideoTimeline();
   const { audioTimeline } = useAudioTimeline();
@@ -37,57 +29,22 @@ export const TimelinePage = () => {
 
   const onPlay = () => {
     timelineClock.play();
-    videoProducerRef.current?.play();
-    audioProducerRef.current?.play();
+    compositeControllerRef.current.play();
   };
 
   const onPause = () => {
     timelineClock.pause();
-    videoProducerRef.current?.pause();
-    audioProducerRef.current?.pause();
+    compositeControllerRef.current.pause();
   };
 
   const onTogglePlay = () => {
-    if (videoProducerRef.current?.isPlaying) {
-      onPause();
-    } else {
-      onPlay();
-    }
+    compositeControllerRef.current.togglePlay();
   };
 
   const onPlayheadSeek = (newTime: number) => {
-    videoProducerRef.current?.seek(newTime);
-    audioProducerRef.current?.seek(newTime);
+    compositeControllerRef.current.seek(newTime);
     timelineClock.seek(newTime);
   };
-
-  React.useEffect(() => {
-    videoProducerRef.current = new VideoProducer(videoTimeline);
-    videoProducerRef.current.playerChanged.addListener(
-      ({ player, nextPlayer, timelineClip }) => {
-        console.log('videoProducer#playerchanged', { player, nextPlayer });
-        setPlayer(player);
-        setCurrentVideoTimelineClip(timelineClip);
-      },
-    );
-    videoProducerRef.current.load();
-  }, [videoTimeline]);
-
-  React.useEffect(() => {
-    audioProducerRef.current = new AudioProducer(audioTimeline);
-    audioProducerRef.current.playerChanged.addListener(({ player }) => {
-      console.log('audioProducer#playerchanged', { player });
-    });
-    audioProducerRef.current.load();
-  }, [audioTimeline]);
-
-  // React.useEffect(() => {
-  //   videoProducerRef.current?.reset(playheadTime);
-  // }, [videoTimeline]);
-
-  // React.useEffect(() => {
-  //   audioProducerRef.current?.reset(playheadTime);
-  // }, [audioTimeline]);
 
   return (
     <EditorStateProvider>
@@ -109,19 +66,12 @@ export const TimelinePage = () => {
           <Timeline onPlayheadSeek={onPlayheadSeek} />
           <div className={classes.content}>
             <div className={classes.column}>
-              {player != null && (
-                <RendererSurface
-                  player={player}
-                  width={500}
-                  height={500}
-                  onClick={onTogglePlay}
-                  effectsState={manifestState.videoTrack.effects}
-                  offset={{
-                    offsetX: currentVideoTimelineClip?.clip.offsetX,
-                    offsetY: currentVideoTimelineClip?.clip.offsetY,
-                  }}
-                />
-              )}
+              <CompositePlayer
+                controllerRef={compositeControllerRef}
+                width={500}
+                height={500}
+                onSurfaceClick={onTogglePlay}
+              />
             </div>
             <div className={classes.column}>
               <DetailsView playheadTime={playheadTime} />

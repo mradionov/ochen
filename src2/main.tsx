@@ -6,11 +6,12 @@ import { MantineProvider } from '@mantine/core';
 import { ProjectsPage } from './pages/projects/projects_page.tsx';
 import { AssetsPage } from './pages/assets/assets_page.tsx';
 import { TimelinePage } from './pages/timeline/timeline_page.tsx';
-
-import '@mantine/core/styles.css';
 import { theme } from './theme/theme.ts';
-import './theme/styles.css';
 import { AudioPage } from './pages/audio/audio_page.tsx';
+import { PerformancePage } from './pages/performance/performance_page.tsx';
+
+import './theme/styles.css';
+import '@mantine/core/styles.css';
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,7 @@ const router = createBrowserRouter([
       { path: 'assets', element: <AssetsPage /> },
       { path: 'timeline', element: <TimelinePage /> },
       { path: 'audio', element: <AudioPage /> },
+      { path: 'performance', element: <PerformancePage /> },
     ],
   },
 ]);
