@@ -15,6 +15,10 @@ node_modules
 *.WAV
 *.MP3
 *.jpeg
+<<<<<<< HEAD
+=======
+*.jpg
+>>>>>>> main
 *.png
 
 # Env

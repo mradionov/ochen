@@ -22,7 +22,7 @@ export class RenderLoop {
   constructor(argOptions: RenderLoopOptions = {}) {
     this.options = defaults(argOptions, {
       deltaTimeLimit: 1,
-      fps: 60,
+      fps: 120,
     });
   }
 
