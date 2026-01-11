@@ -194,8 +194,8 @@ export class EdgeEffect implements Effect<EdgeEffectConfig> {
       }
     }
 
-    // const jej = accentuateBand(audioInfo.diff.treble, 3, 0.3, 0.7);
-    // const iterations = Math.round(jej);
+    const jej = accentuateBand(audioInfo?.diff.treble, 3, 0.3, 0.7);
+    const iterations = Math.round(jej);
     // console.log(iterations);
 
     dilate(dst, width, height, 0);

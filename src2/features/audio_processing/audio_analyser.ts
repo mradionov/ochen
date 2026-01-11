@@ -42,8 +42,9 @@ export const audioAnalyserBandsConfig: Record<string, [number, number]> = {
   lowMid: [140, 400],
   mid: [400, 1200],
   highMid: [1200, 5000],
-  treble: [5000, 10000],
-  noise: [10000, 20000],
+  treble: [5000, 8000],
+  hat: [8000, 14000],
+  noise: [14000, 20000],
 };
 
 export class AudioAnalyser {
