@@ -1,4 +1,4 @@
-import { Subject } from '$lib/subject';
+import { Subject } from './subject';
 
 const EMIT_UPDATE_DELAY_SEC = 1;
 

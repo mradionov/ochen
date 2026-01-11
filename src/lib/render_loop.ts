@@ -6,17 +6,18 @@ type RenderLoopOptions = {
   fps?: number;
 };
 
-enum State {
-  Idle,
-  Working,
-  StopRequested,
-}
+type State = 'idle' | 'working' | 'stopRequested';
+
+export type RenderLoopTickEvent = {
+  deltaTime: number;
+  lastTime: number;
+};
 
 export class RenderLoop {
-  readonly tick = new Subject<{ deltaTime: number; lastTime: number }>();
+  readonly tick = new Subject<RenderLoopTickEvent>();
   readonly options: RenderLoopOptions;
   private lastTimestamp: number | undefined;
-  private state = State.Idle;
+  private state: State = 'idle';
 
   constructor(argOptions: RenderLoopOptions = {}) {
     this.options = defaults(argOptions, {
@@ -26,31 +27,31 @@ export class RenderLoop {
   }
 
   start() {
-    if (this.state !== State.Idle) {
+    if (this.state !== 'idle' && this.state !== 'stopRequested') {
       return;
     }
 
-    this.state = State.Working;
+    this.state = 'working';
 
     this.loop();
   }
 
   // WARNING: a couple of already queued callbacks might still fire after stop
   stop() {
-    if (this.state !== State.Working) {
+    if (this.state !== 'working') {
       return;
     }
 
-    this.state = State.StopRequested;
+    this.state = 'stopRequested';
   }
 
   readonly loop = (timestamp = null) => {
-    if (this.state === State.Idle) {
+    if (this.state === 'idle') {
       return;
     }
 
-    if (this.state === State.StopRequested) {
-      this.state = State.Idle;
+    if (this.state === 'stopRequested') {
+      this.state = 'idle';
       return;
     }
 

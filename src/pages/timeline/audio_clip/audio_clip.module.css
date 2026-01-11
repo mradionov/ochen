@@ -1,0 +1,13 @@
+.root {
+  height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+
+  &:nth-child(odd) {
+    background: #eee;
+  }
+
+  &[data-selected='true'] {
+    border: 1px solid green;
+  }
+}

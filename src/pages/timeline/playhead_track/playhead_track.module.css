@@ -1,0 +1,13 @@
+.root {
+  height: 20px;
+  width: 100%;
+  background: green;
+  position: relative;
+}
+
+.playhead {
+  position: absolute;
+  height: 100%;
+  width: 3px;
+  background: yellow;
+}
