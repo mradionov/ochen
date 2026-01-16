@@ -1,7 +1,7 @@
 import type { Database } from '../../lib/database';
 
 const PROJECTS_STORE_NAME = 'projects';
-const DIR_HANDLE_KEY = 'dir_handle';
+const ROOT_DIR_HANDLE_KEY = 'root_dir_handle';
 const ACTIVE_PROJECT_KEY = 'active_project';
 
 export class ProjectsRepo {
@@ -15,12 +15,16 @@ export class ProjectsRepo {
     });
   }
 
-  async saveDirHandle(handle: FileSystemDirectoryHandle) {
-    return this.db.saveValue(PROJECTS_STORE_NAME, DIR_HANDLE_KEY, handle);
+  async saveRootDirHandle(rootHandle: FileSystemDirectoryHandle) {
+    return this.db.saveValue(
+      PROJECTS_STORE_NAME,
+      ROOT_DIR_HANDLE_KEY,
+      rootHandle,
+    );
   }
 
-  async loadDirHandle(): Promise<FileSystemDirectoryHandle> {
-    return this.db.loadValue(PROJECTS_STORE_NAME, DIR_HANDLE_KEY);
+  async loadRootDirHandle(): Promise<FileSystemDirectoryHandle> {
+    return this.db.loadValue(PROJECTS_STORE_NAME, ROOT_DIR_HANDLE_KEY);
   }
 
   async saveActiveProject(projectName: string) {

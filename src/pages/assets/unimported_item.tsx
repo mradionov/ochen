@@ -1,41 +1,48 @@
-import { toMinutesString } from '../../lib/time_utils';
-import type { SourceVideoFile } from '../../features/projects/projects_controller';
-import { PreviewBaseItem } from './preview_base_item';
+import type { VideoFileAsset } from '../../features/assets/assets_controller';
 import { useVideoResolver } from '../../features/video_resolver/use_video_resolver';
-import React from 'react';
 import { isImage } from '../../lib/image_utils';
-import { Button } from '@mantine/core';
+import { toMinutesString } from '../../lib/time_utils';
+import { PreviewBaseItem } from './preview_base_item';
+import { Button, Group } from '@mantine/core';
+import React from 'react';
 
 export const UnimportedItem = ({
-  sourceVideoFile,
+  videoFileAsset,
   onImport,
+  onDelete,
 }: {
-  sourceVideoFile: SourceVideoFile;
+  videoFileAsset: VideoFileAsset;
   onImport: () => void;
+  onDelete: () => void;
 }) => {
   const { videoResolver, videoResolverSnap } = useVideoResolver();
 
-  const duration = videoResolverSnap.getDuration(sourceVideoFile.name);
+  const duration = videoResolverSnap.getDuration(videoFileAsset.name);
 
   React.useEffect(() => {
-    if (!isImage(sourceVideoFile.name)) {
+    if (!isImage(videoFileAsset.name)) {
       videoResolver.loadMetadataOne({
-        videoId: sourceVideoFile.name,
-        videoPath: sourceVideoFile.path,
+        videoId: videoFileAsset.name,
+        videoPath: videoFileAsset.path,
       });
     }
-  }, [sourceVideoFile, videoResolver]);
+  }, [videoFileAsset, videoResolver]);
 
   const controls = (
-    <Button onClick={onImport} size="compact-xs">
-      Import
-    </Button>
+    <>
+      <Button onClick={onImport} size="compact-xs">
+        Import
+      </Button>
+      <Button onClick={onDelete} size="compact-xs" color="red">
+        Delete
+      </Button>
+    </>
   );
 
   return (
     <PreviewBaseItem
-      videoPath={sourceVideoFile.path}
-      headerLeft={sourceVideoFile.name}
+      videoPath={videoFileAsset.path}
+      headerLeft={videoFileAsset.name}
       headerRight={toMinutesString(duration)}
       controls={controls}
     />

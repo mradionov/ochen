@@ -1,10 +1,10 @@
-import React from 'react';
 import type { EffectsState } from '../../features/renderer/effects_store';
-import classes from './preview_base_item.module.css';
+import { useRenderLoop } from '../../features/use_render_loop';
 import { useVideoPreviewFactory } from '../../features/video_preview_factory/use_video_preview_factory';
 import type { VideoPreview } from '../../features/video_preview_factory/video_preview';
-import { useRenderLoop } from '../../features/use_render_loop';
 import type { RenderLoopTickEvent } from '../../lib/render_loop';
+import classes from './preview_base_item.module.css';
+import React from 'react';
 
 export const PreviewBaseItem = ({
   videoPath,
@@ -83,7 +83,7 @@ export const PreviewBaseItem = ({
         <div>{footerLeft}</div>
         <div>{footerRight}</div>
       </div>
-      <div>{controls}</div>
+      <div className={classes.controls}>{controls}</div>
     </div>
   );
 };

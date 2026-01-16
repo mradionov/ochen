@@ -1,127 +1,100 @@
+import { FS } from '../../lib/fs.ts';
 import type { ProjectsRepo } from './projects_repo.ts';
-
-const excludeNames = ['.DS_Store'];
+import type { ProjectsStore } from './projects_store.ts';
 
 export type Project = {
   name: string;
   isActive: boolean;
 };
 
-export type SourceVideoFile = {
-  name: string;
-  path: string;
-};
-
 export class ProjectsController {
   private readonly projectsRepo: ProjectsRepo;
+  private readonly projectsStore: ProjectsStore;
 
-  constructor(projectsRepo: ProjectsRepo) {
+  constructor(projectsRepo: ProjectsRepo, projectsStore: ProjectsStore) {
     this.projectsRepo = projectsRepo;
+    this.projectsStore = projectsStore;
   }
 
-  async chooseDir() {
-    const handle = await window.showDirectoryPicker();
-    await this.projectsRepo.saveDirHandle(handle);
+  private async getDirRootHandle(): Promise<FileSystemDirectoryHandle> {
+    const rootDirHandle = await this.projectsRepo.loadRootDirHandle();
+    if (!rootDirHandle) {
+      throw new Error('No projects dir handle');
+    }
+    return rootDirHandle;
+  }
+
+  private async getProjectDirHandle(
+    name: string,
+  ): Promise<FileSystemDirectoryHandle> {
+    const rootDirHandle = await this.getDirRootHandle();
+    const projectDirHandle = await FS.findDirHandleByName(rootDirHandle, name);
+    if (!projectDirHandle) {
+      throw new Error(`No project dir found by name: "${name}"`);
+    }
+    return projectDirHandle;
+  }
+
+  async chooseRootDir() {
+    const rootHandle = await window.showDirectoryPicker();
+    await this.projectsRepo.saveRootDirHandle(rootHandle);
+    await this.fetchProjects();
   }
 
   async activate(project: Project) {
+    await this.getProjectDirHandle(project.name);
     await this.projectsRepo.saveActiveProject(project.name);
+    await this.fetchProjects();
   }
 
   async createNewProject(name: string) {
-    const projectsHandle = await this.projectsRepo.loadDirHandle();
-    if (!projectsHandle) {
-      throw new Error('No projects dir handle');
-    }
+    const rootDirHandle = await this.getDirRootHandle();
 
-    const newProjectHandle = await projectsHandle.getDirectoryHandle(name, {
-      create: true,
-    });
+    const newProjectDirHandle = await FS.createDir(rootDirHandle, name);
 
-    await newProjectHandle.getDirectoryHandle('audios', { create: true });
-    await newProjectHandle.getDirectoryHandle('videos', { create: true });
-    await newProjectHandle.getFileHandle('manifest.json', { create: true });
+    await FS.createDir(newProjectDirHandle, 'audios');
+    await FS.createDir(newProjectDirHandle, 'videos');
+    await FS.createFile(newProjectDirHandle, 'manifest.json');
 
     await this.projectsRepo.saveActiveProject(name);
+
+    await this.fetchProjects();
   }
 
-  async fetchActiveProjectName(): Promise<string> {
-    return this.projectsRepo.loadActiveProject();
-  }
-
-  async fetchProjects(): Promise<Project[]> {
-    const handle = await this.projectsRepo.loadDirHandle();
-    if (!handle) {
-      throw new Error('No projects dir handle');
-    }
+  async fetchProjects() {
+    const rootDirHandle = await this.getDirRootHandle();
 
     const activeProjectName = await this.projectsRepo.loadActiveProject();
 
     const projects: Project[] = [];
 
-    const dirItems = await this.getDirItems(handle);
+    const dirItems = await FS.getDirItems(rootDirHandle, { sort: true });
     for (const { name } of dirItems) {
-      if (excludeNames.includes(name)) {
-        continue;
-      }
       projects.push({
         name: name,
         isActive: name === activeProjectName,
       });
     }
 
-    projects.sort((a, b) => a.name.localeCompare(b.name));
-
-    return projects;
+    this.projectsStore.setActiveProject(projects.find((p) => p.isActive));
+    this.projectsStore.setProjects(projects);
   }
 
-  private async getDirItems(dirHandle: FileSystemDirectoryHandle) {
-    const items = [];
-    for await (const [name, handle] of dirHandle.entries()) {
-      items.push({
-        name,
-        handle,
-      });
-    }
-    return items;
-  }
-
-  async fetchActiveProjectVideoFiles(): Promise<SourceVideoFile[]> {
-    const projectsHandle = await this.projectsRepo.loadDirHandle();
-    if (!projectsHandle) {
-      throw new Error('No projects dir handle');
-    }
-
+  async getActiveProjectDirHandle(): Promise<FileSystemDirectoryHandle> {
     const activeProjectName = await this.projectsRepo.loadActiveProject();
+    const projectDirHandle = await this.getProjectDirHandle(activeProjectName);
+    return projectDirHandle;
+  }
 
-    const projectDirItems = await this.getDirItems(projectsHandle);
-
-    const activeProjectDirItem = projectDirItems.find(
-      ({ name }) => name === activeProjectName,
+  async getActiveProjectVideosDirHandle(): Promise<FileSystemDirectoryHandle> {
+    const projectDirHandle = await this.getActiveProjectDirHandle();
+    const videosDirHandle = await FS.findDirHandleByName(
+      projectDirHandle,
+      'videos',
     );
-    if (!activeProjectDirItem) {
-      throw new Error('No active project dir');
-    }
-
-    const activeProjectDirItems = await this.getDirItems(
-      activeProjectDirItem.handle,
-    );
-    const videosDirItem = activeProjectDirItems.find(
-      ({ name }) => name === 'videos',
-    );
-    if (!videosDirItem) {
+    if (!videosDirHandle) {
       throw new Error('No active project "videos" dir');
     }
-
-    const videoFilesItems = await this.getDirItems(videosDirItem.handle);
-
-    return videoFilesItems
-      .filter((item) => {
-        return item.handle.kind === 'file' && !excludeNames.includes(item.name);
-      })
-      .map(({ name }) => ({
-        path: `/sets/${activeProjectName}/videos/${name}`,
-        name,
-      }));
+    return videosDirHandle;
   }
 }

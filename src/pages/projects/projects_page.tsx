@@ -1,17 +1,17 @@
 import { CreateProjectButton } from '../../features/projects/create_project_button';
-import { ProjectsList } from '../../features/projects/projects_list';
-import { Page } from '../../ui/page/page';
-import { Button, Group, Stack } from '@mantine/core';
 import { useProjects } from '../../features/projects/use_projects';
+import { Page } from '../../ui/page/page';
+import { ProjectsList } from './projects_list';
+import { Button, Group, Stack } from '@mantine/core';
 
 export const ProjectsPage = () => {
-  const { chooseProjectsDirectory } = useProjects();
+  const { projectsController } = useProjects();
 
   return (
     <Page>
       <Stack gap="lg">
         <Group justify="space-between">
-          <Button onClick={chooseProjectsDirectory}>
+          <Button onClick={() => projectsController.chooseRootDir()}>
             Choose projects directory
           </Button>
           <CreateProjectButton />

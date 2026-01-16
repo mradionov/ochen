@@ -31,3 +31,10 @@
   bottom: 0;
   top: auto;
 }
+
+.controls {
+  margin-top: 4px;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+}

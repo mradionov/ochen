@@ -1,18 +1,19 @@
-import { Group, Loader, Stack, Title } from '@mantine/core';
-import { useManifest } from '../../features/manifest/use_manifest';
-import { useProjects } from '../../features/projects/use_projects';
-import { UnimportedItem } from './unimported_item';
-import type { SourceVideoFile } from '../../features/projects/projects_controller';
-import { toMinutesString } from '../../lib/time_utils';
-import { ClipItem } from './clip_item';
-import { type VideoTimelineClip } from '../../features/video_timeline/video_timeline_selectors';
-import { VideoTrackStore } from '../../features/manifest/stores/video_track_store';
+import type { VideoFileAsset } from '../../features/assets/assets_controller';
+import { useAssets } from '../../features/assets/use_assets';
 import { ManifestSaveButton } from '../../features/manifest/manifest_save_button';
+import { VideoTrackStore } from '../../features/manifest/stores/video_track_store';
+import { useManifest } from '../../features/manifest/use_manifest';
 import { useVideoTimeline } from '../../features/video_timeline/use_video_timeline';
+import { type VideoTimelineClip } from '../../features/video_timeline/video_timeline_selectors';
+import { toMinutesString } from '../../lib/time_utils';
 import { Page } from '../../ui/page/page';
+import { ClipItem } from './clip_item';
+import { UnimportedItem } from './unimported_item';
+import { Button, Divider, Group, Loader, Stack, Title } from '@mantine/core';
+import * as Lucide from 'lucide-react';
 
 export const AssetsPage = () => {
-  const { sourceVideoFiles } = useProjects();
+  const { assetsController, assetsState } = useAssets();
   const { manifestState, manifestStore } = useManifest();
   const { videoTimeline } = useVideoTimeline();
 
@@ -23,7 +24,7 @@ export const AssetsPage = () => {
   const importedNames = VideoTrackStore.selectVideoFilenames(
     manifestState.videoTrack,
   );
-  const unimportedVideoFiles = sourceVideoFiles.filter(
+  const unimportedVideoFiles = assetsState.videoFileAssets.filter(
     (file) => !importedNames.includes(file.name),
   );
 
@@ -31,6 +32,10 @@ export const AssetsPage = () => {
   const totalDuration = videoTimeline.getTotalDuration();
 
   const tint = manifestState.videoTrack.effects?.tint;
+
+  const onUploadVideos = async () => {
+    await assetsController.pickAndUploadVideoFiles();
+  };
 
   const onMoveLeft = (timelineClip: VideoTimelineClip) => {
     manifestStore.videoTrackStore.moveLeft(timelineClip.videoId);
@@ -44,11 +49,15 @@ export const AssetsPage = () => {
     manifestStore.videoTrackStore.removeClipAndVideo(timelineClip.videoId);
   };
 
-  const onImport = (sourceVideoFile: SourceVideoFile) => {
+  const onImport = (videoFileAsset: VideoFileAsset) => {
     manifestStore.videoTrackStore.addClipAndVideo(
-      sourceVideoFile.name,
-      sourceVideoFile.path,
+      videoFileAsset.name,
+      videoFileAsset.path,
     );
+  };
+
+  const onDeleteFile = async (videoFileAsset: VideoFileAsset) => {
+    await assetsController.deleteVideoFile(videoFileAsset.name);
   };
 
   const onTintChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,12 +67,23 @@ export const AssetsPage = () => {
 
   return (
     <Page>
-      <ManifestSaveButton />
+      <Group justify="space-between">
+        <Group>
+          <Button leftSection={<Lucide.Upload />} onClick={onUploadVideos}>
+            Upload videos
+          </Button>
+        </Group>
+        <Group>
+          <ManifestSaveButton />
+        </Group>
+      </Group>
+
+      <Divider my="sm" />
 
       <div>total duration: {toMinutesString(totalDuration)}</div>
       <input type="color" value={tint ?? '#000000'} onChange={onTintChange} />
 
-      <hr />
+      <Divider my="sm" />
 
       {timelineClips.length > 0 && (
         <Stack>
@@ -86,11 +106,12 @@ export const AssetsPage = () => {
         <Stack>
           <Title>Unimported</Title>
           <Group>
-            {unimportedVideoFiles.map((sourceVideoFile) => (
+            {unimportedVideoFiles.map((videoFileAsset) => (
               <UnimportedItem
-                key={sourceVideoFile.path}
-                sourceVideoFile={sourceVideoFile}
-                onImport={() => onImport(sourceVideoFile)}
+                key={videoFileAsset.path}
+                videoFileAsset={videoFileAsset}
+                onImport={() => onImport(videoFileAsset)}
+                onDelete={() => onDeleteFile(videoFileAsset)}
               />
             ))}
           </Group>

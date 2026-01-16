@@ -1,3 +1,4 @@
+import type { Project } from '../projects/projects_store';
 import { useProjects } from '../projects/use_projects';
 import { ManifestReader } from './manifest_reader';
 import { ManifestWriter } from './manifest_writer';
@@ -9,7 +10,7 @@ const manifestWriter = new ManifestWriter();
 const manifestStore = ManifestStore.createEmpty();
 
 export const useManifest = () => {
-  const { activeProjectName } = useProjects();
+  const { projectsState } = useProjects();
 
   const [savePointManifestState, setSavePointManifestState] =
     React.useState<ManifestState | null>(null);
@@ -19,8 +20,8 @@ export const useManifest = () => {
     manifestStore.getSnapshot,
   );
 
-  const load = async (projectName: string) => {
-    const loadedManifestStore = await manifestReader.read(projectName);
+  const load = async (project: Project) => {
+    const loadedManifestStore = await manifestReader.read(project.name);
     const snap = loadedManifestStore.getSnapshot();
     manifestStore.hydrate(snap);
     setSavePointManifestState(snap);
@@ -32,11 +33,11 @@ export const useManifest = () => {
   };
 
   React.useEffect(() => {
-    if (activeProjectName == null) {
+    if (projectsState.activeProject == null) {
       return;
     }
-    void load(activeProjectName);
-  }, [activeProjectName]);
+    void load(projectsState.activeProject);
+  }, [projectsState.activeProject]);
 
   const hasManifestChanged = React.useMemo(() => {
     return (
