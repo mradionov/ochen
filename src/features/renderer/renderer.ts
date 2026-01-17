@@ -1,17 +1,13 @@
 import { Precondition } from '../../lib/precondition';
 import type { AudioInfo } from '../audio_processing/audio_analyser';
-import type { Effect } from './effect';
-import { EdgeEffect } from './effects/edge';
-import { GlitchEffect } from './effects/glitch';
-import { GrainEffect } from './effects/grain';
-import { TintEffect } from './effects/tint';
-import type { EffectsState } from './effects_store';
+import { EffectsCompositor } from '../effects/effects_compositor';
+import type { EffectsState } from '../effects/effects_store';
 import type { RenderSource } from './render_source';
 
 export class Renderer {
   readonly canvas: HTMLCanvasElement;
   private readonly ctx: CanvasRenderingContext2D;
-  private readonly effectMap: Record<string, Effect<unknown>>;
+  private readonly effectsCompositor: EffectsCompositor;
 
   private constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -20,13 +16,7 @@ export class Renderer {
         willReadFrequently: true,
       }),
     );
-
-    this.effectMap = {
-      grain: new GrainEffect(),
-      edge: new EdgeEffect(),
-      tint: new TintEffect(),
-      glitch: new GlitchEffect(),
-    };
+    this.effectsCompositor = new EffectsCompositor();
   }
 
   // TODO: async
@@ -122,73 +112,14 @@ export class Renderer {
     // }
 
     if (effectsState) {
-      this.applyEffects(effectsState, lastTime, audioInfo);
-    }
-  }
-
-  private async applyEffects(
-    effectsState: EffectsState,
-    lastTime: number,
-    audioInfo: AudioInfo | undefined,
-  ) {
-    const defaultOrder = effectsState.order ?? [
-      'tint',
-      'edge',
-      'glitch',
-      'grain',
-    ];
-
-    for (const effectKey of defaultOrder) {
-      const effectConfig = effectsState[effectKey];
-      if (effectConfig == null) {
-        continue;
-      }
-      const effect = this.effectMap[effectKey];
-      if (!effect) {
-        continue;
-      }
-      const effectContext = {
+      this.effectsCompositor.applyEffects(effectsState, {
         ctx: this.ctx,
         width: this.width,
         height: this.height,
         lastTime,
-      };
-      await effect.apply(effectContext, effectConfig, audioInfo);
+      });
     }
   }
-
-  // private applyVignette() {
-  //   const { width, height } = this.canvas;
-  //   const gradient = this.ctx.createRadialGradient(
-  //     width / 2,
-  //     height / 2,
-  //     width / 4,
-  //     width / 2,
-  //     height / 2,
-  //     width / 1.2,
-  //   );
-  //   gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
-  //   gradient.addColorStop(1, 'rgba(0, 0, 0, 1)');
-  //   this.ctx.fillStyle = gradient;
-  //   this.ctx.fillRect(0, 0, width, height);
-  // }
-
-  // private applyGrain(intensity: number = 0) {
-  //   const imageData = this.ctx.getImageData(0, 0, this.width, this.height);
-  //   const data = imageData.data;
-  //   for (let i = 0; i < data.length; i += 4) {
-  //     const rand = (Math.random() - 0.5) * intensity;
-  //     data[i] += rand; // R
-  //     data[i + 1] += rand; // G
-  //     data[i + 2] += rand; // B
-  //   }
-  //   this.ctx.putImageData(imageData, 0, 0);
-  // }
-
-  // private applyHaze() {
-  //   this.ctx.fillStyle = 'rgba(200, 200, 200, 0.1)';
-  //   this.ctx.fillRect(0, 0, this.width, this.height);
-  // }
 
   private getBox(
     renderSource: RenderSource,

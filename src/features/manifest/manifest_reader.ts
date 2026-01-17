@@ -1,4 +1,4 @@
-import { AudioTrackStore } from './stores/audio_track_store';
+import { EffectsStore } from '../effects/effects_store';
 import {
   ManifestSchema,
   type AudioFilepath,
@@ -7,11 +7,11 @@ import {
   type VideoFilepath,
   type VideoId,
 } from './manifest_schema';
+import { AudioClipStore } from './stores/audio_clip_store';
+import { AudioTrackStore } from './stores/audio_track_store';
 import { ManifestStore } from './stores/manifest_store';
 import { VideoClipStore } from './stores/video_clip_store';
 import { VideoTrackStore } from './stores/video_track_store';
-import { EffectsStore } from '../renderer/effects_store';
-import { AudioClipStore } from './stores/audio_clip_store';
 
 export class ManifestReader {
   async read(projectName: string): Promise<ManifestStore> {

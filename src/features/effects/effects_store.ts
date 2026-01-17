@@ -1,5 +1,5 @@
 import { SyncStore } from '../../lib/store';
-import type { EffectsRaw } from './effects_schema';
+import type { EffectsRaw, EffectType } from '../effects/effects_schema';
 
 export type EdgeEffectConfig = {
   threshold?: number;
@@ -14,13 +14,15 @@ export type GrainEffectConfig = {
 };
 
 export type EffectsState = {
-  tint?: string;
-  vignette?: boolean;
-  grain?: GrainEffectConfig;
-  blur?: number;
-  edge?: EdgeEffectConfig;
-  glitch?: GlitchEffectConfig;
-  order?: string[];
+  configMap?: {
+    tint?: string;
+    vignette?: boolean;
+    grain?: GrainEffectConfig;
+    blur?: number;
+    edge?: EdgeEffectConfig;
+    glitch?: GlitchEffectConfig;
+  };
+  order?: EffectType[];
 };
 
 export class EffectsStore extends SyncStore<EffectsState> {
@@ -56,7 +58,10 @@ export class EffectsStore extends SyncStore<EffectsState> {
   setTint(color: string) {
     this.recomputeState({
       ...this.state,
-      tint: color,
+      configMap: {
+        ...this.state.configMap,
+        tint: color,
+      },
     });
   }
 
@@ -66,17 +71,21 @@ export class EffectsStore extends SyncStore<EffectsState> {
 
   toRaw(): EffectsRaw {
     return {
-      tint: this.state.tint ? this.state.tint : undefined,
-      grain: this.state.grain
-        ? {
-            intensity: this.state.grain?.intensity,
-          }
-        : undefined,
-      edge: this.state.edge
-        ? {
-            threshold: this.state.edge?.threshold,
-          }
-        : undefined,
+      configMap: {
+        tint: this.state.configMap?.tint
+          ? this.state.configMap.tint
+          : undefined,
+        grain: this.state.configMap?.grain
+          ? {
+              intensity: this.state.configMap.grain?.intensity,
+            }
+          : undefined,
+        edge: this.state.configMap?.edge
+          ? {
+              threshold: this.state.configMap.edge?.threshold,
+            }
+          : undefined,
+      },
       order: this.state.order,
     };
   }

@@ -1,10 +1,12 @@
 import type { AudioInfo } from '../../audio_processing/audio_analyser';
-import type { Effect, EffectContext } from '../effect';
-import type { GlitchEffectConfig } from '../effects_store';
+import type { GlitchEffectConfig } from '../../effects/effects_store';
+import type { EffectRenderer, EffectRendererContext } from '../effect_renderer';
 
-export class GlitchEffect implements Effect<GlitchEffectConfig> {
-  async apply(
-    { ctx, width, height }: EffectContext,
+export class GlitchEffectRenderer
+  implements EffectRenderer<GlitchEffectConfig>
+{
+  async render(
+    { ctx, width, height }: EffectRendererContext,
     config: GlitchEffectConfig,
     audioInfo?: AudioInfo,
   ) {

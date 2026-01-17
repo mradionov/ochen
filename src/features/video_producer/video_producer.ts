@@ -100,7 +100,6 @@ export class VideoProducer {
 
     const newCurrentTimelineClip =
       this.videoTimelineSnap.getTimelineClips()[newCurrentIndex];
-    debugger;
 
     if (!newCurrentTimelineClip) {
       console.warn('No new current clip for index', newCurrentIndex);
@@ -116,26 +115,20 @@ export class VideoProducer {
       if (this.isPlaying) {
         this.currentPlayer.play();
       }
-      debugger;
     } else {
       this.maybeDestroyNextPlayer();
       this.currentPlayer = RenderablePlayerFactory.createFromTimelineClip(
         newCurrentTimelineClip,
       );
-      debugger;
     }
 
     this.currentPlayer.ended.addListenerOnce(this.onPlayerEnded);
     this.currentIndex = newCurrentIndex;
 
-    debugger;
-
     if (newNextTimelineClip) {
       this.nextPlayer =
         RenderablePlayerFactory.createFromTimelineClip(newNextTimelineClip);
     }
-
-    debugger;
 
     this.clipChanged.emit(newNextTimelineClip);
     this.playerChanged.emit({

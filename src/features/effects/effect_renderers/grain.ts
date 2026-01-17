@@ -1,10 +1,10 @@
 import type { AudioInfo } from '../../audio_processing/audio_analyser';
-import type { Effect, EffectContext } from '../effect';
-import type { GrainEffectConfig } from '../effects_store';
+import type { GrainEffectConfig } from '../../effects/effects_store';
+import type { EffectRenderer, EffectRendererContext } from '../effect_renderer';
 
-export class GrainEffect implements Effect<GrainEffectConfig> {
-  apply(
-    { ctx, width, height }: EffectContext,
+export class GrainEffectRenderer implements EffectRenderer<GrainEffectConfig> {
+  render(
+    { ctx, width, height }: EffectRendererContext,
     config: GrainEffectConfig,
     audioInfo?: AudioInfo,
   ) {

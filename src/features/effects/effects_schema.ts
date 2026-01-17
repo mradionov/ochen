@@ -1,14 +1,12 @@
 import * as z from 'zod';
 
-export const EffectsSchema = z.object({
+export const EffectsConfigMap = z.object({
   tint: z.string().optional(),
-  vignette: z.boolean().optional(),
   grain: z
     .object({
       intensity: z.number().optional(),
     })
     .optional(),
-  blur: z.number().optional(),
   edge: z
     .object({
       threshold: z.number().optional(),
@@ -16,6 +14,14 @@ export const EffectsSchema = z.object({
     })
     .optional(),
   glitch: z.object({}).optional(),
-  order: z.array(z.string()).optional(),
+  vignette: z.boolean().optional(),
 });
+
+export type EffectType = keyof typeof EffectsConfigMap.shape;
+
+export const EffectsSchema = z.object({
+  configMap: EffectsConfigMap.optional(),
+  order: z.array(EffectsConfigMap.keyof()).optional(),
+});
+
 export type EffectsRaw = z.infer<typeof EffectsSchema>;

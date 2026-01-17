@@ -1,15 +1,15 @@
 // import type { AudioInfo } from '$lib/audio/audio_analyser';
 
-export type EffectContext = {
+export type EffectRendererContext = {
   ctx: CanvasRenderingContext2D;
   width: number;
   height: number;
   lastTime: number;
 };
 
-export interface Effect<T> {
-  apply(
-    context: EffectContext,
+export interface EffectRenderer<T> {
+  render(
+    context: EffectRendererContext,
     config: T,
     // audioInfo?: AudioInfo,
   ): void | Promise<void>;

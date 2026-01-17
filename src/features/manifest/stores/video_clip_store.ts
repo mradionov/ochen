@@ -1,6 +1,6 @@
 import { isImage } from '../../../lib/image_utils';
 import { SyncStore } from '../../../lib/store';
-import { EffectsStore, type EffectsState } from '../../renderer/effects_store';
+import { EffectsStore, type EffectsState } from '../../effects/effects_store';
 import {
   VideoClipSchema,
   VideoTransitionOutSchema,

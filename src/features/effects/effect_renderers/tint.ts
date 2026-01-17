@@ -1,8 +1,8 @@
 import { hexToRgb } from '../../../lib/color';
-import type { Effect, EffectContext } from '../effect';
+import type { EffectRenderer, EffectRendererContext } from '../effect_renderer';
 
-export class TintEffect implements Effect<string> {
-  apply({ ctx, width, height }: EffectContext, tint: string) {
+export class TintEffectRenderer implements EffectRenderer<string> {
+  render({ ctx, width, height }: EffectRendererContext, tint: string) {
     const imageData = ctx.getImageData(0, 0, width, height);
     const tintRGB = hexToRgb(tint);
 

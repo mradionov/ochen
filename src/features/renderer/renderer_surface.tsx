@@ -1,8 +1,8 @@
-import React from 'react';
-import { Renderer } from './renderer';
+import type { EffectsState } from '../effects/effects_store';
 import { useRenderLoop } from '../use_render_loop';
 import type { RenderablePlayer } from '../video_player/renderable_player';
-import type { EffectsState } from './effects_store';
+import { Renderer } from './renderer';
+import React from 'react';
 
 export const RendererSurface = ({
   width,

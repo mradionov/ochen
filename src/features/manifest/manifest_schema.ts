@@ -1,5 +1,5 @@
+import { EffectsSchema } from '../effects/effects_schema';
 import * as z from 'zod';
-import { EffectsSchema } from '../renderer/effects_schema';
 
 export type VideoId = string;
 export type VideoFilename = string;

@@ -4,7 +4,11 @@
       "duration": 0,
       "kind": "cut"
     },
-    "effects": {},
+    "effects": {
+      "configMap": {
+        "tint": "#a43737"
+      }
+    },
     "clips": [
       {
         "videoId": "IMG_0821.jpeg",
