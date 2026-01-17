@@ -1,4 +1,5 @@
 // import type { AudioInfo } from '$lib/audio/audio_analyser';
+import type { EffectConfig, EffectType } from './effects_schema';
 
 export type EffectRendererContext = {
   ctx: CanvasRenderingContext2D;
@@ -7,10 +8,10 @@ export type EffectRendererContext = {
   lastTime: number;
 };
 
-export interface EffectRenderer<T> {
+export interface EffectRenderer<T extends EffectType> {
   render(
     context: EffectRendererContext,
-    config: T,
+    config: EffectConfig<T>,
     // audioInfo?: AudioInfo,
   ): void | Promise<void>;
 }

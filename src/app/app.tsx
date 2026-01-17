@@ -1,7 +1,7 @@
+import { icon } from '../ui/icon';
 import classes from './app.module.css';
 import { NavItem } from './nav_item';
 import { AppShell } from '@mantine/core';
-import * as Lucide from 'lucide-react';
 import { Outlet } from 'react-router-dom';
 
 export const App = () => (
@@ -13,16 +13,16 @@ export const App = () => (
     classNames={classes}
   >
     <AppShell.Navbar>
-      <NavItem to="/" label="Projects" leftSection={<Lucide.Folder />} />
-      <NavItem to="/assets" label="Assets" leftSection={<Lucide.Image />} />
-      <NavItem to="/timeline" label="Timeline" leftSection={<Lucide.Clock />} />
-      <NavItem to="/audio" label="Audio" leftSection={<Lucide.Music />} />
+      <NavItem to="/" label="Projects" leftSection={<icon.Folder />} />
+      <NavItem to="/assets" label="Assets" leftSection={<icon.Image />} />
+      <NavItem to="/timeline" label="Timeline" leftSection={<icon.Clock />} />
+      <NavItem to="/audio" label="Audio" leftSection={<icon.Music />} />
       <NavItem
         to="/performance"
         label="Perform"
-        leftSection={<Lucide.Projector />}
+        leftSection={<icon.Projector />}
       />
-      <NavItem to="/game" label="Game" leftSection={<Lucide.Gamepad />} />
+      <NavItem to="/game" label="Game" leftSection={<icon.Gamepad />} />
     </AppShell.Navbar>
     <AppShell.Main>
       <Outlet />

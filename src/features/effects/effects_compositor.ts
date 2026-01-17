@@ -1,16 +1,15 @@
 import type { EffectRenderer, EffectRendererContext } from './effect_renderer';
-import { EdgeEffectRenderer } from './effect_renderers/edge';
-import { GlitchEffectRenderer } from './effect_renderers/glitch';
-import { GrainEffectRenderer } from './effect_renderers/grain';
-import { TintEffectRenderer } from './effect_renderers/tint';
-import { VignetteEffectRenderer } from './effect_renderers/vignette';
-import type { EffectType } from './effects_schema';
+import { EdgeEffectRenderer } from './effects/edge/edge_effect_renderer';
+import { GrainEffectRenderer } from './effects/grain/grain_effect_renderer';
+import { TintEffectRenderer } from './effects/tint/tint_effect_renderer';
+import { VignetteEffectRenderer } from './effects/vignette/vignette_effect_renderer';
+import { defaultEffectsOrder, type EffectType } from './effects_schema';
 import type { EffectsState } from './effects_store';
 
 export class EffectsCompositor {
   private readonly effectRendererMap: Record<
     EffectType,
-    EffectRenderer<unknown>
+    EffectRenderer<EffectType>
   >;
 
   constructor() {
@@ -18,7 +17,6 @@ export class EffectsCompositor {
       grain: new GrainEffectRenderer(),
       edge: new EdgeEffectRenderer(),
       tint: new TintEffectRenderer(),
-      glitch: new GlitchEffectRenderer(),
       vignette: new VignetteEffectRenderer(),
     };
   }
@@ -27,19 +25,14 @@ export class EffectsCompositor {
     effectsState: EffectsState,
     effectContext: EffectRendererContext,
   ) {
-    const defaultOrder = effectsState.order ?? [
-      'tint',
-      'edge',
-      'glitch',
-      'grain',
-      'vignette',
-    ];
+    const defaultOrder = effectsState.order ?? defaultEffectsOrder;
 
     for (const effectKey of defaultOrder) {
       const effectConfig = effectsState.configMap?.[effectKey];
-      if (effectConfig == null) {
+      if (effectConfig == null || !effectConfig.enabled) {
         continue;
       }
+
       const effectRenderer = this.effectRendererMap[effectKey];
       if (!effectRenderer) {
         continue;

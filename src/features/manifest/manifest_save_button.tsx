@@ -19,7 +19,7 @@ export const ManifestSaveButton = () => {
         onClick={() => manifestController.saveManifest()}
         disabled={!hasChanges}
       >
-        save manifest
+        Save manifest
       </Button>
     </Indicator>
   );

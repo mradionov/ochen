@@ -1,29 +1,11 @@
 import { SyncStore } from '../../lib/store';
-import type { EffectsRaw, EffectType } from '../effects/effects_schema';
+import {
+  EffectsConfigMap,
+  type EffectsRaw,
+  type EffectType,
+} from '../effects/effects_schema';
 
-export type EdgeEffectConfig = {
-  threshold?: number;
-  transparency?: number;
-  strength?: number;
-};
-
-export type GlitchEffectConfig = {};
-
-export type GrainEffectConfig = {
-  intensity?: number;
-};
-
-export type EffectsState = {
-  configMap?: {
-    tint?: string;
-    vignette?: boolean;
-    grain?: GrainEffectConfig;
-    blur?: number;
-    edge?: EdgeEffectConfig;
-    glitch?: GlitchEffectConfig;
-  };
-  order?: EffectType[];
-};
+export type EffectsState = EffectsRaw;
 
 export class EffectsStore extends SyncStore<EffectsState> {
   private state: EffectsState;
@@ -39,6 +21,7 @@ export class EffectsStore extends SyncStore<EffectsState> {
     shouldEmit = true,
   ): EffectsState {
     this.state = {
+      ...this.state,
       ...fromState,
     };
     if (shouldEmit) {
@@ -56,12 +39,36 @@ export class EffectsStore extends SyncStore<EffectsState> {
   }
 
   setTint(color: string) {
+    this.setConfig('tint', { enabled: true, value: color });
+  }
+
+  setGrain({ intensity }: { intensity: number }) {
+    this.setConfig('grain', { enabled: true, intensity });
+  }
+
+  setEnabled(type: EffectType, isEnabled: boolean) {
+    this.setConfig(
+      type,
+      EffectsConfigMap.shape[type].parse({ enabled: isEnabled }),
+    );
+  }
+
+  setOrder(order: EffectType[]) {
     this.recomputeState({
       ...this.state,
-      configMap: {
+      order,
+    });
+  }
+
+  private setConfig<T>(type: EffectType, config: T) {
+    this.recomputeState({
+      configMap: EffectsConfigMap.parse({
         ...this.state.configMap,
-        tint: color,
-      },
+        [type]: EffectsConfigMap.shape[type].parse({
+          ...(this.state.configMap?.[type] || { enabled: true }),
+          ...config,
+        }),
+      }),
     });
   }
 
@@ -71,21 +78,7 @@ export class EffectsStore extends SyncStore<EffectsState> {
 
   toRaw(): EffectsRaw {
     return {
-      configMap: {
-        tint: this.state.configMap?.tint
-          ? this.state.configMap.tint
-          : undefined,
-        grain: this.state.configMap?.grain
-          ? {
-              intensity: this.state.configMap.grain?.intensity,
-            }
-          : undefined,
-        edge: this.state.configMap?.edge
-          ? {
-              threshold: this.state.configMap.edge?.threshold,
-            }
-          : undefined,
-      },
+      configMap: this.state.configMap,
       order: this.state.order,
     };
   }

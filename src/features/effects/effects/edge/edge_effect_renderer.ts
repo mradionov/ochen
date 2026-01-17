@@ -1,6 +1,9 @@
-import type { AudioInfo } from '../../audio_processing/audio_analyser';
-import type { EdgeEffectConfig } from '../../effects/effects_store';
-import type { EffectRenderer, EffectRendererContext } from '../effect_renderer';
+import type { AudioInfo } from '../../../audio_processing/audio_analyser';
+import type {
+  EffectRenderer,
+  EffectRendererContext,
+} from '../../effect_renderer';
+import type { EffectConfig } from '../../effects_schema';
 
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
 
@@ -29,10 +32,10 @@ function accentuateBand(x, gain = 2.5, lo = 0.5, hi = 0.6) {
 //   dead: 0,
 // };
 
-export class EdgeEffectRenderer implements EffectRenderer<EdgeEffectConfig> {
+export class EdgeEffectRenderer implements EffectRenderer<'edge'> {
   async render(
     { ctx, width, height, lastTime }: EffectRendererContext,
-    config: EdgeEffectConfig,
+    config: EffectConfig<'edge'>,
     audioInfo?: AudioInfo,
   ) {
     const kernel = 'sobel';

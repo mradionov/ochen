@@ -1,10 +1,17 @@
-import { hexToRgb } from '../../../lib/color';
-import type { EffectRenderer, EffectRendererContext } from '../effect_renderer';
+import { hexToRgb } from '../../../../lib/color';
+import type {
+  EffectRenderer,
+  EffectRendererContext,
+} from '../../effect_renderer';
+import type { EffectConfig } from '../../effects_schema';
 
-export class TintEffectRenderer implements EffectRenderer<string> {
-  render({ ctx, width, height }: EffectRendererContext, tint: string) {
+export class TintEffectRenderer implements EffectRenderer<'tint'> {
+  render(
+    { ctx, width, height }: EffectRendererContext,
+    config: EffectConfig<'tint'>,
+  ) {
     const imageData = ctx.getImageData(0, 0, width, height);
-    const tintRGB = hexToRgb(tint);
+    const tintRGB = hexToRgb(config.value);
 
     const data = imageData.data;
 

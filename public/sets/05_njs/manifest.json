@@ -6,7 +6,10 @@
     },
     "effects": {
       "configMap": {
-        "tint": "#a43737"
+        "tint": {
+          "enabled": true,
+          "value": "#bf3434"
+        }
       }
     },
     "clips": [

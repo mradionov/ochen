@@ -1,6 +1,6 @@
 import { useProjects } from '../../features/projects/use_projects';
+import { icon } from '../../ui/icon';
 import { Button, Table } from '@mantine/core';
-import * as Lucide from 'lucide-react';
 
 export const ProjectsList = () => {
   const { projectsState, projectsController } = useProjects();
@@ -17,7 +17,7 @@ export const ProjectsList = () => {
       <Table.Tbody>
         {projectsState.projects.map((project) => (
           <Table.Tr key={project.name}>
-            <Table.Td w={20}>{project.isActive && <Lucide.Check />}</Table.Td>
+            <Table.Td w={20}>{project.isActive && <icon.Check />}</Table.Td>
             <Table.Td w={200}>{project.name}</Table.Td>
             <Table.Td>
               <Button onClick={() => projectsController.activate(project)}>

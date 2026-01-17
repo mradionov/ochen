@@ -1,16 +1,17 @@
 import type { VideoFileAsset } from '../../features/assets/assets_controller';
 import { useAssets } from '../../features/assets/use_assets';
+import { EffectsPanel } from '../../features/effects/effects_panel/effects_panel';
 import { ManifestSaveButton } from '../../features/manifest/manifest_save_button';
 import { VideoTrackStore } from '../../features/manifest/stores/video_track_store';
 import { useManifest } from '../../features/manifest/use_manifest';
 import { useVideoTimeline } from '../../features/video_timeline/use_video_timeline';
 import { type VideoTimelineClip } from '../../features/video_timeline/video_timeline_selectors';
 import { toMinutesString } from '../../lib/time_utils';
+import { icon } from '../../ui/icon';
 import { Page } from '../../ui/page/page';
 import { ClipItem } from './clip_item';
 import { UnimportedItem } from './unimported_item';
 import { Button, Divider, Group, Loader, Stack, Title } from '@mantine/core';
-import * as Lucide from 'lucide-react';
 
 export const AssetsPage = () => {
   const { assetsController, assetsState } = useAssets();
@@ -30,8 +31,6 @@ export const AssetsPage = () => {
 
   const timelineClips = videoTimelineSnap.getTimelineClips();
   const totalDuration = videoTimelineSnap.getTotalDuration();
-
-  const tint = manifestState.videoTrack.effects?.tint;
 
   const onUploadVideos = async () => {
     await assetsController.pickAndUploadVideoFiles();
@@ -60,16 +59,11 @@ export const AssetsPage = () => {
     await assetsController.deleteVideoFile(videoFileAsset.name);
   };
 
-  const onTintChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const color = event.target.value;
-    manifestStore.videoTrackStore.effectsStore.setTint(color);
-  };
-
   return (
     <Page>
       <Group justify="space-between">
         <Group>
-          <Button leftSection={<Lucide.Upload />} onClick={onUploadVideos}>
+          <Button leftSection={<icon.Upload />} onClick={onUploadVideos}>
             Upload videos
           </Button>
         </Group>
@@ -80,8 +74,11 @@ export const AssetsPage = () => {
 
       <Divider my="sm" />
 
+      <EffectsPanel />
+
+      <Divider my="sm" />
+
       <div>total duration: {toMinutesString(totalDuration)}</div>
-      <input type="color" value={tint ?? '#000000'} onChange={onTintChange} />
 
       <Divider my="sm" />
 

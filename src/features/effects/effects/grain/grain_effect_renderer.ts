@@ -1,17 +1,15 @@
-import type { AudioInfo } from '../../audio_processing/audio_analyser';
-import type { GrainEffectConfig } from '../../effects/effects_store';
-import type { EffectRenderer, EffectRendererContext } from '../effect_renderer';
+import type {
+  EffectRenderer,
+  EffectRendererContext,
+} from '../../effect_renderer';
+import type { EffectConfig } from '../../effects_schema';
 
-export class GrainEffectRenderer implements EffectRenderer<GrainEffectConfig> {
+export class GrainEffectRenderer implements EffectRenderer<'grain'> {
   render(
     { ctx, width, height }: EffectRendererContext,
-    config: GrainEffectConfig,
-    audioInfo?: AudioInfo,
+    config: EffectConfig<'grain'>,
   ) {
     let intensity = config.intensity ?? 0;
-    if (audioInfo?.isBeat) {
-      intensity *= 1.5;
-    }
 
     const imageData = ctx.getImageData(0, 0, width, height);
     const data = imageData.data;

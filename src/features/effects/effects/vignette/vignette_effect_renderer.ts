@@ -1,6 +1,9 @@
-import type { EffectRenderer, EffectRendererContext } from '../effect_renderer';
+import type {
+  EffectRenderer,
+  EffectRendererContext,
+} from '../../effect_renderer';
 
-export class VignetteEffectRenderer implements EffectRenderer<void> {
+export class VignetteEffectRenderer implements EffectRenderer<'vignette'> {
   render({ ctx, width, height }: EffectRendererContext) {
     const gradient = ctx.createRadialGradient(
       width / 2,
