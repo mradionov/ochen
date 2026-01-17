@@ -1,19 +1,27 @@
-import React from 'react';
+import { manifestStore } from '../manifest/install';
 import { useManifest } from '../manifest/use_manifest';
+import { videoResolverStore } from '../video_resolver/install';
 import { useVideoResolver } from '../video_resolver/use_video_resolver';
-import { VideoTimelineSelectors } from './video_timeline_selectors';
+import { VideoTimelineStore } from './video_timeline_store';
+import React from 'react';
+
+const videoTimelineStore = new VideoTimelineStore(
+  manifestStore,
+  videoResolverStore,
+);
 
 export const useVideoTimeline = () => {
   const { manifestState } = useManifest();
-  const { videoResolver, videoResolverSnap } = useVideoResolver();
+  const { videoResolver } = useVideoResolver();
 
-  const videoTimeline = React.useMemo(() => {
-    return new VideoTimelineSelectors(manifestState, videoResolverSnap);
-  }, [manifestState, videoResolverSnap]);
+  const videoTimelineSnap = React.useSyncExternalStore(
+    videoTimelineStore.subscribe,
+    videoTimelineStore.getSnapshot,
+  );
 
   React.useEffect(() => {
     void videoResolver.loadMetadata(manifestState.videoTrack.clips);
   }, [manifestState, videoResolver]);
 
-  return { videoTimeline };
+  return { videoTimelineSnap };
 };

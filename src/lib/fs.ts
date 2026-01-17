@@ -34,6 +34,12 @@ export class FS {
     await sourceFile.stream().pipeTo(writable);
   }
 
+  static async writeJson(fileHandle: FileSystemFileHandle, content: string) {
+    const writable = await fileHandle.createWritable();
+    await writable.write(content);
+    await writable.close();
+  }
+
   static async deleteFile(
     parentDirHandle: FileSystemDirectoryHandle,
     fileName: string,

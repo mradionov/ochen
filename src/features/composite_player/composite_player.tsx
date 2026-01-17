@@ -1,13 +1,13 @@
-import React from 'react';
-import { VideoProducer } from '../video_producer/video_producer';
 import { AudioProducer } from '../audio_producer/audio_producer';
-import type { RenderablePlayer } from '../video_player/renderable_player';
-import type { VideoTimelineClip } from '../video_timeline/video_timeline_selectors';
-import { useManifest } from '../manifest/use_manifest';
-import { useVideoTimeline } from '../video_timeline/use_video_timeline';
 import { useAudioTimeline } from '../audio_timeline/use_audio_timeline';
+import { useManifest } from '../manifest/use_manifest';
 import { RendererSurface } from '../renderer/renderer_surface';
+import type { RenderablePlayer } from '../video_player/renderable_player';
+import { VideoProducer } from '../video_producer/video_producer';
+import { useVideoTimeline } from '../video_timeline/use_video_timeline';
+import type { VideoTimelineClip } from '../video_timeline/video_timeline_selectors';
 import type { CompositePlayerController } from './composite_player_controller';
+import React from 'react';
 
 export const CompositePlayer = ({
   controllerRef,
@@ -24,7 +24,7 @@ export const CompositePlayer = ({
   const audioProducerRef = React.useRef<AudioProducer | null>(null);
 
   const { manifestState } = useManifest();
-  const { videoTimeline } = useVideoTimeline();
+  const { videoTimelineSnap } = useVideoTimeline();
   const { audioTimeline } = useAudioTimeline();
 
   const [player, setPlayer] = React.useState<RenderablePlayer | null>(null);
@@ -32,7 +32,9 @@ export const CompositePlayer = ({
     React.useState<VideoTimelineClip | null>(null);
 
   React.useEffect(() => {
-    videoProducerRef.current = new VideoProducer(videoTimeline);
+    console.log('setup VideoProducer', videoTimelineSnap);
+
+    videoProducerRef.current = new VideoProducer(videoTimelineSnap);
     videoProducerRef.current.playerChanged.addListener(
       ({ player, nextPlayer, timelineClip }) => {
         console.log('videoProducer#playerchanged', { player, nextPlayer });
@@ -41,9 +43,11 @@ export const CompositePlayer = ({
       },
     );
     videoProducerRef.current.load();
-  }, [videoTimeline]);
+  }, [videoTimelineSnap]);
 
   React.useEffect(() => {
+    console.log('setup AudioProducer');
+
     audioProducerRef.current = new AudioProducer(audioTimeline);
     audioProducerRef.current.playerChanged.addListener(({ player }) => {
       console.log('audioProducer#playerchanged', { player });
@@ -52,6 +56,8 @@ export const CompositePlayer = ({
   }, [audioTimeline]);
 
   React.useEffect(() => {
+    console.log('setup seeked listener');
+
     return controllerRef?.current.seeked.addListener((newTime: number) => {
       videoProducerRef.current?.seek(newTime);
       audioProducerRef.current?.seek(newTime);
@@ -59,6 +65,8 @@ export const CompositePlayer = ({
   }, [controllerRef]);
 
   React.useEffect(() => {
+    console.log('setup played listener');
+
     return controllerRef?.current.played.addListener(() => {
       videoProducerRef.current?.play();
       audioProducerRef.current?.play();
@@ -66,6 +74,7 @@ export const CompositePlayer = ({
   }, [controllerRef]);
 
   React.useEffect(() => {
+    console.log('setup paused listener');
     return controllerRef?.current.paused.addListener(() => {
       videoProducerRef.current?.pause();
       audioProducerRef.current?.pause();
@@ -73,6 +82,7 @@ export const CompositePlayer = ({
   }, [controllerRef]);
 
   React.useEffect(() => {
+    console.log('setup togglePlay listener');
     return controllerRef?.current.toggledPlay.addListener(() => {
       if (videoProducerRef.current?.isPlaying) {
         videoProducerRef.current.pause();

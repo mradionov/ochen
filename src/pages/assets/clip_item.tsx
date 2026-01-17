@@ -1,7 +1,7 @@
-import { Button, Group } from '@mantine/core';
 import type { VideoTimelineClip } from '../../features/video_timeline/video_timeline_selectors';
-import { PreviewBaseItem } from './preview_base_item';
 import { toMinutesString } from '../../lib/time_utils';
+import { PreviewBaseItem } from './preview_base_item';
+import { Button, Group } from '@mantine/core';
 
 export const ClipItem = ({
   timelineClip,
@@ -15,7 +15,7 @@ export const ClipItem = ({
   onRemove: () => void;
 }) => {
   const controls = (
-    <Group gap="xs">
+    <>
       <Button
         size="compact-xs"
         onClick={onMoveLeft}
@@ -33,7 +33,7 @@ export const ClipItem = ({
       <Button size="compact-xs" onClick={onRemove}>
         Remove
       </Button>
-    </Group>
+    </>
   );
 
   return (

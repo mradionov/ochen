@@ -1,50 +1,35 @@
-import type { Project } from '../projects/projects_store';
 import { useProjects } from '../projects/use_projects';
-import { ManifestReader } from './manifest_reader';
-import { ManifestWriter } from './manifest_writer';
-import { ManifestStore, type ManifestState } from './stores/manifest_store';
+import {
+  manifestStore,
+  manifestController,
+  manifestVersionStore,
+} from './install';
 import React from 'react';
-
-const manifestReader = new ManifestReader();
-const manifestWriter = new ManifestWriter();
-const manifestStore = ManifestStore.createEmpty();
 
 export const useManifest = () => {
   const { projectsState } = useProjects();
-
-  const [savePointManifestState, setSavePointManifestState] =
-    React.useState<ManifestState | null>(null);
 
   const manifestState = React.useSyncExternalStore(
     manifestStore.subscribe,
     manifestStore.getSnapshot,
   );
 
-  const load = async (project: Project) => {
-    const loadedManifestStore = await manifestReader.read(project.name);
-    const snap = loadedManifestStore.getSnapshot();
-    manifestStore.hydrate(snap);
-    setSavePointManifestState(snap);
-  };
-
-  const saveManifest = async () => {
-    await manifestWriter.writeWithFilePicker(manifestStore);
-    setSavePointManifestState(manifestStore.getSnapshot());
-  };
+  const manifestVersionState = React.useSyncExternalStore(
+    manifestVersionStore.subscribe,
+    manifestVersionStore.getSnapshot,
+  );
 
   React.useEffect(() => {
     if (projectsState.activeProject == null) {
       return;
     }
-    void load(projectsState.activeProject);
+    void manifestController.loadForProject(projectsState.activeProject);
   }, [projectsState.activeProject]);
 
-  const hasManifestChanged = React.useMemo(() => {
-    return (
-      savePointManifestState != null &&
-      JSON.stringify(savePointManifestState) !== JSON.stringify(manifestState)
-    );
-  }, [savePointManifestState, manifestState]);
-
-  return { manifestState, manifestStore, saveManifest, hasManifestChanged };
+  return {
+    manifestState,
+    manifestStore,
+    manifestController,
+    manifestVersionState,
+  };
 };

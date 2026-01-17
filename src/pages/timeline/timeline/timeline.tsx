@@ -2,19 +2,19 @@ import { useAudioTimeline } from '../../../features/audio_timeline/use_audio_tim
 import { useVideoTimeline } from '../../../features/video_timeline/use_video_timeline';
 import { AudioTrack } from '../audio_track/audio_track';
 import { PlayheadTrack } from '../playhead_track/playhead_track';
-import { VideoTrack } from '../video_track/video_track';
 import { useTimelineClock } from '../use_timeline_clock';
+import { VideoTrack } from '../video_track/video_track';
 
 export const Timeline = ({
   onPlayheadSeek,
 }: {
   onPlayheadSeek: (newTime: number) => void;
 }) => {
-  const { videoTimeline } = useVideoTimeline();
+  const { videoTimelineSnap } = useVideoTimeline();
   const { audioTimeline } = useAudioTimeline();
   const { playheadTime, timelineClock } = useTimelineClock();
 
-  const videoDuration = videoTimeline.getTotalDuration();
+  const videoDuration = videoTimelineSnap.getTotalDuration();
   const audioDuration = audioTimeline.getTotalDuration();
   const maxDuration = Math.max(videoDuration, audioDuration);
 

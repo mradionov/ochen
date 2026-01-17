@@ -27,6 +27,10 @@ export class VideoResolverStore extends SyncStore<VideoResolverSnap> {
 
     const { state, snap } = this.setState(initialState, false);
 
+    this.subscribe(() => {
+      console.log('video resolver store changed');
+    });
+
     this.state = state;
     this.snap = snap;
   }

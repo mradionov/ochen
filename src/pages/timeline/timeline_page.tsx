@@ -19,10 +19,10 @@ export const TimelinePage = () => {
   );
 
   const { playheadTime, timelineClock } = useTimelineClock();
-  const { videoTimeline } = useVideoTimeline();
+  const { videoTimelineSnap } = useVideoTimeline();
   const { audioTimeline } = useAudioTimeline();
 
-  const videoDuration = videoTimeline.getTotalDuration();
+  const videoDuration = videoTimelineSnap.getTotalDuration();
   const audioDuration = audioTimeline.getTotalDuration();
   const maxDuration = Math.max(videoDuration, audioDuration);
 

@@ -8,7 +8,7 @@ export const useProjects = () => {
   );
 
   React.useEffect(() => {
-    void projectsController.fetchProjects();
+    void projectsController.loadProjects();
   }, []);
 
   return {

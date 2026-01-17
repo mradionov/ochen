@@ -25,6 +25,7 @@
   justify-content: space-between;
   font: 10px sans-serif;
   color: #eee;
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .footer {

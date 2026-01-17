@@ -1,13 +1,11 @@
 import { Subject } from '../../lib/subject';
 import type { RenderablePlayer } from '../video_player/renderable_player';
 import { RenderablePlayerFactory } from '../video_player/renderable_player_factory';
-import type {
-  VideoTimelineClip,
-  VideoTimelineSelectors,
-} from '../video_timeline/video_timeline_selectors';
+import type { VideoTimelineClip } from '../video_timeline/video_timeline_selectors';
+import type { VideoTimelineSnap } from '../video_timeline/video_timeline_store';
 
 export class VideoProducer {
-  private readonly videoTimeline: VideoTimelineSelectors;
+  private readonly videoTimelineSnap: VideoTimelineSnap;
   private currentIndex: number | undefined;
   private currentPlayer: RenderablePlayer | undefined;
   private nextPlayer: RenderablePlayer | undefined;
@@ -20,8 +18,8 @@ export class VideoProducer {
     timelineClip: VideoTimelineClip;
   }>();
 
-  constructor(videoTimeline: VideoTimelineSelectors) {
-    this.videoTimeline = videoTimeline;
+  constructor(videoTimelineSnap: VideoTimelineSnap) {
+    this.videoTimelineSnap = videoTimelineSnap;
   }
 
   reset(time: number) {
@@ -57,7 +55,7 @@ export class VideoProducer {
   }
 
   seek(time: number) {
-    const newTimelineClip = this.videoTimeline.findClipByTime(time);
+    const newTimelineClip = this.videoTimelineSnap.findClipByTime(time);
     if (!newTimelineClip) {
       console.warn(`No video clip for time "${time}"`);
       return;
@@ -101,13 +99,15 @@ export class VideoProducer {
     const isNewCurrentNext = this.currentIndex === newCurrentIndex - 1;
 
     const newCurrentTimelineClip =
-      this.videoTimeline.getTimelineClips()[newCurrentIndex];
+      this.videoTimelineSnap.getTimelineClips()[newCurrentIndex];
+    debugger;
+
     if (!newCurrentTimelineClip) {
       console.warn('No new current clip for index', newCurrentIndex);
       return;
     }
     const newNextTimelineClip =
-      this.videoTimeline.getTimelineClips()[newNextIndex];
+      this.videoTimelineSnap.getTimelineClips()[newNextIndex];
 
     this.maybeDestroyCurrentPlayer();
 
@@ -116,20 +116,26 @@ export class VideoProducer {
       if (this.isPlaying) {
         this.currentPlayer.play();
       }
+      debugger;
     } else {
       this.maybeDestroyNextPlayer();
       this.currentPlayer = RenderablePlayerFactory.createFromTimelineClip(
         newCurrentTimelineClip,
       );
+      debugger;
     }
 
     this.currentPlayer.ended.addListenerOnce(this.onPlayerEnded);
     this.currentIndex = newCurrentIndex;
 
+    debugger;
+
     if (newNextTimelineClip) {
       this.nextPlayer =
         RenderablePlayerFactory.createFromTimelineClip(newNextTimelineClip);
     }
+
+    debugger;
 
     this.clipChanged.emit(newNextTimelineClip);
     this.playerChanged.emit({
@@ -141,6 +147,7 @@ export class VideoProducer {
 
   private maybeDestroyCurrentPlayer() {
     if (this.currentPlayer) {
+      debugger;
       this.currentPlayer.destroy();
       this.currentPlayer = undefined;
     }

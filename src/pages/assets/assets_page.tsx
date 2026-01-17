@@ -15,7 +15,7 @@ import * as Lucide from 'lucide-react';
 export const AssetsPage = () => {
   const { assetsController, assetsState } = useAssets();
   const { manifestState, manifestStore } = useManifest();
-  const { videoTimeline } = useVideoTimeline();
+  const { videoTimelineSnap } = useVideoTimeline();
 
   if (manifestStore == null) {
     return <Loader />;
@@ -28,8 +28,8 @@ export const AssetsPage = () => {
     (file) => !importedNames.includes(file.name),
   );
 
-  const timelineClips = videoTimeline.getTimelineClips();
-  const totalDuration = videoTimeline.getTotalDuration();
+  const timelineClips = videoTimelineSnap.getTimelineClips();
+  const totalDuration = videoTimelineSnap.getTotalDuration();
 
   const tint = manifestState.videoTrack.effects?.tint;
 

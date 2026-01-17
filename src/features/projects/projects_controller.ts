@@ -1,11 +1,7 @@
+import { asyncOnce } from '../../lib/async_once.ts';
 import { FS } from '../../lib/fs.ts';
 import type { ProjectsRepo } from './projects_repo.ts';
-import type { ProjectsStore } from './projects_store.ts';
-
-export type Project = {
-  name: string;
-  isActive: boolean;
-};
+import type { Project, ProjectsStore } from './projects_store.ts';
 
 export class ProjectsController {
   private readonly projectsRepo: ProjectsRepo;
@@ -15,6 +11,10 @@ export class ProjectsController {
     this.projectsRepo = projectsRepo;
     this.projectsStore = projectsStore;
   }
+
+  readonly loadProjects = asyncOnce(async () => {
+    await this.fetchProjects();
+  });
 
   private async getDirRootHandle(): Promise<FileSystemDirectoryHandle> {
     const rootDirHandle = await this.projectsRepo.loadRootDirHandle();
