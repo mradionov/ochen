@@ -1,12 +1,12 @@
 import { Precondition } from '../../lib/precondition';
-import type { RenderSource } from './render_source';
-import type { EffectsState } from './effects_store';
-import { EdgeEffect } from './effects/edge';
 import type { AudioInfo } from '../audio_processing/audio_analyser';
 import type { Effect } from './effect';
+import { EdgeEffect } from './effects/edge';
+import { GlitchEffect } from './effects/glitch';
 import { GrainEffect } from './effects/grain';
 import { TintEffect } from './effects/tint';
-import { GlitchEffect } from './effects/glitch';
+import type { EffectsState } from './effects_store';
+import type { RenderSource } from './render_source';
 
 export class Renderer {
   readonly canvas: HTMLCanvasElement;

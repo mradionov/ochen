@@ -1,7 +1,7 @@
 import type { VideoTimelineClip } from '../../features/video_timeline/video_timeline_selectors';
 import { toMinutesString } from '../../lib/time_utils';
 import { PreviewBaseItem } from './preview_base_item';
-import { Button, Group } from '@mantine/core';
+import { Button } from '@mantine/core';
 
 export const ClipItem = ({
   timelineClip,

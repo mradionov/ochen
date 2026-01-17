@@ -62,6 +62,10 @@ export const PreviewBaseItem = ({
     }
   };
 
+  React.useEffect(() => {
+    videoPreviewRef.current?.update({ lastTime: 0, effectsState });
+  }, [effectsState]);
+
   React.useEffect(() => subscribeToTick(onTick), []);
 
   const onCanvasClick = () => {

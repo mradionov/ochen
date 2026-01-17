@@ -4,13 +4,20 @@
       "duration": 0,
       "kind": "cut"
     },
-    "effects": {
-      "tint": "#000000",
-      "grain": {},
-      "edge": {}
-    },
-    "clips": [],
-    "videos": {}
+    "effects": {},
+    "clips": [
+      {
+        "videoId": "IMG_0821.jpeg",
+        "duration": 0,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
+      }
+    ],
+    "videos": {
+      "IMG_0821.jpeg": "IMG_0821.jpeg"
+    }
   },
   "audioTrack": {
     "clips": [],

@@ -66,16 +66,17 @@ export class EffectsStore extends SyncStore<EffectsState> {
 
   toRaw(): EffectsRaw {
     return {
-      tint: this.state.tint,
-      vignette: this.state.vignette,
-      grain: {
-        intensity: this.state.grain?.intensity,
-      },
-      blur: this.state.blur,
-      edge: {
-        threshold: this.state.edge?.threshold,
-      },
-      glitch: this.state.glitch,
+      tint: this.state.tint ? this.state.tint : undefined,
+      grain: this.state.grain
+        ? {
+            intensity: this.state.grain?.intensity,
+          }
+        : undefined,
+      edge: this.state.edge
+        ? {
+            threshold: this.state.edge?.threshold,
+          }
+        : undefined,
       order: this.state.order,
     };
   }
