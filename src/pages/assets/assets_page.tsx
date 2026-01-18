@@ -4,6 +4,7 @@ import { EffectsPanel } from '../../features/effects/effects_panel/effects_panel
 import { ManifestSaveButton } from '../../features/manifest/manifest_save_button';
 import { VideoTrackStore } from '../../features/manifest/stores/video_track_store';
 import { useManifest } from '../../features/manifest/use_manifest';
+import { ModGraphEditor } from '../../features/mod_graph/mod_graph_editor';
 import { useVideoTimeline } from '../../features/video_timeline/use_video_timeline';
 import { type VideoTimelineClip } from '../../features/video_timeline/video_timeline_selectors';
 import { toMinutesString } from '../../lib/time_utils';

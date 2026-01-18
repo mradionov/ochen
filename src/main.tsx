@@ -8,7 +8,7 @@ import { TimelinePage } from './pages/timeline/timeline_page.tsx';
 import './theme/styles.css';
 import { theme } from './theme/theme.ts';
 import { MantineProvider } from '@mantine/core';
-import '@mantine/core/styles.css';
+import '@mantine/core/styles.layer.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';

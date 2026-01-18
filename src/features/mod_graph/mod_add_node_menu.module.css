@@ -1,0 +1,22 @@
+.button {
+  border: 2px solid var(--mantine-color-default-border);
+  border-radius: var(--mantine-radius-default);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  justify-content: center;
+  align-items: center;
+  padding: 4px;
+  font-size: var(--mantine-font-size-sm);
+  width: 60px;
+  height: 60px;
+
+  &:hover:not(:disabled) {
+    background-color: var(--mantine-color-default-hover);
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+}
