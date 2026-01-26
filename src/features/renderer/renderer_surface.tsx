@@ -1,24 +1,19 @@
 import type { EffectsState } from '../effects/effects_store';
 import { useRenderLoop } from '../use_render_loop';
-import type { RenderablePlayer } from '../video_player/renderable_player';
+import type { RenderFrame } from './render_frame';
 import { Renderer } from './renderer';
 import React from 'react';
 
 export const RendererSurface = ({
   width,
   height,
-  player,
-  offset,
+  frameProvider,
   effectsState,
   onClick,
 }: {
   width: number;
   height: number;
-  player: RenderablePlayer;
-  offset?: {
-    offsetX: number | string | undefined;
-    offsetY: number | string | undefined;
-  };
+  frameProvider: () => RenderFrame | null;
   effectsState?: EffectsState;
   onClick?: () => void;
 }) => {
@@ -37,18 +32,19 @@ export const RendererSurface = ({
   React.useEffect(
     () =>
       subscribeToTick(({ lastTime }) => {
-        player.updateFrame();
-
-        const renderSource = player.createRenderSource();
+        const frame = frameProvider();
+        if (!frame) {
+          return;
+        }
 
         rendererRef.current?.updateFrame({
-          renderSource,
+          renderSource: frame.renderSource,
           lastTime,
-          offset,
+          offset: frame.offset,
           effectsState,
         });
       }),
-    [rendererRef.current, player, offset, effectsState],
+    [frameProvider, effectsState, subscribeToTick],
   );
 
   return (

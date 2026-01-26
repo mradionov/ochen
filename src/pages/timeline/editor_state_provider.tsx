@@ -1,9 +1,9 @@
-import React from 'react';
+import type { AudioTimelineClip } from '../../features/audio_timeline/audio_timeline_selectors';
+import { useAudioTimeline } from '../../features/audio_timeline/use_audio_timeline';
 import type { AudioId, VideoId } from '../../features/manifest/manifest_schema';
 import { useVideoTimeline } from '../../features/video_timeline/use_video_timeline';
 import type { VideoTimelineClip } from '../../features/video_timeline/video_timeline_selectors';
-import { useAudioTimeline } from '../../features/audio_timeline/use_audio_timeline';
-import type { AudioTimelineClip } from '../../features/audio_timeline/audio_timeline_selectors';
+import React from 'react';
 
 type EditorState = {
   selectedVideoTimelineClip: VideoTimelineClip | undefined;
@@ -16,7 +16,7 @@ type EditorState = {
 const EditorStateContext = React.createContext<EditorState | null>(null);
 
 export const EditorStateProvider = ({ children }: React.PropsWithChildren) => {
-  const { videoTimeline } = useVideoTimeline();
+  const { videoTimelineSnap } = useVideoTimeline();
   const { audioTimeline } = useAudioTimeline();
 
   const [selectedVideoTimelineClipId, setSelectedVideoTimelineClipId] =
@@ -26,7 +26,7 @@ export const EditorStateProvider = ({ children }: React.PropsWithChildren) => {
 
   const selectedVideoTimelineClip =
     selectedVideoTimelineClipId != null
-      ? videoTimeline.getTimelineClip(selectedVideoTimelineClipId)
+      ? videoTimelineSnap.getTimelineClip(selectedVideoTimelineClipId)
       : undefined;
 
   const selectedAudioTimelineClip =

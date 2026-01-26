@@ -7,15 +7,39 @@
     "effects": {
       "configMap": {
         "tint": {
-          "enabled": true,
-          "value": "#bf3434"
+          "enabled": false,
+          "value": "#000000"
         }
       }
     },
     "clips": [
       {
         "videoId": "IMG_0821.jpeg",
-        "duration": 0,
+        "duration": 3,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
+      },
+      {
+        "videoId": "IMG_0820.jpeg",
+        "duration": 3,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
+      },
+      {
+        "videoId": "IMG_1199.jpeg",
+        "duration": 3,
+        "rate": 1,
+        "offsetX": "left",
+        "offsetY": "top",
+        "trimEnd": 0
+      },
+      {
+        "videoId": "IMG_1291.jpeg",
+        "duration": 3,
         "rate": 1,
         "offsetX": "left",
         "offsetY": "top",
@@ -23,7 +47,10 @@
       }
     ],
     "videos": {
-      "IMG_0821.jpeg": "IMG_0821.jpeg"
+      "IMG_0821.jpeg": "IMG_0821.jpeg",
+      "IMG_0820.jpeg": "IMG_0820.jpeg",
+      "IMG_1199.jpeg": "IMG_1199.jpeg",
+      "IMG_1291.jpeg": "IMG_1291.jpeg"
     }
   },
   "audioTrack": {

@@ -1,5 +1,5 @@
 import { useManifest } from './use_manifest';
-import { Button, Indicator } from '@mantine/core';
+import { Button, Group, Indicator } from '@mantine/core';
 
 export const ManifestSaveButton = () => {
   const { manifestController, manifestVersionState } = useManifest();
@@ -7,20 +7,22 @@ export const ManifestSaveButton = () => {
   const { hasChanges } = manifestVersionState;
 
   return (
-    <Indicator
-      inline
-      disabled={!hasChanges}
-      processing={hasChanges}
-      color="red"
-      size={12}
-      withBorder
-    >
-      <Button
-        onClick={() => manifestController.saveManifest()}
+    <Group>
+      <Indicator
+        inline
         disabled={!hasChanges}
+        processing={hasChanges}
+        color="red"
+        size={12}
+        withBorder
       >
-        Save manifest
-      </Button>
-    </Indicator>
+        <Button
+          onClick={() => manifestController.saveManifest()}
+          disabled={!hasChanges}
+        >
+          Save manifest
+        </Button>
+      </Indicator>
+    </Group>
   );
 };

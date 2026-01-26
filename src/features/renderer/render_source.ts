@@ -13,11 +13,55 @@ export type RenderSource = (
   height(): number;
 };
 
+function createEmptyImageBitmap(
+  width: number,
+  height: number,
+  fill: 'transparent' | string = 'transparent',
+): ImageBitmap {
+  const canvas = new OffscreenCanvas(width, height);
+  const ctx = canvas.getContext('2d')!;
+
+  if (fill !== 'transparent') {
+    ctx.fillStyle = fill;
+    ctx.fillRect(0, 0, width, height);
+  } else {
+    ctx.clearRect(0, 0, width, height);
+  }
+
+  return canvas.transferToImageBitmap();
+}
+
 export class ImageBitmapRenderSource {
   private readonly imageBitmap: ImageBitmap;
 
   constructor(imageBitmap: ImageBitmap) {
     this.imageBitmap = imageBitmap;
+  }
+
+  source() {
+    return this.imageBitmap;
+  }
+
+  width() {
+    return this.imageBitmap.width;
+  }
+
+  height() {
+    return this.imageBitmap.height;
+  }
+}
+
+export class AsyncImageBitmapRenderSource {
+  private imageBitmap: ImageBitmap = createEmptyImageBitmap(1, 1);
+
+  constructor(imageBitmapPromise: Promise<ImageBitmap>) {
+    imageBitmapPromise
+      .then((imageBitmap) => {
+        this.imageBitmap = imageBitmap;
+      })
+      .catch((error) => {
+        console.error('Failed to create ImageBitmap:', error);
+      });
   }
 
   source() {

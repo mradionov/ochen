@@ -115,7 +115,7 @@ export class VideoTimelineSelectors {
   getFileDuration(id: VideoId): number {
     const clip = this.getClip(id);
     if (isImage(clip.videoPath)) {
-      return clip.duration ?? 5;
+      return clip.duration || 5;
     }
     return this.videoResolverSnap.getDuration(id);
   }

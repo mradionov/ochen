@@ -1,6 +1,6 @@
 import { Subject } from './subject';
 
-const EMIT_UPDATE_DELAY_SEC = 1;
+const EMIT_UPDATE_DELAY_SEC = 0.2;
 
 export class RunningClock {
   private baseTimeSec = 0;

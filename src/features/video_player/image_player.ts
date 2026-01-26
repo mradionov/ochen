@@ -1,7 +1,11 @@
 import { Deferred } from '../../lib/deferred';
 import { RunningClock } from '../../lib/running_clock';
 import { Subject } from '../../lib/subject';
-import { ImageRenderSource } from '../renderer/render_source';
+import {
+  AsyncImageBitmapRenderSource,
+  PlaceholderRenderSource,
+  type RenderSource,
+} from '../renderer/render_source';
 import type { RenderablePlayer } from './renderable_player';
 
 export class ImagePlayer implements RenderablePlayer {
@@ -13,16 +17,23 @@ export class ImagePlayer implements RenderablePlayer {
   private _isLoaded = false;
   private _isPlaying = false;
   private _isDestroyed = false;
+  private renderSource: RenderSource = new PlaceholderRenderSource();
 
   private constructor(element: HTMLImageElement, duration: number) {
     this.element = element;
     this.duration = duration;
+
     const loadedDeferred = new Deferred<void>();
     this.loaded = loadedDeferred.promise;
+
     element.addEventListener(
       'load',
       () => {
         loadedDeferred.resolve(undefined);
+        const imageBitmapPromise = createImageBitmap(this.element);
+        this.renderSource = new AsyncImageBitmapRenderSource(
+          imageBitmapPromise,
+        );
       },
       { once: true },
     );
@@ -39,10 +50,7 @@ export class ImagePlayer implements RenderablePlayer {
   }
 
   createRenderSource() {
-    // if (!this._isLoaded) {
-    //   return new PlaceholderRenderSource();
-    // }
-    return new ImageRenderSource(this.element);
+    return this.renderSource;
   }
 
   get isPlaying() {
