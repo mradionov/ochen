@@ -8,9 +8,11 @@ import React from 'react';
 type EditorState = {
   selectedVideoTimelineClip: VideoTimelineClip | undefined;
   selectVideoTimelineClip: (id: VideoId) => void;
+  unselectVideoTimelineClip: () => void;
 
   selectedAudioTimelineClip: AudioTimelineClip | undefined;
   selectAudioTimelineClip: (id: AudioId) => void;
+  unselectAudioTimelineClip: () => void;
 };
 
 const EditorStateContext = React.createContext<EditorState | null>(null);
@@ -47,9 +49,11 @@ export const EditorStateProvider = ({ children }: React.PropsWithChildren) => {
   const value: EditorState = {
     selectedVideoTimelineClip,
     selectVideoTimelineClip,
+    unselectVideoTimelineClip: () => setSelectedVideoTimelineClipId(null),
 
     selectedAudioTimelineClip,
     selectAudioTimelineClip,
+    unselectAudioTimelineClip: () => setSelectedAudioTimelineClipId(null),
   };
 
   return (

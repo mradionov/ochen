@@ -3,9 +3,11 @@
   display: flex;
   flex-direction: row;
   min-height: 0;
+  gap: 8px;
 }
 
-.column {
+.videoColumn,
+.detailsColumn {
   flex: 1;
   display: flex;
   flex-direction: column;

@@ -64,7 +64,7 @@ export const TimelinePage = () => {
           Time: {toClockString(playheadTime)} / {toClockString(maxDuration)}
           <Timeline onPlayheadSeek={onPlayheadSeek} />
           <div className={classes.content}>
-            <div className={classes.column}>
+            <div className={classes.videoColumn}>
               <CompositePlayer
                 controllerRef={compositeControllerRef}
                 width={500}
@@ -72,7 +72,7 @@ export const TimelinePage = () => {
                 onSurfaceClick={onTogglePlay}
               />
             </div>
-            <div className={classes.column}>
+            <div className={classes.detailsColumn}>
               <DetailsView playheadTime={playheadTime} />
             </div>
           </div>
