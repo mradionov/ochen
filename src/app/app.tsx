@@ -23,6 +23,7 @@ export const App = () => (
         leftSection={<icon.Projector />}
       />
       <NavItem to="/game" label="Game" leftSection={<icon.Gamepad />} />
+      <NavItem to="/face" label="Face" leftSection={<icon.Smile />} />
     </AppShell.Navbar>
     <AppShell.Main>
       <Outlet />
