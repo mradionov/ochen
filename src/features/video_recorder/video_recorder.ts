@@ -1,5 +1,8 @@
 export class VideoRecorder {
   rec: MediaRecorder | undefined;
+  private renderCanvas!: HTMLCanvasElement;
+  private recordCanvas!: HTMLCanvasElement;
+  private rctx!: CanvasRenderingContext2D | null;
 
   start(renderCanvas: HTMLCanvasElement) {
     this.renderCanvas = renderCanvas;
@@ -18,15 +21,9 @@ export class VideoRecorder {
       videoBitsPerSecond: 30_000_000,
     });
 
-    const chunks = [];
+    const chunks: Blob[] = [];
     rec.ondataavailable = (e) => {
-      e.data.size && chunks.push(e.data);
-
-      //   if (chunks.length >= 60) {
-      //     // ~60 seconds
-      //     saveChunk(chunks);
-      //     chunks = [];
-      //   }
+      if (e.data.size) chunks.push(e.data);
     };
 
     rec.onstop = async () => {

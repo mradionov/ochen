@@ -51,7 +51,7 @@ export const SortableList = <T,>({
     onChange(arrayMove([...items], oldIndex, newIndex));
   };
 
-  const ids = React.useMemo(() => items.map(getId), [items, getId]);
+  const ids = items.map(getId);
 
   return (
     <DndContext

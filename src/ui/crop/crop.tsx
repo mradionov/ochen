@@ -4,7 +4,6 @@ import React from 'react';
 export const Crop = ({
   width,
   height,
-  renderSource,
 }: {
   width: number;
   height: number;

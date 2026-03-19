@@ -105,8 +105,6 @@ export class AudioProducer {
 
     this.maybeDestroyCurrentPlayer();
 
-    const oldPlayer = this.currentPlayer;
-
     if (isNewCurrentNext && this.nextPlayer) {
       this.currentPlayer = this.nextPlayer;
       if (this.isPlaying) {
@@ -151,7 +149,6 @@ export class AudioProducer {
   }
 
   private onPlayerEnded = () => {
-    console.log('onPlayerEnded');
     if (this.currentIndex == null) {
       throw new Error('A player must already exist');
     }

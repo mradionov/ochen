@@ -9,9 +9,7 @@ type Task<T> = {
 
 export class TaskQueue {
   private isBusy = false;
-  private tasks: Task<any>[] = [];
-
-  constructor() {}
+  private tasks: Task<unknown>[] = [];
 
   run<T>(runFn: RunFn<T>): Promise<T> {
     const deferred = new Deferred<T>();

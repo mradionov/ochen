@@ -1,5 +1,4 @@
 import { Precondition } from '../../lib/precondition';
-import type { AudioInfo } from '../audio_processing/audio_analyser';
 import { EffectsCompositor } from '../effects/effects_compositor';
 import type { EffectsState } from '../effects/effects_store';
 import type { RenderSource } from './render_source';
@@ -19,7 +18,6 @@ export class Renderer {
     this.effectsCompositor = new EffectsCompositor();
   }
 
-  // TODO: async
   static createFromSize({ width, height }: { width: number; height: number }) {
     const canvas = document.createElement('canvas');
     canvas.width = width;
@@ -43,41 +41,21 @@ export class Renderer {
     {
       renderSource,
       effectsState,
-      audioInfo,
       offset,
       lastTime,
     }: {
       renderSource: RenderSource;
       effectsState?: EffectsState;
-      audioInfo?: AudioInfo;
       lastTime: number;
       offset?: {
         offsetX: number | string | undefined;
         offsetY: number | string | undefined;
       };
     },
-    // next: { player: VideoPlayer } | undefined,
   ) {
     this.ctx.clearRect(0, 0, this.width, this.height);
 
     const box = this.getBox(renderSource, offset);
-
-    // const { timelineClip } = player;
-    // const { effects, transitionOut } = player.timelineClip.clip;
-
-    // if (effects?.blur != null) {
-    //   this.ctx.filter = `blur(${effects.blur}px)`;
-    // }
-
-    // const unratedTransitionDuration = transitionOut.duration * timelineClip.rate;
-    // const transitionStart =
-    // 	timelineClip.sourceDuration - unratedTransitionDuration - (timelineClip.clip.trimEnd ?? 0);
-    // const transitionElapsed = Math.max(0, player.element.currentTime - transitionStart);
-    // const transitionProgress = transitionElapsed / unratedTransitionDuration;
-    //
-    // if (transitionOut.duration > 0) {
-    // 	this.ctx.globalAlpha = 1 - transitionProgress;
-    // }
 
     this.ctx.drawImage(
       renderSource.source(),
@@ -90,26 +68,6 @@ export class Renderer {
       box.dstWidth,
       box.dstHeight,
     );
-
-    // if (transitionOut.duration > 0 && nextPlayer) {
-    // 	this.ctx.globalAlpha = transitionProgress;
-    //
-    // 	const nextBox = this.getBox(nextPlayer);
-    //
-    // 	this.ctx.drawImage(
-    // 		nextPlayer.element,
-    // 		nextBox.srcX,
-    // 		nextBox.srcY,
-    // 		nextBox.srcWidth,
-    // 		nextBox.srcHeight,
-    // 		nextBox.dstX,
-    // 		nextBox.dstY,
-    // 		nextBox.dstWidth,
-    // 		nextBox.dstHeight
-    // 	);
-    //
-    // 	this.ctx.globalAlpha = 1;
-    // }
 
     if (effectsState) {
       this.effectsCompositor.applyEffects(effectsState, {

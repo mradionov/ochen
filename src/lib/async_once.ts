@@ -1,4 +1,4 @@
-export const asyncOnce = <Result, Args extends any[]>(
+export const asyncOnce = <Result, Args extends unknown[]>(
   fn: (...args: Args) => Promise<Result>,
   keyFn: (args: Args) => string = (arg) => String(arg),
 ) => {

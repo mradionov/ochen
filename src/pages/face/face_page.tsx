@@ -51,13 +51,19 @@ export const FacePage = () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        console.log(faces);
+        const scaleX = canvas.width / video.videoWidth;
+        const scaleY = canvas.height / video.videoHeight;
 
         faces.forEach((face) => {
           const box = face.box;
           ctx.strokeStyle = 'red';
           ctx.lineWidth = 4;
-          ctx.strokeRect(box.xMin, box.yMin, box.width, box.height);
+          ctx.strokeRect(
+            box.xMin * scaleX,
+            box.yMin * scaleY,
+            box.width * scaleX,
+            box.height * scaleY,
+          );
         });
       }),
     [],

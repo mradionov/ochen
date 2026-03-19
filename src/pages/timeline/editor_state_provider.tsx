@@ -63,6 +63,7 @@ export const EditorStateProvider = ({ children }: React.PropsWithChildren) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useEditorState = (): EditorState => {
   const context = React.useContext(EditorStateContext);
   if (context == null) {

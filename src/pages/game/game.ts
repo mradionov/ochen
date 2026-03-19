@@ -5,7 +5,6 @@ import { IH, IW } from './config';
 
 export const createGame = async () => {
   const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
 
   canvas.width = IW;
   canvas.height = IH;
@@ -16,9 +15,7 @@ export const createGame = async () => {
 
   loop.tick.addListener(() => {
     const audioCaptureData = audioCapture.update();
-    const audioInfo = audioAnalyer.process(audioCaptureData);
-
-    // console.log('tick', audioInfo);
+    audioAnalyer.process(audioCaptureData);
   });
 
   await audioCapture.connectStream();

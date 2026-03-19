@@ -3,7 +3,7 @@ import { useVideoResolver } from '../../features/video_resolver/use_video_resolv
 import { isImage } from '../../lib/image_utils';
 import { toMinutesString } from '../../lib/time_utils';
 import { PreviewBaseItem } from './preview_base_item';
-import { Button, Group } from '@mantine/core';
+import { Button } from '@mantine/core';
 import React from 'react';
 
 export const UnimportedItem = ({

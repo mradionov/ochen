@@ -104,7 +104,7 @@ export class EdgeEffectRenderer implements EffectRenderer<'edge'> {
             i = (offsetY * width + offsetX) * 4;
           }
 
-          let intensity = Math.min(255, mag);
+          const intensity = Math.min(255, mag);
 
           dst[i] = intensity;
           dst[i + 1] = intensity;
@@ -127,7 +127,7 @@ export class EdgeEffectRenderer implements EffectRenderer<'edge'> {
   }
 }
 
-function pruneBySupport(dst, w, h, { edgeThr = 60, minNeighbors = 2 } = {}) {
+function pruneBySupport(dst: Uint8ClampedArray, w: number, h: number, { edgeThr = 60, minNeighbors = 2 } = {}) {
   const copy = dst.slice();
   for (let y = 1; y < h - 1; y++) {
     for (let x = 1; x < w - 1; x++) {
@@ -150,7 +150,7 @@ function pruneBySupport(dst, w, h, { edgeThr = 60, minNeighbors = 2 } = {}) {
   }
 }
 
-function box3x3Gray(gray, w, h) {
+function box3x3Gray(gray: Uint8ClampedArray, w: number, h: number) {
   const out = new Uint8ClampedArray(gray.length);
   for (let y = 1; y < h - 1; y++) {
     for (let x = 1; x < w - 1; x++) {
@@ -166,14 +166,15 @@ function box3x3Gray(gray, w, h) {
   return out;
 }
 
-const clamp01 = (v) => Math.min(1, Math.max(0, v));
+const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
-const smoothstep = (e0, e1, x) => {
+const smoothstep = (e0: number, e1: number, x: number) => {
   const t = clamp01((x - e0) / (e1 - e0));
   return t * t * (3 - 2 * t);
 };
 
-function accentuateBand(x, gain = 2.5, lo = 0.5, hi = 0.6) {
+function accentuateBand(x: number | undefined, gain = 2.5, lo = 0.5, hi = 0.6) {
+  if (x == null) return 0;
   // window = 0 outside, 1 inside (with soft edges)
   const wIn = smoothstep(lo, lo + 0.05, x);
   const wOut = 1 - smoothstep(hi - 0.05, hi, x);

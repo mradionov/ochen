@@ -9,7 +9,7 @@ export class GrainEffectRenderer implements EffectRenderer<'grain'> {
     { ctx, width, height }: EffectRendererContext,
     config: EffectConfig<'grain'>,
   ) {
-    let intensity = config.intensity ?? 0;
+    const intensity = config.intensity ?? 0;
 
     const imageData = ctx.getImageData(0, 0, width, height);
     const data = imageData.data;

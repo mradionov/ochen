@@ -98,10 +98,9 @@ export class VideoTrackStore extends SyncStore<VideoTrackState> {
     if (this.findClipStore(filename)) {
       return;
     }
-    // TODO: sub new store
-    this.videoClipStores.push(
-      VideoClipStore.createFromPath({ videoId: filename, videoPath: path }),
-    );
+    const newClipStore = VideoClipStore.createFromPath({ videoId: filename, videoPath: path });
+    newClipStore.subscribe(this.recomputeState);
+    this.videoClipStores.push(newClipStore);
     const newVideos = {
       ...this.state.videos,
       [filename]: filename,
@@ -117,7 +116,8 @@ export class VideoTrackStore extends SyncStore<VideoTrackState> {
     this.videoClipStores = this.videoClipStores.filter(
       (clipStore) => clipStore.videoId !== id,
     );
-    const { [id]: _, ...newVideos } = this.state.videos;
+    const newVideos = { ...this.state.videos };
+    delete newVideos[id];
     this.recomputeState({
       ...this.state,
       videos: newVideos,
