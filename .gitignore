@@ -9,16 +9,16 @@ node_modules
 # IDE
 .idea
 
+# Face recordings
+face_recording_*.json
+
 # Data
 *.MOV
 *.HEIC
 *.WAV
 *.MP3
 *.jpeg
-<<<<<<< HEAD
-=======
 *.jpg
->>>>>>> main
 *.png
 
 # Env
