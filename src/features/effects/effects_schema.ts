@@ -68,6 +68,7 @@ export const EffectsConfigMap = z.object({
     mirrored: z.boolean().optional(),
     tileCols: z.number().optional(),
     tileRows: z.number().optional(),
+    style: z.enum(['rings', 'constellation']).optional(),
   }).optional(),
 });
 

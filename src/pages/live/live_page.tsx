@@ -84,8 +84,8 @@ let activeEffects: EffectKey[] = [];
 // ── DVD state machine ────────────────────────────────────────────────────────
 const DVD_FALLBACK_URL = `${import.meta.env.BASE_URL}alina/alina1.png`;
 const DVD_FACE_DELAY_MS  =  5_000; // wait after face detected before showing
-const DVD_SHOW_MS        = 15_000; // how long DVD stays on screen
-const DVD_COOLDOWN_MS    = 60_000; // gap before face can trigger DVD again
+const DVD_SHOW_MS        =  30_000; // how long DVD stays on screen
+const DVD_COOLDOWN_MS    = 120_000; // gap before face can trigger DVD again
 const NO_FACE_RANDOM_MIN = 60_000; // random DVD fires after this long without a face
 const NO_FACE_RANDOM_MAX = 90_000;
 
@@ -171,7 +171,7 @@ function randomiseParams() {
   targetState.edgeTransparency = randomIntBetween(0, 120);
   targetState.edgeStrength = randomBetween(0.3, 1.2);
   targetState.grainIntensity = randomIntBetween(20, 200);
-  targetState.pixelateBlockSize = randomIntBetween(8, 24);
+  targetState.pixelateBlockSize = randomIntBetween(8, 14);
   targetState.glitchIntensity = randomIntBetween(5, 30);
   targetState.glitchSlices = randomIntBetween(6, 20);
   targetState.chromaticOffset = randomIntBetween(4, 20);
@@ -186,6 +186,7 @@ function randomiseParams() {
   targetState.asciiCellSize = randomIntBetween(6, 12);
   targetState.rippleAmplitude = randomIntBetween(4, 16);
   targetState.rippleFrequency = randomBetween(0.02, 0.08);
+  targetState.faceOverlayStyle = Math.random() < 0.5 ? 0 : 1;
 }
 
 function pickRandomTarget() {

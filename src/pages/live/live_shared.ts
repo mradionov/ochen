@@ -43,6 +43,7 @@ export type LerpState = {
   rippleAmplitude: number;
   rippleFrequency: number;
   faceOverlayWeight: number;
+  faceOverlayStyle: number; // 0 = rings, 1 = constellation
 };
 
 export const DEFAULT_LERP_STATE: LerpState = {
@@ -85,6 +86,7 @@ export const DEFAULT_LERP_STATE: LerpState = {
   rippleAmplitude: 8,
   rippleFrequency: 0.04,
   faceOverlayWeight: 0,
+  faceOverlayStyle: 0,
 };
 
 export function lerp(a: number, b: number, t: number) {
@@ -140,6 +142,7 @@ export function lerpToward(current: LerpState, target: LerpState, speed: number)
   current.rippleAmplitude = lerp(current.rippleAmplitude, target.rippleAmplitude, speed);
   current.rippleFrequency = lerp(current.rippleFrequency, target.rippleFrequency, speed);
   current.faceOverlayWeight = lerpWeight(current.faceOverlayWeight, target.faceOverlayWeight, speed);
+  current.faceOverlayStyle = target.faceOverlayStyle; // categorical, no lerp
 }
 
 export function lerpStateToEffects(s: LerpState): EffectsState {
@@ -203,7 +206,8 @@ export function lerpStateToEffects(s: LerpState): EffectsState {
             mirrored: w(s.mirrorWeight),
             tileCols: w(s.tileWeight) ? Math.round(s.tileCols) : 1,
             tileRows: w(s.tileWeight) ? Math.round(s.tileRows) : 1,
-          }
+            style: s.faceOverlayStyle < 0.5 ? 'rings' : 'constellation',
+          } as const
         : { enabled: false },
     },
     order: ['dvd', 'ghost', 'ripple', 'mirror', 'duotone', 'channelSwap', 'tint', 'chromatic', 'glitch', 'edge', 'grain', 'pixelate', 'dither', 'halftone', 'ascii', 'posterize', 'scanlines', 'tile', 'faceOverlay'],
