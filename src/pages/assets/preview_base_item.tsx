@@ -1,4 +1,4 @@
-import type { EffectsState } from '../../features/renderer/effects_store';
+import type { EffectsState } from '../../features/effects/effects_store';
 import { useRenderLoop } from '../../features/use_render_loop';
 import { useVideoPreviewFactory } from '../../features/video_preview_factory/use_video_preview_factory';
 import type { VideoPreview } from '../../features/video_preview_factory/video_preview';

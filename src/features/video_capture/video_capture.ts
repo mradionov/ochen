@@ -21,6 +21,7 @@ export class VideoCapture {
   }
 
   update() {
-    return { video: this.video ?? undefined };
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return { video: this.video! };
   }
 }

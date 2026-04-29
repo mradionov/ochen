@@ -19,7 +19,7 @@ export class TaskQueue {
       runFn,
     };
 
-    this.tasks.push(task);
+    this.tasks.push(task as Task<unknown>);
     void this.maybeRunNext();
 
     return deferred.promise;

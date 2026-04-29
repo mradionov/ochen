@@ -82,7 +82,7 @@ const weightKey: Record<EffectKey, keyof LerpState> = {
 let activeEffects: EffectKey[] = [];
 
 // ── DVD state machine ────────────────────────────────────────────────────────
-const DVD_FALLBACK_URL = '/alina/alina1.png';
+const DVD_FALLBACK_URL = `${import.meta.env.BASE_URL}alina/alina1.png`;
 const DVD_FACE_DELAY_MS  =  5_000; // wait after face detected before showing
 const DVD_SHOW_MS        = 15_000; // how long DVD stays on screen
 const DVD_COOLDOWN_MS    = 60_000; // gap before face can trigger DVD again

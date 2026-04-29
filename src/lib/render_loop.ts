@@ -45,7 +45,7 @@ export class RenderLoop {
     this.state = 'stopRequested';
   }
 
-  readonly loop = (timestamp = null) => {
+  readonly loop = (timestamp: number | null = null) => {
     if (this.state === 'idle') {
       return;
     }
@@ -63,9 +63,9 @@ export class RenderLoop {
     let deltaTime = idealDeltaTime;
     if (timestamp !== null) {
       // Timestamp is originally in milliseconds, convert to seconds
-      const deltaTimestamp = timestamp - this.lastTimestamp;
+      const deltaTimestamp = timestamp - (this.lastTimestamp ?? 0);
       if (Math.round(this.getFpsInterval()) - Math.round(deltaTimestamp) > 2) {
-        window.requestAnimationFrame(this.loop);
+        window.requestAnimationFrame((t) => this.loop(t));
         return;
       }
 
@@ -73,25 +73,25 @@ export class RenderLoop {
 
       // If delta is too large, we must have resumed from stop() or breakpoint.
       // Use ideal default delta only for this frame.
-      if (deltaTime > this.options.deltaTimeLimit) {
+      if (deltaTime > (this.options.deltaTimeLimit ?? 1)) {
         deltaTime = idealDeltaTime;
       }
     }
 
-    this.lastTimestamp = timestamp;
+    this.lastTimestamp = timestamp ?? undefined;
 
-    const lastTime = timestamp / 1000;
+    const lastTime = (timestamp ?? 0) / 1000;
 
     this.tick.emit({ deltaTime, lastTime });
 
-    window.requestAnimationFrame(this.loop);
+    window.requestAnimationFrame((t) => this.loop(t));
   };
 
   getFpsInterval() {
-    return 1000 / this.options.fps;
+    return 1000 / (this.options.fps ?? 120);
   }
 
   getIdealDeltaTime() {
-    return 1 / this.options.fps;
+    return 1 / (this.options.fps ?? 120);
   }
 }
