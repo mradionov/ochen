@@ -21,7 +21,6 @@ tfjsWasm.setWasmPaths(
 );
 
 const videoCapture = new VideoCapture();
-const detectorPromise = FaceLandmarkDetector.createDetector();
 
 let detector: Awaited<ReturnType<typeof FaceLandmarkDetector.createDetector>> | undefined;
 
@@ -38,7 +37,7 @@ const FaceRecordTab = () => {
   React.useEffect(() => {
     const create = async () => {
       await videoCapture.connect();
-      detector = await detectorPromise;
+      detector = await FaceLandmarkDetector.createDetector();
     };
     create();
   }, []);

@@ -8,6 +8,8 @@ export class Renderer {
   private readonly ctx: CanvasRenderingContext2D;
   private readonly effectsCompositor: EffectsCompositor;
 
+  private isRendering = false;
+
   private constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     this.ctx = Precondition.checkExists(
@@ -41,11 +43,13 @@ export class Renderer {
     {
       renderSource,
       effectsState,
+      fit = 'contain',
       offset,
       lastTime,
-    }: {
+    }:  {
       renderSource: RenderSource;
       effectsState?: EffectsState;
+      fit?: 'contain' | 'cover';
       lastTime: number;
       offset?: {
         offsetX: number | string | undefined;
@@ -53,9 +57,12 @@ export class Renderer {
       };
     },
   ) {
+    if (this.isRendering) return;
+    this.isRendering = true;
+    try {
     this.ctx.clearRect(0, 0, this.width, this.height);
 
-    const box = this.getBox(renderSource, offset);
+    const box = this.getBox(renderSource, fit, offset);
 
     this.ctx.drawImage(
       renderSource.source(),
@@ -77,10 +84,14 @@ export class Renderer {
         lastTime,
       });
     }
+    } finally {
+      this.isRendering = false;
+    }
   }
 
   private getBox(
     renderSource: RenderSource,
+    fit: 'contain' | 'cover' = 'contain',
     offset: {
       offsetX: number | string | undefined;
       offsetY: number | string | undefined;
@@ -108,15 +119,17 @@ export class Renderer {
     const surfaceWidth = this.width;
     const surfaceHeight = this.height;
 
-    const sourceToCanvasRatio =
-      srcHeight > srcWidth
-        ? srcWidth / surfaceWidth
-        : srcHeight / surfaceHeight;
+    const scaleX = surfaceWidth / srcWidth;
+    const scaleY = surfaceHeight / srcHeight;
+    const scale = fit === 'cover'
+      ? Math.max(scaleX, scaleY)
+      : Math.min(scaleX, scaleY);
 
-    const dstWidth = srcWidth / sourceToCanvasRatio;
-    const dstHeight = srcHeight / sourceToCanvasRatio;
+    const dstWidth = srcWidth * scale;
+    const dstHeight = srcHeight * scale;
 
-    let dstX = 0;
+    // cover: center by default so cropping is symmetric
+    let dstX = fit === 'cover' ? (surfaceWidth - dstWidth) / 2 : 0;
     if (offsetX === 'left') {
       // noop
     } else if (offsetX === 'right') {
@@ -127,7 +140,7 @@ export class Renderer {
       dstX = offsetX;
     }
 
-    let dstY = 0;
+    let dstY = fit === 'cover' ? (surfaceHeight - dstHeight) / 2 : 0;
     if (offsetY === 'top') {
       // noop
     } else if (offsetY === 'bottom') {

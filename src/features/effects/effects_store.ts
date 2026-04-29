@@ -46,6 +46,14 @@ export class EffectsStore extends SyncStore<EffectsState> {
     this.setConfig('grain', { enabled: true, intensity });
   }
 
+  setEdge({ threshold, transparency }: { threshold?: number; transparency?: number }) {
+    this.setConfig('edge', {
+      enabled: this.state.configMap?.edge?.enabled ?? true,
+      threshold,
+      transparency,
+    });
+  }
+
   setEnabled(type: EffectType, isEnabled: boolean) {
     this.setConfig(
       type,
@@ -72,7 +80,7 @@ export class EffectsStore extends SyncStore<EffectsState> {
     });
   }
 
-  getSnapshot() {
+  readonly getSnapshot = () => {
     return this.state;
   }
 

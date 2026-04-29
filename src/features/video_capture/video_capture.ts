@@ -1,5 +1,9 @@
 export class VideoCapture {
-  private video: HTMLVideoElement;
+  private video: HTMLVideoElement | null = null;
+
+  get lastVideo(): HTMLVideoElement | null {
+    return this.video;
+  }
 
   async connect() {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -17,6 +21,6 @@ export class VideoCapture {
   }
 
   update() {
-    return { video: this.video };
+    return { video: this.video ?? undefined };
   }
 }

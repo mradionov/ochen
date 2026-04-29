@@ -8,19 +8,23 @@ export const RendererSurface = ({
   width,
   height,
   frameProvider,
-  effectsState,
+  getEffectsState,
   onClick,
+  style,
 }: {
   width: number;
   height: number;
   frameProvider: () => RenderFrame | null;
-  effectsState?: EffectsState;
+  getEffectsState?: () => EffectsState | undefined;
   onClick?: () => void;
+  style?: React.CSSProperties;
 }) => {
   const { subscribeToTick } = useRenderLoop();
 
   const rendererRef = React.useRef<Renderer | null>(null);
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
+  const getEffectsStateRef = React.useRef(getEffectsState);
+  getEffectsStateRef.current = getEffectsState;
 
   React.useEffect(() => {
     if (canvasRef.current == null) {
@@ -39,12 +43,13 @@ export const RendererSurface = ({
 
         rendererRef.current?.updateFrame({
           renderSource: frame.renderSource,
+          fit: frame.fit,
           lastTime,
           offset: frame.offset,
-          effectsState,
+          effectsState: getEffectsStateRef.current?.(),
         });
       }),
-    [frameProvider, effectsState, subscribeToTick],
+    [frameProvider, subscribeToTick],
   );
 
   return (
@@ -53,6 +58,7 @@ export const RendererSurface = ({
       width={width}
       height={height}
       onClick={onClick}
+      style={{ display: 'block', ...style }}
     ></canvas>
   );
 };

@@ -2,6 +2,7 @@ import { App } from './app/app.tsx';
 import { AssetsPage } from './pages/assets/assets_page.tsx';
 import { AudioPage } from './pages/audio/audio_page.tsx';
 import { FacePage } from './pages/face/face_page.tsx';
+import { LivePage } from './pages/live/live_page.tsx';
 import { GamePage } from './pages/game/game_page.tsx';
 import { PosePage } from './pages/pose/pose_page.tsx';
 import { PerformancePage } from './pages/performance/performance_page.tsx';
@@ -33,6 +34,7 @@ const router = createBrowserRouter([
       { path: 'game', element: <GamePage /> },
       { path: 'face', element: <FacePage /> },
       { path: 'pose', element: <PosePage /> },
+      { path: 'live', element: <LivePage /> },
     ],
   },
 ]);

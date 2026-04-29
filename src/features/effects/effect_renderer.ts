@@ -9,9 +9,5 @@ export type EffectRendererContext = {
 };
 
 export interface EffectRenderer<T extends EffectType> {
-  render(
-    context: EffectRendererContext,
-    config: EffectConfig<T>,
-    // audioInfo?: AudioInfo,
-  ): void | Promise<void>;
+  render(context: EffectRendererContext, config: EffectConfig<T>): void;
 }

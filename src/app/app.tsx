@@ -25,6 +25,7 @@ export const App = () => (
       <NavItem to="/game" label="Game" leftSection={<icon.Gamepad />} />
       <NavItem to="/face" label="Face" leftSection={<icon.Smile />} />
       <NavItem to="/pose" label="Pose" leftSection={<icon.PersonStanding />} />
+      <NavItem to="/live" label="Live" leftSection={<icon.Radio />} />
     </AppShell.Navbar>
     <AppShell.Main>
       <Outlet />

@@ -24,6 +24,11 @@ export const CompositePlayer = ({
 
   const { frameProvider } = useVideoProducer();
 
+  const getEffectsState = React.useCallback(
+    () => manifestState.videoTrack.effects,
+    [manifestState.videoTrack.effects],
+  );
+
   React.useEffect(() => {
     audioProducerRef.current = new AudioProducer(audioTimeline);
     audioProducerRef.current.load();
@@ -53,7 +58,7 @@ export const CompositePlayer = ({
       width={width}
       height={height}
       onClick={onSurfaceClick}
-      effectsState={manifestState.videoTrack.effects}
+      getEffectsState={getEffectsState}
     />
   );
 };

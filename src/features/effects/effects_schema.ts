@@ -17,6 +17,58 @@ export const EffectsConfigMap = z.object({
     intensity: z.number().optional(),
   }).optional(),
   vignette: BaseEffectConfig.extend({}).optional(),
+  pixelate: BaseEffectConfig.extend({
+    blockSize: z.number().optional(),
+  }).optional(),
+  glitch: BaseEffectConfig.extend({
+    intensity: z.number().optional(),
+    sliceCount: z.number().optional(),
+  }).optional(),
+  duotone: BaseEffectConfig.extend({
+    shadowColor: z.string().optional(),
+    highlightColor: z.string().optional(),
+  }).optional(),
+  chromatic: BaseEffectConfig.extend({
+    offset: z.number().optional(),
+  }).optional(),
+  scanlines: BaseEffectConfig.extend({
+    gap: z.number().optional(),
+    opacity: z.number().optional(),
+  }).optional(),
+  mirror: BaseEffectConfig.extend({}).optional(),
+  posterize: BaseEffectConfig.extend({
+    levels: z.number().optional(),
+  }).optional(),
+  tile: BaseEffectConfig.extend({
+    cols: z.number().optional(),
+    rows: z.number().optional(),
+  }).optional(),
+  channelSwap: BaseEffectConfig.extend({}).optional(),
+  dvd: BaseEffectConfig.extend({
+    imageUrl: z.string().optional(),
+    scale: z.number().optional(),
+  }).optional(),
+  ghost: BaseEffectConfig.extend({
+    decay: z.number().optional(),
+  }).optional(),
+  halftone: BaseEffectConfig.extend({
+    cellSize: z.number().optional(),
+  }).optional(),
+  ascii: BaseEffectConfig.extend({
+    cellSize: z.number().optional(),
+  }).optional(),
+  dither: BaseEffectConfig.extend({}).optional(),
+  ripple: BaseEffectConfig.extend({
+    amplitude: z.number().optional(),
+    frequency: z.number().optional(),
+  }).optional(),
+  faceOverlay: BaseEffectConfig.extend({
+    dotRadius: z.number().optional(),
+    color: z.string().optional(),
+    mirrored: z.boolean().optional(),
+    tileCols: z.number().optional(),
+    tileRows: z.number().optional(),
+  }).optional(),
 });
 
 export type EffectsConfigMap = z.infer<typeof EffectsConfigMap>;
@@ -35,8 +87,24 @@ export const EffectsSchema = z.object({
 export type EffectsRaw = z.infer<typeof EffectsSchema>;
 
 export const defaultEffectsOrder: EffectType[] = [
+  'mirror',
+  'duotone',
   'tint',
+  'chromatic',
+  'glitch',
   'edge',
   'grain',
+  'pixelate',
+  'posterize',
+  'scanlines',
   'vignette',
+  'tile',
+  'channelSwap',
+  'dvd',
+  'ghost',
+  'halftone',
+  'ascii',
+  'dither',
+  'ripple',
+  'faceOverlay',
 ];
