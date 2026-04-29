@@ -13,13 +13,8 @@ node_modules
 face_recording_*.json
 
 # Data
-*.MOV
-*.HEIC
-*.WAV
-*.MP3
-*.jpeg
-*.jpg
-*.png
+**/sets/**/audios/
+**/sets/**/videos/
 
 # Env
 .env
